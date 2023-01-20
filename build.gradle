@@ -2,7 +2,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.1.1"
+    id "edu.wpi.first.GradleRIO" version "2023.2.1"
     id "idea"
 }
 
@@ -49,7 +49,20 @@ wpi.java.debugJni = false
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
+repositories {
+    mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url='https://maven.pkg.github.com/Troy-Argonauts/ocean'
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
 dependencies {
+    implementation 'org.troyargonauts:ocean:2023.1.2'
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
