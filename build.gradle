@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.troyargonauts:ocean:2023.1.2'
+    implementation 'org.troyargonauts:ocean:latest'
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
