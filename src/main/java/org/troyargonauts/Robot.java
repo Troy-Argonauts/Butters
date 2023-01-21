@@ -5,11 +5,11 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.Manipulator;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -23,11 +23,15 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
+    static Manipulator manipulator;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+
+        manipulator = new Manipulator();
     }
 
     @Override
@@ -82,4 +86,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
+
+    public static Manipulator getManipulator() {
+        if (manipulator == null) {
+            manipulator = new Manipulator();
+        }
+        return manipulator;
+    }
 }

@@ -2,9 +2,8 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public interface Drivetrain {
-
+    public static final class ManipulatorConstants {
+        public static final int kIntakeMotorID = 0;
     }
-
 
 }
