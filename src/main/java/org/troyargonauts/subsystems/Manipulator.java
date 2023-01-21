@@ -1,6 +1,6 @@
 package org.troyargonauts.subsystems;
 
-import org.troyargonauts.Constants.ManipulatorConstants;
+import org.troyargonauts.Constants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -16,7 +16,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Manipulator() {
-        intakeMotor = new CANSparkMax(ManipulatorConstants.kIntakeMotorID, MotorType.kBrushless);
+        intakeMotor = new CANSparkMax(Constants.Manipulator.PORT, MotorType.kBrushless);
     }
 
     public void setState(ManipulatorStates state) {
