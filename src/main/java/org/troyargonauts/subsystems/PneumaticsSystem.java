@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Pneumatics extends SubsystemBase {
+public class PneumaticsSystem extends SubsystemBase {
 
     private final DoubleSolenoid manipulatorSolenoid;
     private DoubleSolenoid.Value manipulatorState;
 
-    public Pneumatics() {
+    public PneumaticsSystem() {
         manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Manipulator.kForwardChannel, Manipulator.kReverseChannel);
         manipulatorState = DoubleSolenoid.Value.kForward;
         updateManipulatorState();
