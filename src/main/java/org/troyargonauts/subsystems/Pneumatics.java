@@ -1,6 +1,6 @@
 package org.troyargonauts.subsystems;
 
-import org.troyargonauts.Constants.PneumaticsConstants;
+import org.troyargonauts.Constants.*;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -12,7 +12,7 @@ public class Pneumatics extends SubsystemBase {
     private DoubleSolenoid.Value manipulatorState;
 
     public Pneumatics() {
-        manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, PneumaticsConstants.kForwardChannel, PneumaticsConstants.kReverseChannel);
+        manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Manipulator.kForwardChannel, Manipulator.kReverseChannel);
         manipulatorState = DoubleSolenoid.Value.kForward;
         updateManipulatorState();
     }
