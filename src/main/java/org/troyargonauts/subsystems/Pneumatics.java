@@ -6,56 +6,38 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PneumaticsSystem extends SubsystemBase {
+public class Pneumatics extends SubsystemBase {
 
     private final DoubleSolenoid manipulatorSolenoid;
     private DoubleSolenoid.Value manipulatorState;
     private DoubleSolenoid elevatorSolenoid;
     private DoubleSolenoid.Value elevatorState;
 
-    public PneumaticsSystem() {
+    public Pneumatics() {
         manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Manipulator.kForwardChannel, Manipulator.kReverseChannel);
         manipulatorState = DoubleSolenoid.Value.kForward;
         elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Elevator.kElevatorForwardChannel, Elevator.kElevatorReverseChannel);
         elevatorState = DoubleSolenoid.Value.kForward;
-        updateManipulatorState();
-        updateElevatorState();
     }
 
 
-    public void manipulatorGrab() {
-        if (manipulatorState == DoubleSolenoid.Value.kReverse) {
+    public void setManipulatorSolenoid(boolean state) {
+        if (state == true) {
             manipulatorState = DoubleSolenoid.Value.kForward;
-            updateManipulatorState();
-        }
-    }
 
-    public void manipulatorRelease() {
-        if (manipulatorState == DoubleSolenoid.Value.kForward) {
+        } else {
             manipulatorState = DoubleSolenoid.Value.kReverse;
-            updateManipulatorState();
+
+            }
         }
-    }
 
-    public void updateManipulatorState() {
-        manipulatorSolenoid.set(manipulatorState);
-    }
 
-    public void elevatorUp() {
-        if (elevatorState == DoubleSolenoid.Value.kReverse) {
+    public void setElevatorSolenoid(boolean state) {
+        if (state == true) {
             elevatorState = DoubleSolenoid.Value.kForward;
-            updateElevatorState();
-        }
-    }
 
-    public void elevatorDown() {
-        if (elevatorState == DoubleSolenoid.Value.kForward) {
+        } else {
             elevatorState = DoubleSolenoid.Value.kReverse;
-            updateElevatorState();
         }
-    }
-
-    public void updateElevatorState() {
-        elevatorSolenoid.set(elevatorState);
     }
 }
