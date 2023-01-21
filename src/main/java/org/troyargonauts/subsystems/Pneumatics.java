@@ -8,30 +8,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
 
-    private final DoubleSolenoid solenoid;
-    private DoubleSolenoid.Value currentState;
+    private final DoubleSolenoid manipulatorSolenoid;
+    private DoubleSolenoid.Value manipulatorState;
 
     public Pneumatics() {
-        solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, PneumaticsConstants.kForwardChannel, PneumaticsConstants.kReverseChannel);
-        currentState = DoubleSolenoid.Value.kForward;
-        updateState();
+        manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, PneumaticsConstants.kForwardChannel, PneumaticsConstants.kReverseChannel);
+        manipulatorState = DoubleSolenoid.Value.kForward;
+        updateManipulatorState();
     }
 
-    public void pickupIntake(){
-        if (currentState == DoubleSolenoid.Value.kReverse) {
-            currentState = DoubleSolenoid.Value.kForward;
-            updateState();
+    public void manipulatorGrab(){
+        if (manipulatorState == DoubleSolenoid.Value.kReverse) {
+            manipulatorState = DoubleSolenoid.Value.kForward;
+            updateManipulatorState();
         }
     }
 
-    public void dropIntake() {
-        if (currentState == DoubleSolenoid.Value.kForward) {
-            currentState = DoubleSolenoid.Value.kReverse;
-            updateState();
+    public void manipulatorRelease() {
+        if (manipulatorState == DoubleSolenoid.Value.kForward) {
+            manipulatorState = DoubleSolenoid.Value.kReverse;
+            updateManipulatorState();
         }
     }
 
-    public void updateState() {
-        solenoid.set(currentState);
+    public void updateManipulatorState() {
+        manipulatorSolenoid.set(manipulatorState);
     }
 }
