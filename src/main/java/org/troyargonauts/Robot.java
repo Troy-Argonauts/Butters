@@ -8,6 +8,7 @@ package org.troyargonauts;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.troyargonauts.subsystems.Elevator;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -20,7 +21,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
-    
+
+    private static Elevator elevator;
+
     private RobotContainer robotContainer;
 
     @Override
@@ -28,6 +31,8 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+
+        elevator = new Elevator();
     }
 
     @Override
@@ -82,4 +87,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
+
+    public static Elevator getElevator() {
+        if(elevator == null) elevator = new Elevator();
+        return elevator;
+    }
 }

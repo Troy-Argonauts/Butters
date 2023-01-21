@@ -6,6 +6,7 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,12 +20,20 @@ public class RobotContainer
     {
         // Configure the trigger bindings
         configureBindings();
+
+        final ArgoController driver = new ArgoController (0);
     }
     
     
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+        new RunCommand(
+                () -> {
+                    Robot.getElevator().setElevatorPower(driver.getRightJoystickY());
+                }, Robot.getElevator()
+
+        );
 
     }
     
