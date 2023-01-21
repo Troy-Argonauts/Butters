@@ -16,47 +16,19 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
         leftElevatorMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightElevatorMotor = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+
         elevatorLimitSwitch = leftElevatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         elevatorLimitSwitch = rightElevatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+
+        rightElevatorMotor.setInverted(true);
     }
 
-    @Override
-    public void periodic() {
-        if(elevatorLimitSwitch.isPressed()) {
-           setElevatorPower(0);
-        }
-        super.periodic();
+    public boolean getLimitSwitchState() {
+        return elevatorLimitSwitch.isLimitSwitchEnabled();
     }
 
-    public enum setElevatorMotors {
-        FORWARD, BACKWARD, STOP
-    }
-
-//    public void extendElevator(setElevatorMotors state) {
-//        switch (state) {
-//            case FORWARD:
-//                leftElevatorMotor.set(0.1);
-//                rightElevatorMotor.set(0.1);
-//                break;
-//
-//            case BACKWARD:
-//                leftElevatorMotor.set(-0.1);
-//                rightElevatorMotor.set(-0.1);
-//                break;
-//
-//            case STOP:
-//                leftElevatorMotor.set(0);
-//                rightElevatorMotor.set(0);
-//                break;
-//
-//        }
-//    }
-
-    public void setElevatorPower(double rightJoystick) {
-        leftElevatorMotor.set(rightJoystick);
-        rightElevatorMotor.set(rightJoystick);
-        if(rightJoystick > 0) {
-            periodic();
-        }
+    public void setElevatorPower(double speed) {
+        leftElevatorMotor.set(speed);
+        rightElevatorMotor.set(speed);
     }
 }
