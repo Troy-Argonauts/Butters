@@ -5,7 +5,7 @@
 
 package org.troyargonauts;
 
-import org.troyargonauts.subsystems.Pneumatics;
+import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
-    static Pneumatics pneumatics;
+    static PneumaticsSystem pneumatics;
 
     @Override
     public void robotInit() {
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
 
-        pneumatics = new Pneumatics();
+        pneumatics = new PneumaticsSystem();
     }
 
     @Override
@@ -87,9 +87,9 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static Pneumatics getPneumatics() {
+    public static PneumaticsSystem getPneumatics() {
         if (pneumatics == null) {
-            pneumatics = new Pneumatics();
+            pneumatics = new PneumaticsSystem();
         }
         return pneumatics;
     }
