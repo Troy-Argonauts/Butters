@@ -9,26 +9,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 public class Elevator extends SubsystemBase {
-    private CANSparkMax leftElevatorMotor;
-    private CANSparkMax rightElevatorMotor;
-    private SparkMaxLimitSwitch elevatorLimitSwitch;
+    private CANSparkMax leftMotor;
+    private CANSparkMax rightMotor;
+    private SparkMaxLimitSwitch upperLimitSwitch;
+    private SparkMaxLimitSwitch lowerLimitSwitch;
 
     public Elevator() {
-        leftElevatorMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightElevatorMotor = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMotor = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        elevatorLimitSwitch = leftElevatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        elevatorLimitSwitch = rightElevatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
 
-        rightElevatorMotor.setInverted(true);
+        lowerLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+
+        rightMotor.setInverted(true);
     }
 
-    public boolean getLimitSwitchState() {
-        return elevatorLimitSwitch.isLimitSwitchEnabled();
+    public boolean getUpperLimitSwitchState() {
+        return upperLimitSwitch.isLimitSwitchEnabled();
+    }
+    public boolean getLowerLimitSwitchState() {
+        return lowerLimitSwitch.isLimitSwitchEnabled();
     }
 
     public void setElevatorPower(double speed) {
-        leftElevatorMotor.set(speed);
-        rightElevatorMotor.set(speed);
+        leftMotor.set(speed);
+        rightMotor.set(speed);
     }
 }
