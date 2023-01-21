@@ -5,11 +5,11 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.PneumaticsSystem;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -23,11 +23,15 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
+    static PneumaticsSystem pneumatics;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+
+        pneumatics = new PneumaticsSystem();
     }
 
     @Override
@@ -82,4 +86,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
+
+    public static PneumaticsSystem getPneumatics() {
+        if (pneumatics == null) {
+            pneumatics = new PneumaticsSystem();
+        }
+        return pneumatics;
+    }
 }
