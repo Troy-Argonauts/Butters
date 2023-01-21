@@ -20,24 +20,31 @@ public class Pneumatics extends SubsystemBase {
         elevatorState = DoubleSolenoid.Value.kForward;
     }
 
+    public enum State {
+        FORWARD, REVERSE;
+    }
 
-    public void setManipulatorSolenoid(boolean state) {
-        if (state == true) {
-            manipulatorState = DoubleSolenoid.Value.kForward;
-
-        } else {
-            manipulatorState = DoubleSolenoid.Value.kReverse;
-
-            }
+    public void setManipulatorSolenoid(State state){
+        switch (state) {
+            case REVERSE:
+                manipulatorState = DoubleSolenoid.Value.kReverse;
+                break;
+            case FORWARD:
+                manipulatorState = DoubleSolenoid.Value.kForward;
+                break;
         }
+        manipulatorSolenoid.set(manipulatorState);
+    }
 
-
-    public void setElevatorSolenoid(boolean state) {
-        if (state == true) {
-            elevatorState = DoubleSolenoid.Value.kForward;
-
-        } else {
-            elevatorState = DoubleSolenoid.Value.kReverse;
+    public void setElevatorSolenoid(State state) {
+        switch (state) {
+            case REVERSE:
+                elevatorState = DoubleSolenoid.Value.kReverse;
+                break;
+            case FORWARD:
+                elevatorState = DoubleSolenoid.Value.kForward;
+                break;
         }
+        elevatorSolenoid.set(elevatorState);
     }
 }
