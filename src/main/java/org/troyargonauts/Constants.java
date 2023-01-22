@@ -18,6 +18,17 @@ public final class Constants {
         public static final double kDistanceConvertion = kEncoderNUPerWheelRevolution / kWheelRevolutionDistanceInches;
 
         public static final double kEncoderGearboxScale = 8.56;
+
+        public static final double kP = 1;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        
+        public static final double kTurnP = 1;
+        public static final double kTurnI = 0;
+        public static final double kTurnD = 0;
+
+        public static final double kDriveTolerance = 1;
+        public static final double kTurnToleranceDeg = 1;
     }
 
 }

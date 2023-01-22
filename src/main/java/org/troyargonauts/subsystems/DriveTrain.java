@@ -3,13 +3,20 @@ package org.troyargonauts.subsystems;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import org.troyargonauts.Robot;
 import org.troyargonauts.Constants.DriveConstants;
 
 public class DriveTrain extends SubsystemBase {
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
     Pigeon2 pigeon;
+
+    PIDController drive, turn;
 
     public DriveTrain() {
         frontRight = new CANSparkMax(DriveConstants.kFrontRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -24,6 +31,14 @@ public class DriveTrain extends SubsystemBase {
         backRight.setInverted(true);
 
         pigeon = new Pigeon2(DriveConstants.kPigeonID);
+
+        drive = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+        turn = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+
+        drive.setTolerance(DriveConstants.kDriveTolerance);
+        turn.setTolerance(DriveConstants.kTurnToleranceDeg);
+
+        turn.enableContinuousInput(-180, 180);
     }
 
     public void cheesyDrive(double speed, double turn, double nerf) {
@@ -60,5 +75,25 @@ public class DriveTrain extends SubsystemBase {
             }
         }
         return output;
+    }
+
+    public PIDCommand drivePID(double setpoint) {
+        return new PIDCommand(
+            drive,
+            () -> getPosition(),
+            setpoint * DriveConstants.kDistanceConvertion,
+            output -> cheesyDrive(output, 0, 1),
+            Robot.getDrivetrain()
+        );
+    }
+
+    public PIDCommand turnPID(double angle) {
+        return new PIDCommand(
+            turn,
+            () -> getAngle(),
+            angle,
+            output -> cheesyDrive(0, output, 1),
+            Robot.getDrivetrain()
+        );
     }
 }
