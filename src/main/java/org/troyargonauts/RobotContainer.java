@@ -5,6 +5,7 @@
 
 package org.troyargonauts;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer
 {
+    XboxController controller = new XboxController(0);
     public RobotContainer()
     {
         // Configure the trigger bindings
@@ -28,6 +30,7 @@ public class RobotContainer
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+<<<<<<< Updated upstream
         new RunCommand(
                 () -> {
                     Robot.getElevator().setElevatorPower(driver.getRightJoystickY());
@@ -35,6 +38,11 @@ public class RobotContainer
 
         );
 
+=======
+        Robot.getTurret().setDefaultCommand(new RunCommand(() -> {
+            Robot.getTurret().setPower(controller.getLeftX() * 0.1);
+        }));
+>>>>>>> Stashed changes
     }
     
     
