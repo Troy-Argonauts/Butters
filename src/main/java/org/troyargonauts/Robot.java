@@ -8,11 +8,8 @@ package org.troyargonauts;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-<<<<<<< Updated upstream
 import org.troyargonauts.subsystems.Elevator;
-=======
 import org.troyargonauts.subsystems.Turret;
->>>>>>> Stashed changes
 
 import java.util.concurrent.CompletableFuture;
 
@@ -38,11 +35,8 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
 
-<<<<<<< Updated upstream
         elevator = new Elevator();
-=======
         turret = new Turret();
->>>>>>> Stashed changes
     }
 
     @Override
@@ -98,17 +92,16 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-<<<<<<< Updated upstream
     public static Elevator getElevator() {
-        if(elevator == null) elevator = new Elevator();
+        if (elevator == null) elevator = new Elevator();
         return elevator;
-=======
+
+    }
     public static Turret getTurret() {
         if (turret == null){
             turret = new Turret();
         }
 
         return turret;
->>>>>>> Stashed changes
     }
 }
