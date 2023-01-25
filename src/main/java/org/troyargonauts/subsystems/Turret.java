@@ -7,23 +7,23 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
  * Turret Code
  *
- * @author Ashwin Shrivsatav, Isaac Hatfield, Teodor Topan
+ * @author Ashwin Shrivastav, Isaac Hatfield, Teodor Topan
  */
 
 public class Turret extends SubsystemBase {
     private final CANSparkMax turretMotor;
-    private boolean active;
     public final SparkMaxLimitSwitch rightLimitSwitch;
     public final SparkMaxLimitSwitch leftLimitSwitch;
     PIDController pid;
 
-    boolean leftLimitSwitchIsActive;
-    boolean rightLimitSwitchIsActive;
+    private boolean leftLimitSwitchValue;
+    private boolean rightLimitSwitchValue;
 
     public final AnalogPotentiometer potentiometer;
 
@@ -31,15 +31,15 @@ public class Turret extends SubsystemBase {
 
 
     /**
-     * Constructor for Turret Class. Instantiates motors, magnetic limit switches, PID Controllers, and potentiometer.
+     * Constructor for Turret Class. Instantiate motors, magnetic limit switches, PID Controllers, and potentiometer.
      */
     public Turret() {
-        turretMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
+        turretMotor = new CANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         leftLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
-        pid = new PIDController(1, 0, 0, 0.2);
-        potentiometer = new AnalogPotentiometer(0, 180, 30);
+        pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
+        potentiometer = new AnalogPotentiometer(Constants.Turret.CHANNEL, Constants.Turret.FULL_RANGE, Constants.Turret.OFFSET);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Turret extends SubsystemBase {
      *
      */
     public void setPower(double power){
-        if ((leftLimitSwitchIsActive && power < 0) || (rightLimitSwitchIsActive && power > 0)) {
+        if ((leftLimitSwitchValue && power < 0) || (rightLimitSwitchValue && power > 0)) {
             turretMotor.set(0);
         }
         else {
@@ -62,8 +62,8 @@ public class Turret extends SubsystemBase {
      */
     @Override
     public void periodic(){
-        rightLimitSwitchIsActive = rightLimitSwitch.isPressed();
-        leftLimitSwitchIsActive = leftLimitSwitch.isPressed();
+        rightLimitSwitchValue = getRightLimitSwitchState();
+        leftLimitSwitchValue = getLeftLimitSwitchState();
         potentiometerValue = potentiometer.get();
     }
 
@@ -71,16 +71,16 @@ public class Turret extends SubsystemBase {
      * Gives status of left limit switch as a boolean value.
      * @return Status of left limit switch.
      */
-    public boolean getLeftLimitSwitch(){
-        return leftLimitSwitchIsActive;
+    public boolean getLeftLimitSwitchState(){
+        return leftLimitSwitch.isLimitSwitchEnabled();
     }
 
     /**
      * Gives status of right limit switch as a boolean value.
      * @return Status of right limit switch.
      */
-    public boolean getRightLimitSwitch() {
-        return rightLimitSwitchIsActive;
+    public boolean getRightLimitSwitchState() {
+        return rightLimitSwitch.isLimitSwitchEnabled();
     }
 
     /**

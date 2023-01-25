@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxLimitSwitch;
+import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
@@ -27,8 +28,8 @@ public class Elevator extends SubsystemBase {
      * Additionally, the right motor is inverted for convenience
      */
     public Elevator() {
-        leftMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMotor = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMotor = new CANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         upperLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
@@ -37,7 +38,7 @@ public class Elevator extends SubsystemBase {
         lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
 
         rightMotor.setInverted(true);
-        pid = new PIDController(1, 0 ,0, 0.2);
+        pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD, Constants.Elevator.PERIOD);
     }
 
     /**
