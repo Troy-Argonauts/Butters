@@ -22,27 +22,13 @@ public class RobotContainer
     {
         // Configure the trigger bindings
         configureBindings();
-
-        final ArgoController driver = new ArgoController (0);
     }
     
     
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
-<<<<<<< Updated upstream
-        new RunCommand(
-                () -> {
-                    Robot.getElevator().setElevatorPower(driver.getRightJoystickY());
-                }, Robot.getElevator()
 
-        );
-
-=======
-        Robot.getTurret().setDefaultCommand(new RunCommand(() -> {
-            Robot.getTurret().setPower(controller.getLeftX() * 0.1);
-        }));
->>>>>>> Stashed changes
     }
     
     

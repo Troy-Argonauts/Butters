@@ -6,5 +6,10 @@ public final class Constants {
 
     }
 
+    public interface Elevator {
+
+    }
+
+
 
 }
