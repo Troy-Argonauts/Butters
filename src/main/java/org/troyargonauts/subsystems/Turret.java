@@ -9,7 +9,11 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Robot;
 
-
+/**
+ * Turret Code
+ *
+ * @author Ashwin Shrivsatav, Isaac Hatfield, Teodor Topan
+ */
 
 public class Turret extends SubsystemBase {
     private final CANSparkMax turretMotor;
