@@ -85,6 +85,11 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
+    /** 
+     * Returns driveTrain object
+     * @author @SolidityContract
+     * @return DriveTrain
+     */
     public static DriveTrain getDrivetrain() {
         if (driveTrain == null) {
             driveTrain = new DriveTrain();
