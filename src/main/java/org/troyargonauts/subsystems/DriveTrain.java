@@ -16,7 +16,7 @@ public class DriveTrain extends SubsystemBase {
 
     Pigeon2 pigeon;
 
-    PIDController drive, turn;
+    PIDController drivePID, turnPID;
 
     public DriveTrain() {
         frontRight = new CANSparkMax(DriveConstants.kFrontRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -30,41 +30,59 @@ public class DriveTrain extends SubsystemBase {
         middleRight.setInverted(true);
         backRight.setInverted(true);
 
+        backRight.follow(frontRight);
+        middleRight.follow(frontRight);
+
+        backLeft.follow(frontLeft);
+        middleLeft.follow(frontRight);
+
         pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
-        drive = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
-        turn = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+        drivePID = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+        turnPID = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
 
-        drive.setTolerance(DriveConstants.kDriveTolerance);
-        turn.setTolerance(DriveConstants.kTurnToleranceDeg);
+        drivePID.setTolerance(DriveConstants.kDriveTolerance);
+        turnPID.setTolerance(DriveConstants.kTurnToleranceDeg);
 
-        turn.enableContinuousInput(-180, 180);
+        turnPID.enableContinuousInput(-180, 180);
     }
 
+    
+    /** 
+     * @param speed
+     * @param turn
+     * @param nerf
+     */
     public void cheesyDrive(double speed, double turn, double nerf) {
         frontRight.set((speed + turn) * nerf);
-        middleRight.set((speed + turn) * nerf);
-        backRight.set((speed + turn) * nerf);
         frontLeft.set((speed - turn) * nerf);
-        middleLeft.set((speed - turn) * nerf);
-        backLeft.set((speed - turn) * nerf);
     }
 
+    
+    /** 
+     * @return double
+     */
     public double getPosition() {
         return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.kEncoderGearboxScale);
     }
 
-    public void resetSensors() {
+    public void resetEncoders() {
         frontRight.getEncoder().setPosition(0);
         middleRight.getEncoder().setPosition(0);
         backRight.getEncoder().setPosition(0);
         frontLeft.getEncoder().setPosition(0);
         middleLeft.getEncoder().setPosition(0);
         backLeft.getEncoder().setPosition(0);
+    }
 
+    public void resetAngle() {
         pigeon.setYaw(0);
     }
 
+    
+    /** 
+     * @return double
+     */
     public double getAngle() {
         double output = pigeon.getYaw() % 360;
         while (Math.abs(output) > 180) {
@@ -77,9 +95,14 @@ public class DriveTrain extends SubsystemBase {
         return output;
     }
 
+    
+    /** 
+     * @param setpoint
+     * @return PIDCommand
+     */
     public PIDCommand drivePID(double setpoint) {
         return new PIDCommand(
-            drive,
+            drivePID,
             () -> getPosition(),
             setpoint * DriveConstants.kDistanceConvertion,
             output -> cheesyDrive(output, 0, 1),
@@ -87,9 +110,14 @@ public class DriveTrain extends SubsystemBase {
         );
     }
 
+    
+    /** 
+     * @param angle
+     * @return PIDCommand
+     */
     public PIDCommand turnPID(double angle) {
         return new PIDCommand(
-            turn,
+            turnPID,
             () -> getAngle(),
             angle,
             output -> cheesyDrive(0, output, 1),

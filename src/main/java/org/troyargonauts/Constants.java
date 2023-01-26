@@ -2,33 +2,33 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public static final class DriveConstants {
-        public static final int kFrontRightID = 0;
-        public static final int kMiddleRightID = 1;
-        public static final int kBackRightID = 2;
-        public static final int kFrontLeftID = 3;
-        public static final int kMiddleLeftID = 4;
-        public static final int kBackLeftID = 5;
+    public interface DriveConstants {
+        final int kFrontRightID = 0;
+        final int kMiddleRightID = 1;
+        final int kBackRightID = 2;
+        final int kFrontLeftID = 3;
+        final int kMiddleLeftID = 4;
+        final int kBackLeftID = 5;
 
-        public static final int kPigeonID = 6;
+        final int kPigeonID = 6;
 
-        public static final double kWheelDiameterInches = 6.0;
-        public static final double kEncoderNUPerWheelRevolution = 2004.789;
-        public static final double kWheelRevolutionDistanceInches = kWheelDiameterInches * Math.PI;
-        public static final double kDistanceConvertion = kEncoderNUPerWheelRevolution / kWheelRevolutionDistanceInches;
+        final double kWheelDiameterInches = 6.0;
+        final double kEncoderNUPerWheelRevolution = 2004.789;
+        final double kWheelRevolutionDistanceInches = kWheelDiameterInches * Math.PI;
+        final double kDistanceConvertion = kEncoderNUPerWheelRevolution / kWheelRevolutionDistanceInches;
 
-        public static final double kEncoderGearboxScale = 8.56;
+        final double kEncoderGearboxScale = 8.56;
 
-        public static final double kP = 1;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        final double kP = 1;
+        final double kI = 0;
+        final double kD = 0;
         
-        public static final double kTurnP = 1;
-        public static final double kTurnI = 0;
-        public static final double kTurnD = 0;
+        final double kTurnP = 1;
+        final double kTurnI = 0;
+        final double kTurnD = 0;
 
-        public static final double kDriveTolerance = 1;
-        public static final double kTurnToleranceDeg = 1;
+        final double kDriveTolerance = 1;
+        final double kTurnToleranceDeg = 1;
     }
 
 }
