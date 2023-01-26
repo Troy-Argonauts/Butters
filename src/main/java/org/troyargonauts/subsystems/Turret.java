@@ -48,7 +48,7 @@ public class Turret extends SubsystemBase {
      *
      */
     public void setPower(double power){
-        if ((leftLimitSwitchValue && power < 0) || (rightLimitSwitchValue && power > 0)) {
+        if ((getLeftLimitSwitchState() && power < 0) || (getRightLimitSwitchState() && power > 0)) {
             turretMotor.set(0);
         }
         else {

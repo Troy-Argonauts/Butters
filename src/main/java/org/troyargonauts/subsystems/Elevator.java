@@ -73,8 +73,14 @@ public class Elevator extends SubsystemBase {
      * @param speed desired elevator extension or retraction speed
      */
     public void setElevatorPower(double speed) {
-        leftMotor.set(speed);
-        rightMotor.set(speed);
+        if((upperLimitSwitchValue && speed > 0) || (lowerLimitSwitchValue && speed < 0)) {
+            leftMotor.set(0);
+            rightMotor.set(0);
+        }
+        else {
+            leftMotor.set(speed);
+            rightMotor.set(speed);
+        }
     }
 
     /**
