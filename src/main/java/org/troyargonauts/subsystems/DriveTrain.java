@@ -15,6 +15,7 @@ public class DriveTrain extends SubsystemBase {
     /** 
      * using PID, used
      * @author @SolidityContract @sgowda260 @Shreyan-M
+     * @param DriveTrain This method lists the PID values and the motors for the drivetrain
      */
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
@@ -56,7 +57,7 @@ public class DriveTrain extends SubsystemBase {
      * Sets motors value based on speed and turn parameters
      * @param speed speed of robot
      * @param turn amount we want to turn
-     * @param nerf asets max speed
+     * @param nerf decreases the max speed and amount we want to turn the robot
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
         frontRight.set((speed + turn) * nerf);
@@ -72,6 +73,11 @@ public class DriveTrain extends SubsystemBase {
         return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.kEncoderGearboxScale);
     }
 
+    /**
+     * Resets the encoders
+     * @return encoder value to 0
+     */
+
     public void resetEncoders() {
         frontRight.getEncoder().setPosition(0);
         middleRight.getEncoder().setPosition(0);
@@ -81,6 +87,11 @@ public class DriveTrain extends SubsystemBase {
         backLeft.getEncoder().setPosition(0);
     }
 
+    /**
+     * Resets the angle
+     * @return the angle to 0
+     */
+    
     public void resetAngle() {
         pigeon.setYaw(0);
     }
