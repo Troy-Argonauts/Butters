@@ -13,6 +13,7 @@ import org.troyargonauts.Constants.DriveConstants;
 
 public class DriveTrain extends SubsystemBase {
     /** 
+     * using PID, used
      * @author @SolidityContract @sgowda260 @Shreyan-M
      */
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
@@ -53,9 +54,9 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Sets motors value based on speed and turn parameters
-     * @param speed
-     * @param turn
-     * @param nerf
+     * @param speed speed of robot
+     * @param turn amount we want to turn
+     * @param nerf asets max speed
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
         frontRight.set((speed + turn) * nerf);
@@ -104,7 +105,7 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Drives certian distance based parameter
-     * @param setpoint
+     * @param setpoint distance away we want robot to be
      * @return PIDCommand that moved robot to setpoint
      */
     public PIDCommand drivePID(double setpoint) {
@@ -120,7 +121,7 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Turns certain angle based on PID
-     * @param angle
+     * @param angle the angle we want the robot to be at
      * @return PIDCommand that turns robot to target angle
      */
     public PIDCommand turnPID(double angle) {
