@@ -12,6 +12,9 @@ import org.troyargonauts.Robot;
 import org.troyargonauts.Constants.DriveConstants;
 
 public class DriveTrain extends SubsystemBase {
+    /** 
+     * @author @SolidityContract @sgowda260 @Shreyan-M
+     */
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
     Pigeon2 pigeon;
@@ -50,7 +53,6 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Sets motors value based on speed and turn parameters
-     * @author @SolidityContract @sgowda260
      * @param speed
      * @param turn
      * @param nerf
@@ -63,8 +65,7 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Returns encoder position based on encoder values
-     * @author @SolidityContract
-     * @return double
+     * @return encoder position based on encoder values
      */
     public double getPosition() {
         return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.kEncoderGearboxScale);
@@ -86,8 +87,7 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Returns angles between -180 and 180 degrees from pigeon
-     * @author @SolidityContract
-     * @return double
+     * @return angle of robot
      */
     public double getAngle() {
         double output = pigeon.getYaw() % 360;
@@ -104,9 +104,8 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Drives certian distance based parameter
-     * @author @Shreyan-M @SolidityContract
      * @param setpoint
-     * @return PIDCommand
+     * @return PIDCommand that moved robot to setpoint
      */
     public PIDCommand drivePID(double setpoint) {
         return new PIDCommand(
@@ -121,9 +120,8 @@ public class DriveTrain extends SubsystemBase {
     
     /** 
      * Turns certain angle based on PID
-     * @author @Shreyan-M @SolidityContract
      * @param angle
-     * @return PIDCommand
+     * @return PIDCommand that turns robot to target angle
      */
     public PIDCommand turnPID(double angle) {
         return new PIDCommand(

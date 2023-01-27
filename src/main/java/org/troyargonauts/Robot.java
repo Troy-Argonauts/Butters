@@ -87,8 +87,7 @@ public class Robot extends TimedRobot {
 
     /** 
      * Returns driveTrain object
-     * @author @SolidityContract
-     * @return DriveTrain
+     * @return DriveTrain object instantiated in Robot class
      */
     public static DriveTrain getDrivetrain() {
         if (driveTrain == null) {
