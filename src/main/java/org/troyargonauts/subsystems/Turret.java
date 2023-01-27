@@ -22,8 +22,8 @@ public class Turret extends SubsystemBase {
     public final SparkMaxLimitSwitch leftLimitSwitch;
     PIDController pid;
 
-    boolean leftLimitSwitchIsActive;
-    boolean rightLimitSwitchIsActive;
+    public boolean leftLimitSwitchIsActive;
+    public boolean rightLimitSwitchIsActive;
 
     public final AnalogPotentiometer potentiometer;
 
@@ -71,17 +71,13 @@ public class Turret extends SubsystemBase {
      * Gives status of left limit switch as a boolean value.
      * @return Status of left limit switch.
      */
-    public boolean getLeftLimitSwitch(){
-        return leftLimitSwitchIsActive;
-    }
+
 
     /**
      * Gives status of right limit switch as a boolean value.
      * @return Status of right limit switch.
      */
-    public boolean getRightLimitSwitch() {
-        return rightLimitSwitchIsActive;
-    }
+
 
     /**
      * Using a PID command, turret will rotate to a setpoint using the PID Controller. Will mainly be used in autonomous.
