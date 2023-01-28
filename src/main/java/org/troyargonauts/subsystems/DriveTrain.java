@@ -10,18 +10,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.troyargonauts.Robot;
 import org.troyargonauts.Constants.DriveConstants;
-
+/**
+ * using PID and stating our speed, turn, and nerf we made a code to run our 8 wheel tank drivetrain with 2 motors
+ * @author @SolidityContract @sgowda260 @Shreyan-M
+ */
 public class DriveTrain extends SubsystemBase {
-    /** 
-     * using PID, used
-     * @author @SolidityContract @sgowda260 @Shreyan-M
-     * @param DriveTrain This method lists the PID values and the motors for the drivetrain
-     */
+
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
     Pigeon2 pigeon;
 
     PIDController drivePID, turnPID;
+
+    /**
+     * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
+     */
 
     public DriveTrain() {
         frontRight = new CANSparkMax(DriveConstants.kFrontRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
