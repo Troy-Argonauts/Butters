@@ -1,34 +1,51 @@
 package org.troyargonauts;
 
-public final class Constants {
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
+public class Constants {
 
     public interface DriveConstants {
-        final int kFrontRightID = 0;
-        final int kMiddleRightID = 1;
-        final int kBackRightID = 2;
-        final int kFrontLeftID = 3;
-        final int kMiddleLeftID = 4;
-        final int kBackLeftID = 5;
+        int kFrontRightID = 0;
+        int kMiddleRightID = 1;
+        int kBackRightID = 2;
+        int kFrontLeftID = 3;
+        int kMiddleLeftID = 4;
+        int kBackLeftID = 5;
 
-        final int kPigeonID = 6;
+        int kPigeonID = 6;
 
-        final double kWheelDiameterInches = 6.0;
-        final double kEncoderNUPerWheelRevolution = 2004.789;
-        final double kWheelRevolutionDistanceInches = kWheelDiameterInches * Math.PI;
-        final double kDistanceConvertion = kEncoderNUPerWheelRevolution / kWheelRevolutionDistanceInches;
+        double kWheelDiameterInches = 6.0;
+        double kEncoderNUPerWheelRevolution = 42;
+        double kWheelRevolutionDistanceInches = kWheelDiameterInches * Math.PI;
+        double kDistanceConvertion = kWheelRevolutionDistanceInches / kEncoderNUPerWheelRevolution;
 
-        final double kEncoderGearboxScale = 8.56;
+        double kEncoderGearboxScale = 8.56;
 
-        final double kP = 1;
-        final double kI = 0;
-        final double kD = 0;
+        double kP = 1;
+        double kI = 0;
+        double kD = 0;
         
-        final double kTurnP = 1;
-        final double kTurnI = 0;
-        final double kTurnD = 0;
+        double kTurnP = 1;
+        double kTurnI = 0;
+        double kTurnD = 0;
 
-        final double kDriveTolerance = 1;
-        final double kTurnToleranceDeg = 1;
+        double kDriveTolerance = 1;
+        double kTurnToleranceDeg = 1;
+        
+        double ks = 0.1;
+        double kv = 0.1;
+        double ka = 0.1;
+
+        double kPDrive = 0.1;
+
+        double kTrackwidthMeters = 0.7;
+        DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+        double kMaxSpeed = 3;
+        double kMaxAcceleration = 1;
+
+        double kRamseteB = 2;
+        double kRamseteZeta = 0.7;
     }
 
 }

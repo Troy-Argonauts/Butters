@@ -5,8 +5,24 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.troyargonauts.Robot;
 import org.troyargonauts.Constants.DriveConstants;
@@ -18,9 +34,11 @@ public class DriveTrain extends SubsystemBase {
 
     private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
-    Pigeon2 pigeon;
+    private Pigeon2 pigeon;
 
-    PIDController drivePID, turnPID;
+    private PIDController drivePID, turnPID;
+
+    private DifferentialDriveOdometry odometry;
 
     /**
      * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
@@ -44,6 +62,13 @@ public class DriveTrain extends SubsystemBase {
         backLeft.follow(frontLeft);
         middleLeft.follow(frontRight);
 
+        frontRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        middleRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        backRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        frontLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        middleLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        backLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+
         pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
         drivePID = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
@@ -53,8 +78,27 @@ public class DriveTrain extends SubsystemBase {
         turnPID.setTolerance(DriveConstants.kTurnToleranceDeg);
 
         turnPID.enableContinuousInput(-180, 180);
+
+        odometry = new DifferentialDriveOdometry(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
     }
 
+    @Override
+    public void periodic() {
+        odometry.update(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
+    }
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(frontLeft.getEncoder().getVelocity(), frontRight.getEncoder().getVelocity());
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        odometry.resetPosition(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition(), pose);
+    }
     
     /** 
      * Sets motors value based on speed and turn parameters
@@ -67,6 +111,14 @@ public class DriveTrain extends SubsystemBase {
         frontLeft.set((speed - turn) * nerf);
     }
 
+    public BiConsumer<Double, Double> tankDriveVolts = (right, left) -> {
+        frontRight.setVoltage(right);
+        frontLeft.setVoltage(left);
+    };
+
+    public Rotation2d getRotation2d() {
+        return Rotation2d.fromDegrees(getAngle());
+    }
     
     /** 
      * Returns encoder position based on encoder values
@@ -126,7 +178,7 @@ public class DriveTrain extends SubsystemBase {
         return new PIDCommand(
             drivePID,
             () -> getPosition(),
-            setpoint * DriveConstants.kDistanceConvertion,
+            setpoint,
             output -> cheesyDrive(output, 0, 1),
             Robot.getDrivetrain()
         );
@@ -146,5 +198,46 @@ public class DriveTrain extends SubsystemBase {
             output -> cheesyDrive(0, output, 1),
             Robot.getDrivetrain()
         );
+    }
+
+    public SequentialCommandGroup generate(double x_0, double y_0, double x_1, double y_1, double x_2, double y_2, double x_3, double y_3, double angle) {
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(x_0, y_0, new Rotation2d(0)),
+            List.of(
+                new Translation2d(x_1, y_1),
+                new Translation2d(x_2, y_2),
+                new Translation2d(x_3, y_3)
+            ),
+            new Pose2d(x_0 + x_1 + x_2 + x_3, y_0 + y_1 + y_2 + y_3, new Rotation2d(angle)),
+            new TrajectoryConfig(
+                DriveConstants.kMaxSpeed, 
+                DriveConstants.kMaxAcceleration
+            )
+            .setKinematics(DriveConstants.kDriveKinematics)
+            .addConstraint(
+                new DifferentialDriveVoltageConstraint(
+                    new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka),
+                    DriveConstants.kDriveKinematics,
+                    10
+                )
+            )
+        );
+
+        RamseteCommand ramseteCommand = new RamseteCommand(
+            trajectory,
+            () -> getPose(),
+            new RamseteController(DriveConstants.kRamseteB, DriveConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(DriveConstants.ks, DriveConstants.kv, DriveConstants.ka),
+            DriveConstants.kDriveKinematics,
+            () -> getWheelSpeeds(),
+            new PIDController(DriveConstants.kPDrive, 0, 0),
+            new PIDController(DriveConstants.kPDrive, 0, 0),
+            tankDriveVolts,
+            Robot.getDrivetrain()
+        );
+
+        Robot.getDrivetrain().resetOdometry(trajectory.getInitialPose());
+
+        return ramseteCommand.andThen(() -> Robot.getDrivetrain().tankDriveVolts.accept(Double.valueOf(0), Double.valueOf(0)));
     }
 }
