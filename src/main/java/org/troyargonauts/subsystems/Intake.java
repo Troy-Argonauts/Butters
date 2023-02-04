@@ -9,8 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
     
-    CANSparkMax leftMotor;
-    CANSparkMax rightMotor;
+    CANSparkMax leftMotor, rightMotor;
 
     public enum IntakeStates {
         IN, OUT, OFF;
