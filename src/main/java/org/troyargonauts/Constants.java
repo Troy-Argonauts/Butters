@@ -2,8 +2,10 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public interface Manipulator {
-        public static final int PORT = 0;
+    public interface IntakeConstants {
+        int kRightIntakeID = 8;
+        int kLeftIntakeID = 7;
+
     }
 
 }
