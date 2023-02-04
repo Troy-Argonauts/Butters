@@ -2,11 +2,13 @@ package org.troyargonauts.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxLimitSwitch;
 import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
+import org.troyargonauts.subsystems.PneumaticsSystem.*;
 
 /**
  * Elevator Code
@@ -99,5 +101,14 @@ public class Elevator extends SubsystemBase {
         );
     }
 
-
+    public void setManipulatorState(ManipulatorState state) {
+        switch (state) {
+            case GRAB:
+                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kForward);
+                break;
+            case RELEASE:
+                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+                break;
+        }
+    }
 }
