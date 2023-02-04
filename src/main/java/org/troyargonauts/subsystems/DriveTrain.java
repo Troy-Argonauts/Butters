@@ -152,4 +152,9 @@ public class DriveTrain extends SubsystemBase {
             Robot.getDrivetrain()
         );
     }
+
+    public void breakMode() {
+        resetEncoders();
+        drivePID(0);
+    }
 }
