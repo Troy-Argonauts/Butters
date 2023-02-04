@@ -34,15 +34,15 @@ public class DriveTrain extends SubsystemBase {
         middleLeft = new CANSparkMax(DriveConstants.kMiddleLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
         backLeft = new CANSparkMax(DriveConstants.kBackLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        frontRight.setInverted(true);
-        middleRight.setInverted(true);
-        backRight.setInverted(true);
+        frontLeft.setInverted(true);
+        middleLeft.setInverted(true);
+        backLeft.setInverted(true);
 
         backRight.follow(frontRight);
         middleRight.follow(frontRight);
 
         backLeft.follow(frontLeft);
-        middleLeft.follow(frontRight);
+        middleLeft.follow(frontLeft);
 
         pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
@@ -65,6 +65,11 @@ public class DriveTrain extends SubsystemBase {
     public void cheesyDrive(double speed, double turn, double nerf) {
         frontRight.set((speed + turn) * nerf);
         frontLeft.set((speed - turn) * nerf);
+    }
+
+    public void tankDrive(double left, double right) {
+        frontRight.set(-right * 0.25);
+        frontLeft.set(-left * 0.25);
     }
 
     

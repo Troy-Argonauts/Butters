@@ -54,15 +54,15 @@ repositories {
     maven {
         name = "GitHubPackages"
         url='https://maven.pkg.github.com/Troy-Argonauts/ocean'
-//        credentials {
-//            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-//            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-//        }
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
     }
 }
 
 dependencies {
-    implementation 'org.troyargonauts:ocean:latest'
+//    implementation 'org.troyargonauts:ocean:latest'
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
