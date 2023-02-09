@@ -5,6 +5,7 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.Limelight;
 import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,6 +26,8 @@ public class Robot extends TimedRobot {
 
     static PneumaticsSystem pneumatics;
 
+    private static Limelight limelight;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -32,6 +35,11 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
 
         pneumatics = new PneumaticsSystem();
+
+        limelight = Limelight.getInstance();
+
+        limelight.setLedMode(Limelight.LightMode.ON);
+        limelight.setCameraMode(Limelight.CameraMode.VISION);
     }
 
     @Override
