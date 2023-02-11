@@ -2,7 +2,7 @@ package org.troyargonauts.subsystems;
 
 import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
@@ -22,8 +22,6 @@ public class Turret extends SubsystemBase {
 
     public boolean leftLimitSwitchIsActive;
     public boolean rightLimitSwitchIsActive;
-    private boolean leftLimitSwitchValue;
-    private boolean rightLimitSwitchValue;
 
     public final AbsoluteEncoder turretEncoder;
 
@@ -62,8 +60,7 @@ public class Turret extends SubsystemBase {
      */
     @Override
     public void periodic(){
-        rightLimitSwitchValue = getRightLimitSwitchState();
-        leftLimitSwitchValue = getLeftLimitSwitchState();
+        SmartDashboard.putNumber("Position", turretEncoder.getPosition());
     }
 
     /**

@@ -15,13 +15,11 @@ import org.troyargonauts.subsystems.PneumaticsSystem.*;
  */
 public class Elevator extends SubsystemBase {
     private final CANSparkMax leftMotor;
-    private static final SparkMaxAbsoluteEncoder.Type encoder = SparkMaxAbsoluteEncoder.Type.kDutyCycle;
     private final CANSparkMax rightMotor;
     private SparkMaxLimitSwitch upperLimitSwitch;
     private SparkMaxLimitSwitch lowerLimitSwitch;
     private boolean upperLimitSwitchValue;
     private boolean lowerLimitSwitchValue;
-    private Double leftMotorEncoder;
     PIDController pid;
 
 
@@ -51,11 +49,8 @@ public class Elevator extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        leftMotorEncoder = leftMotor.getEncoder().getPosition();
         upperLimitSwitchValue = getUpperLimitSwitchState();
         lowerLimitSwitchValue = getLowerLimitSwitchState();
-
-
     }
 
     /**
@@ -88,6 +83,10 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    public double getPosition() {
+        return (rightMotor.getEncoder().getPosition() + leftMotor.getEncoder().getPosition()) / (2 * Constants.Elevator.kEncoderGearboxScale);
+    }
+
     /**
      * Using a PID command, the elevator will shift to a given setpoint using the
      * predetermined PID Controller. Will be used mainly in Autonomous
@@ -96,11 +95,11 @@ public class Elevator extends SubsystemBase {
      */
     public void elevatorPID(double setpoint) {
         new PIDCommand(
-                pid,
-                () -> leftMotorEncoder,
-                setpoint,
-                this::setElevatorPower,
-                Robot.getElevator()
+            pid,
+            () -> getPosition(),
+            setpoint,
+            this::setElevatorPower,
+            Robot.getElevator()
         );
     }
 
