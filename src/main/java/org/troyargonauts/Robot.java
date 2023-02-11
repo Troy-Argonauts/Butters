@@ -70,9 +70,6 @@ public class Robot extends TimedRobot {
     {
         CommandScheduler.getInstance().run();
         SmartDashboard.putNumber("Limelight Distance", limelight.getTy());
-        System.out.println("Pigeon yaw: " + pigeon.getYaw());
-        System.out.println("Pigeon pitch: " + pigeon.getPitch());
-        System.out.println("Pigeon roll: " + pigeon.getRoll());
         SmartDashboard.putNumber("Pigeon yaw", pigeon.getYaw());
         SmartDashboard.putNumber("Pigeon pitch", pigeon.getPitch());
         SmartDashboard.putNumber("Pigeon roll", pigeon.getRoll());
