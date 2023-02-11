@@ -6,6 +6,8 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,11 +27,18 @@ public class Robot extends TimedRobot {
 
     static DriveTrain driveTrain = new DriveTrain();
 
+    private final SendableChooser<Command> chooser = new SendableChooser<>();
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+
+        driveTrain.resetEncoders();
+        SmartDashboard.putData("Autonomous modes", chooser);
+        chooser.setDefaultOption("Drive PID", getDrivetrain().leftPID(1).alongWith(getDrivetrain().rightPID(1)));
+        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
     }
 
     @Override
