@@ -12,6 +12,12 @@ import org.troyargonauts.subsystems.PneumaticsSystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -29,6 +35,11 @@ public class Robot extends TimedRobot {
 
     private static Limelight limelight;
 
+    private Pigeon2 pigeon;
+    private WPI_Pigeon2 pigeon_wpi;
+
+
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -41,6 +52,17 @@ public class Robot extends TimedRobot {
 
         limelight.setLedMode(Limelight.LightMode.ON);
         limelight.setCameraMode(Limelight.CameraMode.VISION);
+
+        pigeon= new Pigeon2(11);
+
+
+        pigeon.configFactoryDefault();
+        pigeon.clearStickyFaults();
+        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+        pigeonConfig.MountPosePitch = 0;
+        pigeonConfig.MountPoseRoll = 0;
+        pigeonConfig.MountPoseYaw = 0;
+        pigeon.configAllSettings(pigeonConfig);
     }
 
     @Override
@@ -48,6 +70,12 @@ public class Robot extends TimedRobot {
     {
         CommandScheduler.getInstance().run();
         SmartDashboard.putNumber("Limelight Distance", limelight.getTy());
+        System.out.println("Pigeon yaw: " + pigeon.getYaw());
+        System.out.println("Pigeon pitch: " + pigeon.getPitch());
+        System.out.println("Pigeon roll: " + pigeon.getRoll());
+        SmartDashboard.putNumber("Pigeon yaw", pigeon.getYaw());
+        SmartDashboard.putNumber("Pigeon pitch", pigeon.getPitch());
+        SmartDashboard.putNumber("Pigeon roll", pigeon.getRoll());
     }
 
     @Override
