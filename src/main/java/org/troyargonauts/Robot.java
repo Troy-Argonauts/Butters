@@ -10,6 +10,7 @@ import org.troyargonauts.subsystems.PneumaticsSystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import sensors.ColorSensor;
 
 
 /**
@@ -26,6 +27,8 @@ public class Robot extends TimedRobot {
     private static Intake intake;
     static PneumaticsSystem pneumatics;
 
+    private static ColorSensor colorSensor;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -33,6 +36,14 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         intake = new Intake();
         pneumatics = new PneumaticsSystem();
+
+        colorSensor = new ColorSensor();
+
+        robotContainer = new RobotContainer();
+
+        ColorSensor.colorMatch.addColorMatch(ColorSensor.kYellow);
+        ColorSensor.colorMatch.addColorMatch(ColorSensor.kPurple);
+        ColorSensor.colorMatch.addColorMatch(ColorSensor.kMiddle);
     }
 
     @Override
@@ -100,5 +111,12 @@ public class Robot extends TimedRobot {
         if (pneumatics == null) {
         }
         return pneumatics;
+    }
+
+    public static ColorSensor getColorSensor() {
+        if (colorSensor == null) {
+            colorSensor = new ColorSensor();
+        }
+        return colorSensor;
     }
 }
