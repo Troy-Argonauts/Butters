@@ -20,7 +20,7 @@ public class DriveTrain extends SubsystemBase {
 
     Pigeon2 pigeon;
 
-    PIDController drivePID, turnPID;
+    PIDController leftPID, rightPID, turnPID;
 
     /**
      * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
@@ -44,12 +44,21 @@ public class DriveTrain extends SubsystemBase {
         backLeft.follow(frontLeft);
         middleLeft.follow(frontLeft);
 
+        frontRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        middleRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        backRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        frontLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        middleLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        backLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+
         pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
-        drivePID = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+        leftPID = new PIDController(DriveConstants.kLeftP, DriveConstants.kLeftI, DriveConstants.kLeftD);
+        rightPID = new PIDController(DriveConstants.kRightP, DriveConstants.kRightI, DriveConstants.kRightD);
         turnPID = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
 
-        drivePID.setTolerance(DriveConstants.kDriveTolerance);
+        leftPID.setTolerance(DriveConstants.kLeftDriveTolerance);
+        rightPID.setTolerance(DriveConstants.kRightDriveTolerance);
         turnPID.setTolerance(DriveConstants.kTurnToleranceDeg);
 
         turnPID.enableContinuousInput(-180, 180);
@@ -67,9 +76,9 @@ public class DriveTrain extends SubsystemBase {
         frontLeft.set((speed - turn) * nerf);
     }
 
-    public void tankDrive(double left, double right) {
-        frontRight.set(-right * 0.25);
-        frontLeft.set(-left * 0.25);
+    public void tankDrive(double left, double right, double nerf) {
+        frontRight.set(right * nerf);
+        frontLeft.set(left * nerf);
     }
 
     
@@ -79,6 +88,14 @@ public class DriveTrain extends SubsystemBase {
      */
     public double getPosition() {
         return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.kEncoderGearboxScale);
+    }
+
+    public double getLeftPosition() {
+        return frontLeft.getEncoder().getPosition() / DriveConstants.kEncoderGearboxScale;
+    }
+
+    public double getRightPosition() {
+        return frontRight.getEncoder().getPosition() / DriveConstants.kEncoderGearboxScale;
     }
 
     /**
@@ -121,18 +138,34 @@ public class DriveTrain extends SubsystemBase {
         return output;
     }
 
+
+    /** 
+     * Drives certian distance based parameter
+     * @param setpoint distance away we want robot to be
+     * @return PIDCommand that moved robot to setpoint
+     */
+    public PIDCommand leftPID(double setpoint) {
+        return new PIDCommand(
+            leftPID,
+            () -> getLeftPosition(),
+            setpoint * DriveConstants.kDistanceConvertion,
+            output -> tankDrive(output, 0, 1),
+            Robot.getDrivetrain()
+        );
+    }
+
     
     /** 
      * Drives certian distance based parameter
      * @param setpoint distance away we want robot to be
      * @return PIDCommand that moved robot to setpoint
      */
-    public PIDCommand drivePID(double setpoint) {
+    public PIDCommand rightPID(double setpoint) {
         return new PIDCommand(
-            drivePID,
-            () -> getPosition(),
+            rightPID,
+            () -> getRightPosition(),
             setpoint * DriveConstants.kDistanceConvertion,
-            output -> cheesyDrive(output, 0, 1),
+            output -> tankDrive(0, output, 1),
             Robot.getDrivetrain()
         );
     }
@@ -155,6 +188,7 @@ public class DriveTrain extends SubsystemBase {
 
     public void breakMode() {
         resetEncoders();
-        drivePID(0);
+        rightPID(0);
+        leftPID(0);
     }
 }

@@ -27,8 +27,12 @@ public class RobotContainer {
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings() {
         Robot.getDrivetrain().setDefaultCommand(
-                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickX(), 0.25), Robot.getDrivetrain()
-                ));
+            new RunCommand(
+                () -> {
+                    Robot.getDrivetrain().tankDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickY(), 0.5);
+                }
+            )
+        );
     }
     
     
