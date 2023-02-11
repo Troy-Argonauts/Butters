@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.troyargonauts.subsystems.Elevator;
 import org.troyargonauts.subsystems.Turret;
 
-import java.util.concurrent.CompletableFuture;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to

@@ -1,11 +1,12 @@
 package org.troyargonauts.subsystems;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.SparkMaxLimitSwitch;
+import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
+import org.troyargonauts.subsystems.PneumaticsSystem.*;
 
 /**
  * Elevator Code
@@ -14,6 +15,7 @@ import org.troyargonauts.Robot;
  */
 public class Elevator extends SubsystemBase {
     private final CANSparkMax leftMotor;
+    private static final SparkMaxAbsoluteEncoder.Type encoder = SparkMaxAbsoluteEncoder.Type.kDutyCycle;
     private final CANSparkMax rightMotor;
     private SparkMaxLimitSwitch upperLimitSwitch;
     private SparkMaxLimitSwitch lowerLimitSwitch;
@@ -22,13 +24,16 @@ public class Elevator extends SubsystemBase {
     private Double leftMotorEncoder;
     PIDController pid;
 
+
+
     /**
      * Here, the motors, limit switches, and PID controller are instantiated.
      * Additionally, the right motor is inverted for convenience
      */
     public Elevator() {
-        leftMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMotor = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMotor = new CANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor.getEncoder();
 
         upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         upperLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
@@ -37,7 +42,7 @@ public class Elevator extends SubsystemBase {
         lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
 
         rightMotor.setInverted(true);
-        pid = new PIDController(1, 0 ,0, 0.2);
+        pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD, Constants.Elevator.PERIOD);
     }
 
     /**
@@ -49,6 +54,7 @@ public class Elevator extends SubsystemBase {
         leftMotorEncoder = leftMotor.getEncoder().getPosition();
         upperLimitSwitchValue = getUpperLimitSwitchState();
         lowerLimitSwitchValue = getLowerLimitSwitchState();
+
 
     }
 
@@ -72,8 +78,14 @@ public class Elevator extends SubsystemBase {
      * @param speed desired elevator extension or retraction speed
      */
     public void setElevatorPower(double speed) {
-        leftMotor.set(speed);
-        rightMotor.set(speed);
+        if((upperLimitSwitchValue && speed > 0) || (lowerLimitSwitchValue && speed < 0)) {
+            leftMotor.set(0);
+            rightMotor.set(0);
+        }
+        else {
+            leftMotor.set(speed);
+            rightMotor.set(speed);
+        }
     }
 
     /**
@@ -92,5 +104,14 @@ public class Elevator extends SubsystemBase {
         );
     }
 
-
+    public void setManipulatorState(ManipulatorState state) {
+        switch (state) {
+            case GRAB:
+                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kForward);
+                break;
+            case RELEASE:
+                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+                break;
+        }
+    }
 }
