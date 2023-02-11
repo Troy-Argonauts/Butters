@@ -2,15 +2,17 @@ package org.troyargonauts.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.Constants;
 
 
 public class Limelight extends SubsystemBase {
 
     private NetworkTableInstance table = null;
-    private final double limelightHeight = 0;
-    private final double aprilTagHeight = 0;
-    private final double mountingAngle = 0;
+    private final double limelightHeight = Constants.Limelight.LIMELIGHT_HEIGHT;
+    private final double aprilTagHeight = Constants.Limelight.APRIL_TAG_HEIGHT;
+    private final double mountingAngle = Constants.Limelight.MOUNTING_ANGLE;
 
     public enum LightMode {
         ON, OFF, BLINK
@@ -61,6 +63,11 @@ public class Limelight extends SubsystemBase {
     }
     public void setPipeline(int number) {
         getValue("pipeline").setNumber(number);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Limelight Distance", getDistanceFromTargetInches());
     }
 
 

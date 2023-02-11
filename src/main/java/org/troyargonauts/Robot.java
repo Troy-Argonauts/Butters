@@ -5,6 +5,7 @@
 
 package org.troyargonauts;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.subsystems.Limelight;
 import org.troyargonauts.subsystems.PneumaticsSystem;
 
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic()
     {
         CommandScheduler.getInstance().run();
+        SmartDashboard.putNumber("Limelight Distance", limelight.getTy());
     }
 
     @Override
