@@ -1,8 +1,6 @@
 package org.troyargonauts.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -13,7 +11,7 @@ import org.troyargonauts.Robot;
 /**
  * Turret Code
  *
- * @author Ashwin Shrivastav, Isaac Hatfield, Teodor Topan
+ * @author Ashwin Shrivastav, Isaac Hatfield, Teodor Topan, Rohan Gajula-Ghosh
  */
 
 public class Turret extends SubsystemBase {
@@ -27,7 +25,7 @@ public class Turret extends SubsystemBase {
     private boolean leftLimitSwitchValue;
     private boolean rightLimitSwitchValue;
 
-//    public final AnalogPotentiometer potentiometer;
+    public final AbsoluteEncoder turretEncoder;
 
     public double potentiometerValue;
 
@@ -41,7 +39,7 @@ public class Turret extends SubsystemBase {
         leftLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
-//        potentiometer = new AnalogPotentiometer(Constants.Turret.CHANNEL, Constants.Turret.FULL_RANGE, Constants.Turret.OFFSET);
+        turretEncoder = turretMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
     }
 
     /**
@@ -66,7 +64,6 @@ public class Turret extends SubsystemBase {
     public void periodic(){
         rightLimitSwitchValue = getRightLimitSwitchState();
         leftLimitSwitchValue = getLeftLimitSwitchState();
-//        potentiometerValue = potentiometer.get();
     }
 
     /**
@@ -89,13 +86,13 @@ public class Turret extends SubsystemBase {
 
     /**
      * Using a PID command, turret will rotate to a setpoint using the PID Controller. Will mainly be used in autonomous.
-     * @param setPoint Point that turret wants to reach.
+     * @param setAngle Point that turret wants to reach.
      */
-    public void turretPID(double setPoint){
+    public void turretPID(double setAngle){
         new PIDCommand (
             pid,
-            () -> turretMotor.getEncoder().getPosition(),
-            setPoint,
+            () -> turretEncoder.getPosition(),
+            setAngle,
             this::setPower,
             Robot.getTurret()
         );
