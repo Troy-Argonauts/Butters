@@ -11,6 +11,12 @@ public final class Constants {
         public static final double APRIL_TAG_HEIGHT = 18;
         public static final double MOUNTING_ANGLE = 0;
 
+        public static final double LOW_CONE_HEIGHT = 23;
+
+        public static final double HIGH_CONE_HEIGHT = 43;
+
+        public static final double DISTANCE_BETWEEN_CONES = 17;
+
     }
 
 

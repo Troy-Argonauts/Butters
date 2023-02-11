@@ -14,6 +14,12 @@ public class Limelight extends SubsystemBase {
     private final double aprilTagHeight = Constants.Limelight.APRIL_TAG_HEIGHT;
     private final double mountingAngle = Constants.Limelight.MOUNTING_ANGLE;
 
+    private final double lowConeHeight = Constants.Limelight.LOW_CONE_HEIGHT;
+
+    private final double highConeHeight =  Constants.Limelight.HIGH_CONE_HEIGHT;
+
+    private final double distanceBetweenCones =  Constants.Limelight.DISTANCE_BETWEEN_CONES;
+
     public enum LightMode {
         ON, OFF, BLINK
     }
@@ -37,13 +43,33 @@ public class Limelight extends SubsystemBase {
         return getValue("ty").getDouble(0.00);
     }
 
-    public double getDistanceFromTargetInches()  {
+    public double getDistanceFromAprilTagInches()  {
         double angle = mountingAngle + getTy();
         if (angle < 1 || angle > 89)
             return 0;
         double tan = Math.tan(Math.toRadians(angle));
         return (aprilTagHeight - limelightHeight) / tan;
+
     }
+
+    public double getLowConeDistance() {
+        double angle = mountingAngle + getTy();
+        if (angle < 1 || angle > 89)
+            return 0;
+        double tan = Math.tan(Math.toRadians(angle));
+        return (lowConeHeight - limelightHeight) / tan;
+
+    }
+    public double getHighConeDistance() {
+        double angle = mountingAngle + getTy();
+        if (angle < 1 || angle > 89)
+            return 0;
+        double tan = Math.tan(Math.toRadians(angle));
+        return ((highConeHeight - limelightHeight) / tan) + distanceBetweenCones;
+
+    }
+
+
 
 
     private NetworkTableEntry getValue(String key) {
@@ -67,7 +93,10 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Limelight Distance", getDistanceFromTargetInches());
+        SmartDashboard.putNumber("April Tag Distance", getDistanceFromAprilTagInches());
+        SmartDashboard.putNumber("Low Cone Height", getLowConeDistance());
+        SmartDashboard.putNumber("High Cone Height: ", getHighConeDistance());
+
     }
 
 
