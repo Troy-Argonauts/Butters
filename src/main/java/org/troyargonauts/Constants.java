@@ -15,11 +15,18 @@ public class Constants {
         int kPigeonID = 6;
 
         double kWheelDiameterMeters = 0.1524;
+
+        double kWheelDiameterFeet = 0.5;
         double kEncoderNUPerWheelRevolution = 42;
         double kWheelRevolutionDistanceMeters = kWheelDiameterMeters * Math.PI;
         double kDistanceConvertion = kWheelRevolutionDistanceMeters / kEncoderNUPerWheelRevolution;
 
+
         double kEncoderGearboxScale = 8.56;
+        double trackWidthIn = 19.5;
+        double kLeftP = 1;
+        double kLeftI = 0;
+        double kLeftD = 0;
 
         double kP = 1;
         double kI = 0;
