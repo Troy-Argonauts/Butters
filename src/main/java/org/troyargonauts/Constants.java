@@ -16,10 +16,10 @@ public class Constants {
 
         double kWheelDiameterMeters = 0.1524;
 
-        double kWheelDiameterFeet = 0.5;
+        double kWheelDiameterInches = 6;
         double kEncoderNUPerWheelRevolution = 42;
-        double kWheelRevolutionDistanceMeters = kWheelDiameterMeters * Math.PI;
-        double kDistanceConvertion = kWheelRevolutionDistanceMeters / kEncoderNUPerWheelRevolution;
+        double kWheelRevolutionDistanceInches = kWheelDiameterInches * Math.PI;
+        double kDistanceConvertion = kWheelRevolutionDistanceInches / kEncoderNUPerWheelRevolution;
 
 
         double kEncoderGearboxScale = 8.56;

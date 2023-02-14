@@ -77,9 +77,9 @@ public class Follower {
 
         Double[] motorSpeeds = new Double[2];
 
-        motorSpeeds[0] = (leftRadius*2*Math.PI*circlePercent/(Constants.DriveConstants.kWheelDiameterFeet *12)/0.5636)*(speed/3.316);
+        motorSpeeds[0] = (leftRadius*2*Math.PI*circlePercent/(Constants.DriveConstants.kWheelDiameterInches)/0.5636)*(speed/3.316);
 
-        motorSpeeds[1] = (rightRadius*2*Math.PI*circlePercent/(Constants.DriveConstants.kWheelDiameterFeet *12)/ 0.5636)*(speed/3.316);
+        motorSpeeds[1] = (rightRadius*2*Math.PI*circlePercent/(Constants.DriveConstants.kWheelDiameterInches)/ 0.5636)*(speed/3.316);
 
         return motorSpeeds;
 

@@ -192,6 +192,11 @@ public class DriveTrain extends SubsystemBase {
         return output;
     }
 
+    public void resetSensors() {
+        resetEncoders();
+        resetAngle();
+    }
+
     
     /** 
      * Drives certian distance based parameter
