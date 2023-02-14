@@ -1,7 +1,5 @@
 package org.troyargonauts.libs;
 
-import org.opencv.core.Mat;
-
 public class QuinticSquared {
 
     public static double[] quinticSquared(double [] variables, int degree){

@@ -32,4 +32,10 @@ public class PIDController {
 
         return output;
     }
+
+    public void reset() {
+        Error = 0;
+        prevError = 0;
+        iterations = 0;
+    }
 }

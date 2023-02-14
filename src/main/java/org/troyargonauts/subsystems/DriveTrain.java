@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import QuinticPathFollower.Position;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -39,6 +40,8 @@ public class DriveTrain extends SubsystemBase {
     private PIDController drivePID, turnPID;
 
     private DifferentialDriveOdometry odometry;
+
+    private Position position;
 
     /**
      * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
@@ -80,11 +83,19 @@ public class DriveTrain extends SubsystemBase {
         turnPID.enableContinuousInput(-180, 180);
 
         odometry = new DifferentialDriveOdometry(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
+
+        position = new Position(0, 0, getAngle(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
     }
 
     @Override
     public void periodic() {
         odometry.update(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
+
+        position = position.update(getAngle(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
+    }
+
+    public Position getPos() {
+        return position;
     }
 
     public Pose2d getPose() {
@@ -93,6 +104,14 @@ public class DriveTrain extends SubsystemBase {
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(frontLeft.getEncoder().getVelocity(), frontRight.getEncoder().getVelocity());
+    }
+
+    public double getLeftWheelSpeeds() {
+        return frontLeft.getEncoder().getVelocity();
+    }
+
+    public double getRightWheelSpeeds() {
+        return frontRight.getEncoder().getVelocity();
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -112,6 +131,11 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public BiConsumer<Double, Double> tankDriveVolts = (right, left) -> {
+        frontRight.setVoltage(right);
+        frontLeft.setVoltage(left);
+    };
+
+    public void tankVolts(double right, double left) {
         frontRight.setVoltage(right);
         frontLeft.setVoltage(left);
     };
