@@ -8,7 +8,7 @@ public class Polynomial {
         this.values = values;
     }
 
-    public double interpolation(double value) {
+    public double interpolate(double value) {
         double sum = 0;
         for (int i = 0; i < 6; i++) {
             double partsum = 1;
@@ -23,7 +23,11 @@ public class Polynomial {
     }
 
     public double derivative(double value) {
-        return (interpolation(value + 0.0001) - interpolation(value)) / 0.0001;
+        return (interpolate(value + 1E-4) - interpolate(value)) / 1E-4;
+    }
+
+    public double getDistance(double a, double b) {
+        return Math.hypot(b - a, interpolate(b) - interpolate(a));
     }
 
 }

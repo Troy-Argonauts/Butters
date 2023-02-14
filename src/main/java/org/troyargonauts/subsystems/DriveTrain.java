@@ -84,7 +84,7 @@ public class DriveTrain extends SubsystemBase {
 
         odometry = new DifferentialDriveOdometry(getRotation2d(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
 
-        position = new Position(0, 0, getAngle(), frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
+        position = new Position(0, 0, getAngle() * Math.PI / 180, frontLeft.getEncoder().getPosition(), frontRight.getEncoder().getPosition());
     }
 
     @Override

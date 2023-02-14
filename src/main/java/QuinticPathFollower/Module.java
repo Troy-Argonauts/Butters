@@ -90,21 +90,20 @@ public class Module {
         }
 
         public List<Module> generate(double[][] values) {
-            List<Module> m_states = new ArrayList<>();
+            List<Module> states = new ArrayList<>();
             Polynomial poly = new Polynomial(values);
-            for (double i = values[0][0]; i <= values[5][0]; i += (values[5][0] - values[0][0]) / 100) {
-                m_states.add(
+            for (double i = values[0][0]; i <= values[5][0]; i += 0.01) {
+                states.add(
                     new Module(
-                        0.1 * ((i - values[0][0]) / (values[5][0] - values[0][0]) + 1), 
-                        Math.hypot((values[5][0] - values[0][0]) / 100, poly.interpolation(i + (values[5][0] - values[0][0]) / 100) - poly.interpolation(i)) / 0.1, 
-                        (Math.hypot((values[5][0] - values[0][0]) / 100, poly.interpolation(i + 2 * (values[5][0] - values[0][0]) / 100) - poly.interpolation(i + (values[5][0] - values[0][0]) / 100)) / 0.1 - Math.hypot((values[5][0] - values[0][0]) / 100, poly.interpolation(i + (values[5][0] - values[0][0]) / 100) - poly.interpolation(i)) / 0.1) / 0.1, 
-                        new Position(i, poly.interpolation(i), Math.atan(poly.derivative(i))),
-                        (Math.atan(poly.derivative(i + (values[5][0] - values[0][0]) / 100)) - Math.atan(poly.derivative(i))) / 0.1
+                        0.01 * ((i - values[0][0]) * 100 + 1), 
+                        poly.getDistance(i, i + 0.01) / 0.01,
+                        (poly.getDistance(i + 0.01, i + 0.02) - poly.getDistance(i, i + 0.01)) / 1E-4, 
+                        new Position(i, poly.interpolate(i), Math.atan(poly.derivative(i))),
+                        (Math.atan(poly.derivative(i + 0.01)) - Math.atan(poly.derivative(i))) / 0.01
                     )
                 );
-                poly.interpolation(i);
             }
-            return m_states;
+            return states;
         }
     }
 
