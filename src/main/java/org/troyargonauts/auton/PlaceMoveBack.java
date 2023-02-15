@@ -11,7 +11,8 @@ public class PlaceMoveBack extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(Robot.getDrivetrain()::resetSensors),
             // place elevetor here
-            Robot.getDrivetrain().drivePID(-60)
+            Robot.getDrivetrain().drivePID(-60),
+                new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 

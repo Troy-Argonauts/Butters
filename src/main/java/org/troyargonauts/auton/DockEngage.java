@@ -15,7 +15,8 @@ public class DockEngage extends SequentialCommandGroup {
             Robot.getDrivetrain().turnPID(90),
             Robot.getDrivetrain().drivePID(10),
             Robot.getDrivetrain().turnPID(90),
-            Robot.getDrivetrain().drivePID(10)
+            Robot.getDrivetrain().drivePID(10),
+                new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 

@@ -12,7 +12,8 @@ public class PlaceOutPickBack extends SequentialCommandGroup {
             // add elevator code
             Robot.getDrivetrain().drivePID(-60),
             // add intake code
-                Robot.getDrivetrain().drivePID(60)
+                Robot.getDrivetrain().drivePID(60),
+                new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 

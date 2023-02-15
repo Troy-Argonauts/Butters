@@ -10,8 +10,9 @@ public class PlaceOutPick extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(Robot.getDrivetrain()::resetEncoders),
             // add elevator code to place
-            Robot.getDrivetrain().drivePID(-60)
+            Robot.getDrivetrain().drivePID(-60),
             // add intake code to pick
+        new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 

@@ -10,7 +10,8 @@ public class MoveBack extends SequentialCommandGroup {
     public MoveBack() {
         addCommands(
             new InstantCommand(Robot.getDrivetrain()::resetEncoders),
-            Robot.getDrivetrain().drivePID(-60)
+            Robot.getDrivetrain().drivePID(-60),
+                new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 

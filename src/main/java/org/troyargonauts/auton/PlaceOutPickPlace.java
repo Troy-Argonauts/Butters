@@ -13,6 +13,7 @@ public class PlaceOutPickPlace extends SequentialCommandGroup {
             Robot.getDrivetrain().drivePID(-60),
             // add intake code to pick
                 // add elevator code to place
+                new InstantCommand(Robot.getDrivetrain()::breakMode)
         );
     }
 
