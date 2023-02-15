@@ -23,7 +23,7 @@ import org.troyargonauts.subsystems.DriveTrain;
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
     
-    private RobotContainer robotContainer;
+    private static RobotContainer robotContainer;
 
     static DriveTrain driveTrain = new DriveTrain();
 
@@ -37,13 +37,15 @@ public class Robot extends TimedRobot {
 
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Drive PID", getDrivetrain().leftPID(1).alongWith(getDrivetrain().rightPID(1)));
-        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
+        chooser.setDefaultOption("Drive PID", getDrivetrain().PID(60));
+//        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
     }
 
     @Override
     public void robotPeriodic()
     {
+        SmartDashboard.putNumber("Left Y", Robot.getRobotContainer().getDriver().getLeftJoystickY());
+        SmartDashboard.putNumber("Right X", Robot.getRobotContainer().getDriver().getRightJoystickX());
         CommandScheduler.getInstance().run();
     }
 
@@ -56,7 +58,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
         {
             autonomousCommand.schedule();
@@ -103,5 +105,12 @@ public class Robot extends TimedRobot {
             driveTrain = new DriveTrain();
         }
         return driveTrain;
+    }
+
+    public static RobotContainer getRobotContainer() {
+        if (robotContainer == null) {
+            robotContainer = new RobotContainer();
+        }
+        return robotContainer;
     }
 }

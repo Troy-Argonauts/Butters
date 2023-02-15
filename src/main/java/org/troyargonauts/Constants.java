@@ -3,19 +3,20 @@ package org.troyargonauts;
 public final class Constants {
 
     public interface DriveConstants {
-        int kFrontRightID = 4;
-        int kMiddleRightID = 5;
-        int kBackRightID = 6;
-        int kFrontLeftID = 1;
-        int kMiddleLeftID = 2;
-        int kBackLeftID = 3;
+        int kFrontRightID = 2;
+        int kMiddleRightID = 3;
+        int kBackRightID = 4;
+        int kFrontLeftID = 5;
+        int kMiddleLeftID = 6;
+        int kBackLeftID = 7;
 
         int kPigeonID = 6;
 
-        double kWheelDiameterFeet = 0.5;
+        //Values in Inches
+        double kWheelDiameter = 6;
         double kEncoderNUPerWheelRevolution = 42;
-        double kWheelRevolutionDistanceFeet = kWheelDiameterFeet * Math.PI;
-        double kDistanceConvertion = kWheelRevolutionDistanceFeet / kEncoderNUPerWheelRevolution;
+        double kWheelRevolutionDistance = kWheelDiameter * Math.PI;
+        double kDistanceConvertion = kWheelRevolutionDistance / kEncoderNUPerWheelRevolution;
 
         double kEncoderGearboxScale = 8.54;
         

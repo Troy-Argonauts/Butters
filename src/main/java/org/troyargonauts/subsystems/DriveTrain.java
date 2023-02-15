@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.troyargonauts.Robot;
@@ -35,9 +36,13 @@ public class DriveTrain extends SubsystemBase {
         middleLeft = new CANSparkMax(DriveConstants.kMiddleLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
         backLeft = new CANSparkMax(DriveConstants.kBackLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        frontLeft.setInverted(true);
-        middleLeft.setInverted(true);
-        backLeft.setInverted(true);
+        frontLeft.setInverted(false);
+        middleLeft.setInverted(false);
+        backLeft.setInverted(false);
+
+        frontRight.setInverted(true);
+        middleRight.setInverted(true);
+        backRight.setInverted(true);
 
         backRight.follow(frontRight);
         middleRight.follow(frontRight);
@@ -52,7 +57,7 @@ public class DriveTrain extends SubsystemBase {
         middleLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
         backLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
 
-        pigeon = new Pigeon2(DriveConstants.kPigeonID);
+//        pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
         leftPID = new PIDController(DriveConstants.kLeftP, DriveConstants.kLeftI, DriveConstants.kLeftD);
         rightPID = new PIDController(DriveConstants.kRightP, DriveConstants.kRightI, DriveConstants.kRightD);
@@ -71,7 +76,7 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("Right Encoder", getRightPosition());
         SmartDashboard.putNumber("Position", getPosition());
 
-        SmartDashboard.putNumber("Angle", getAngle());
+//        SmartDashboard.putNumber("Angle", getAngle());
     }
 
 
@@ -83,8 +88,8 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
-        frontRight.set((speed + turn) * nerf);
-        frontLeft.set((speed - turn) * nerf);
+        frontRight.set(((speed - turn) + 0.0010) * nerf);
+        frontLeft.set((speed + turn) * nerf);
     }
 
     public void tankDrive(double left, double right, double nerf) {
@@ -128,26 +133,26 @@ public class DriveTrain extends SubsystemBase {
      * @return the angle to 0
      */
     
-    public void resetAngle() {
-        pigeon.setYaw(0);
-    }
+//    public void resetAngle() {
+//        pigeon.setYaw(0);
+//    }
 
     
     /** 
      * Returns angles between -180 and 180 degrees from pigeon
      * @return angle of robot
      */
-    public double getAngle() {
-        double output = pigeon.getYaw() % 360;
-        while (Math.abs(output) > 180) {
-            if (output < 0) {
-                output += 360;
-            } else {
-                output -= 360;
-            }
-        }
-        return output;
-    }
+//    public double getAngle() {
+//        double output = pigeon.getYaw() % 360;
+//        while (Math.abs(output) > 180) {
+//            if (output < 0) {
+//                output += 360;
+//            } else {
+//                output -= 360;
+//            }
+//        }
+//        return output;
+//    }
 
 
     /** 
@@ -159,7 +164,7 @@ public class DriveTrain extends SubsystemBase {
         return new PIDCommand(
             leftPID,
             () -> getLeftPosition(),
-            setpoint * DriveConstants.kDistanceConvertion,
+            setpoint,
             output -> tankDrive(output, 0, 1),
             Robot.getDrivetrain()
         );
@@ -187,13 +192,23 @@ public class DriveTrain extends SubsystemBase {
      * @param angle the angle we want the robot to be at
      * @return PIDCommand that turns robot to target angle
      */
-    public PIDCommand turnPID(double angle) {
+//    public PIDCommand turnPID(double angle) {
+//        return new PIDCommand(
+//            turnPID,
+//            () -> getAngle(),
+//            angle,
+//            output -> cheesyDrive(0, output, 1),
+//            Robot.getDrivetrain()
+//        );
+//    }
+
+    public PIDCommand PID(double setpoint) {
         return new PIDCommand(
-            turnPID,
-            () -> getAngle(),
-            angle,
-            output -> cheesyDrive(0, output, 1),
-            Robot.getDrivetrain()
+                rightPID,
+                () -> getPosition(),
+                setpoint,
+                output -> cheesyDrive(output, 0, 1),
+                Robot.getDrivetrain()
         );
     }
 

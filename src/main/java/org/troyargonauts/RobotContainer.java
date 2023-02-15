@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
 
-    public ArgoController argoController;
+    public static ArgoController argoController;
     public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
-        argoController = new ArgoController(0, 0);
+        argoController = new ArgoController(0, 0.1);
     }
     
     
@@ -29,8 +29,8 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
             new RunCommand(
                 () -> {
-                    Robot.getDrivetrain().tankDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickY(), 0.5);
-                }
+                    Robot.getDrivetrain().cheesyDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickX(), 0.1);
+                }, Robot.getDrivetrain()
             )
         );
     }
@@ -45,5 +45,9 @@ public class RobotContainer {
     {
         // TODO: Implement properly
         return null;
+    }
+
+    public ArgoController getDriver() {
+        return argoController;
     }
 }

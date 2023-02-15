@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 
 public class ArgoController extends Joystick {
 
-    private final int controllerDrift;
+    private final double controllerDrift;
 
-    public ArgoController(int port, int controllerDrift) {
+    public ArgoController(int port, double controllerDrift) {
         super(port);
         this.controllerDrift = controllerDrift;
     }
