@@ -29,7 +29,7 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
             new RunCommand(
                 () -> {
-                    Robot.getDrivetrain().cheesyDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickX(), 0.1);
+                    Robot.getDrivetrain().cheesyDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickX(), 1);
                 }, Robot.getDrivetrain()
             )
         );

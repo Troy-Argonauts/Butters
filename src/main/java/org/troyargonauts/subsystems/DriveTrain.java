@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.troyargonauts.Robot;
@@ -29,12 +28,12 @@ public class DriveTrain extends SubsystemBase {
      */
 
     public DriveTrain() {
-        frontRight = new CANSparkMax(DriveConstants.kFrontRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleRight = new CANSparkMax(DriveConstants.kMiddleRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backRight = new CANSparkMax(DriveConstants.kBackRightID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        frontLeft = new CANSparkMax(DriveConstants.kFrontLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleLeft = new CANSparkMax(DriveConstants.kMiddleLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backLeft = new CANSparkMax(DriveConstants.kBackLeftID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontRight = new CANSparkMax(DriveConstants.FRONT_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        middleRight = new CANSparkMax(DriveConstants.MIDDLE_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        backRight = new CANSparkMax(DriveConstants.BACK_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontLeft = new CANSparkMax(DriveConstants.FRONT_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        middleLeft = new CANSparkMax(DriveConstants.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        backLeft = new CANSparkMax(DriveConstants.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         frontLeft.setInverted(false);
         middleLeft.setInverted(false);
@@ -50,12 +49,12 @@ public class DriveTrain extends SubsystemBase {
         backLeft.follow(frontLeft);
         middleLeft.follow(frontLeft);
 
-        frontRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
-        middleRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
-        backRight.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
-        frontLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
-        middleLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
-        backLeft.getEncoder().setPositionConversionFactor(DriveConstants.kDistanceConvertion);
+        frontRight.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
+        middleRight.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
+        backRight.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
+        frontLeft.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
+        middleLeft.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
+        backLeft.getEncoder().setPositionConversionFactor(DriveConstants.REVOLUTION_DISTANCE);
 
 //        pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
@@ -103,15 +102,15 @@ public class DriveTrain extends SubsystemBase {
      * @return encoder position based on encoder values
      */
     public double getPosition() {
-        return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.kEncoderGearboxScale);
+        return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * DriveConstants.GEARBOX_SCALE);
     }
 
     public double getLeftPosition() {
-        return frontLeft.getEncoder().getPosition() / DriveConstants.kEncoderGearboxScale;
+        return frontLeft.getEncoder().getPosition() / DriveConstants.GEARBOX_SCALE;
     }
 
     public double getRightPosition() {
-        return frontRight.getEncoder().getPosition() / DriveConstants.kEncoderGearboxScale;
+        return frontRight.getEncoder().getPosition() / DriveConstants.GEARBOX_SCALE;
     }
 
     /**
@@ -180,7 +179,7 @@ public class DriveTrain extends SubsystemBase {
         return new PIDCommand(
             rightPID,
             () -> getRightPosition(),
-            setpoint * DriveConstants.kDistanceConvertion,
+            setpoint * DriveConstants.DISTANCE_CONVERSION,
             output -> tankDrive(0, output, 1),
             Robot.getDrivetrain()
         );
