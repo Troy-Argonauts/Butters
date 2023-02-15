@@ -5,14 +5,14 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.PneumaticsSystem;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import org.troyargonauts.subsystems.DriveTrain;
-
+import org.troyargonauts.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -25,14 +25,18 @@ public class Robot extends TimedRobot {
     
     private static RobotContainer robotContainer;
 
-    static DriveTrain driveTrain = new DriveTrain();
+    static DriveTrain driveTrain;
 
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+
+    static PneumaticsSystem pneumatics;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+        driveTrain = new DriveTrain();
+        pneumatics = new PneumaticsSystem();
         robotContainer = new RobotContainer();
 
         driveTrain.resetEncoders();
@@ -112,5 +116,12 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
+    }
+
+    public static PneumaticsSystem getPneumatics() {
+        if (pneumatics == null) {
+            pneumatics = new PneumaticsSystem();
+        }
+        return pneumatics;
     }
 }

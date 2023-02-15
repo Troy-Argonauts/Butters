@@ -38,5 +38,9 @@ public final class Constants {
         double kRightDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
     }
-
+    
+    public interface Manipulator {
+        public static final int kForwardChannel = 0;
+        public static final int kReverseChannel = 1;
+    }
 }
