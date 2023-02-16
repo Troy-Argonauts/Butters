@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.troyargonauts.Robot;
 import org.troyargonauts.Constants.DriveConstants;
+
 /**
  * using PID and stating our speed, turn, and nerf we made a code to run our 8 wheel tank drivetrain with 2 motors
  * @author @SolidityContract @sgowda260 @Shreyan-M
@@ -21,7 +22,7 @@ public class DriveTrain extends SubsystemBase {
 
     Pigeon2 pigeon;
 
-    PIDController leftPID, rightPID, turnPID;
+    PIDController drivePID, turnPID;
 
     /**
      * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
@@ -58,13 +59,11 @@ public class DriveTrain extends SubsystemBase {
 
 //        pigeon = new Pigeon2(DriveConstants.kPigeonID);
 
-        leftPID = new PIDController(DriveConstants.kLeftP, DriveConstants.kLeftI, DriveConstants.kLeftD);
-        rightPID = new PIDController(DriveConstants.kRightP, DriveConstants.kRightI, DriveConstants.kRightD);
-        turnPID = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+        drivePID = new PIDController(DriveConstants.DRIVE_P, DriveConstants.DRIVE_I, DriveConstants.DRIVE_D);
+        turnPID = new PIDController(DriveConstants.TURN_P, DriveConstants.TURN_I, DriveConstants.TURN_D);
 
-        leftPID.setTolerance(DriveConstants.kLeftDriveTolerance);
-        rightPID.setTolerance(DriveConstants.kRightDriveTolerance);
-        turnPID.setTolerance(DriveConstants.kTurnToleranceDeg);
+        drivePID.setTolerance(DriveConstants.DRIVE_TOLERANCE, DriveConstants.VELOCITY_TOLERANCE);
+        turnPID.setTolerance(DriveConstants.TURN_TOLERANCE);
 
         turnPID.enableContinuousInput(-180, 180);
     }
@@ -74,6 +73,10 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("Left Encoder", getLeftPosition());
         SmartDashboard.putNumber("Right Encoder", getRightPosition());
         SmartDashboard.putNumber("Position", getPosition());
+
+        SmartDashboard.putBoolean("At Setpoint", drivePID.atSetpoint());
+        SmartDashboard.putNumber("Error", drivePID.getPositionError());
+        SmartDashboard.putNumber("Velocity", drivePID.getVelocityError());
 
 //        SmartDashboard.putNumber("Angle", getAngle());
     }
@@ -152,39 +155,6 @@ public class DriveTrain extends SubsystemBase {
 //        }
 //        return output;
 //    }
-
-
-    /** 
-     * Drives certian distance based parameter
-     * @param setpoint distance away we want robot to be
-     * @return PIDCommand that moved robot to setpoint
-     */
-    public PIDCommand leftPID(double setpoint) {
-        return new PIDCommand(
-            leftPID,
-            () -> getLeftPosition(),
-            setpoint,
-            output -> tankDrive(output, 0, 1),
-            Robot.getDrivetrain()
-        );
-    }
-
-    
-    /** 
-     * Drives certian distance based parameter
-     * @param setpoint distance away we want robot to be
-     * @return PIDCommand that moved robot to setpoint
-     */
-    public PIDCommand rightPID(double setpoint) {
-        return new PIDCommand(
-            rightPID,
-            () -> getRightPosition(),
-            setpoint * DriveConstants.DISTANCE_CONVERSION,
-            output -> tankDrive(0, output, 1),
-            Robot.getDrivetrain()
-        );
-    }
-
     
     /** 
      * Turns certain angle based on PID
@@ -202,9 +172,10 @@ public class DriveTrain extends SubsystemBase {
 //    }
 
     public PIDCommand PID(double setpoint) {
+        drivePID.setSetpoint(setpoint);
         return new PIDCommand(
-                rightPID,
-                () -> getPosition(),
+                drivePID,
+                this::getPosition,
                 setpoint,
                 output -> cheesyDrive(output, 0, 1),
                 Robot.getDrivetrain()
@@ -213,7 +184,6 @@ public class DriveTrain extends SubsystemBase {
 
     public void breakMode() {
         resetEncoders();
-        rightPID(0);
-        leftPID(0);
+        PID(0);
     }
 }
