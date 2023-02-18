@@ -5,6 +5,7 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.Arm;
 import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -24,6 +25,8 @@ public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
 
     static PneumaticsSystem pneumatics;
+
+    private static Arm arm;
 
     @Override
     public void robotInit() {
@@ -92,5 +95,11 @@ public class Robot extends TimedRobot {
             pneumatics = new PneumaticsSystem();
         }
         return pneumatics;
+    }
+    public static Arm getArm() {
+        if (arm == null) {
+            arm = new Arm();
+        }
+        return arm;
     }
 }
