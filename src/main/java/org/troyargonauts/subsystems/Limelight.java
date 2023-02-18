@@ -6,6 +6,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
 
+/**
+ * Limelight code
+ * @author Abhinav Daram, Teodor Topan
+ */
+
 
 public class Limelight extends SubsystemBase {
 
@@ -39,9 +44,19 @@ public class Limelight extends SubsystemBase {
         return INSTANCE;
     }
 
+    /**
+     *
+     * @return vertical angle of offset from limelight crosshair to target
+     */
+
     public double getTy() {
         return getValue("ty").getDouble(0.00);
     }
+
+    /**
+     *Takes ty as reported from above and finds distance of april tags
+     * @return distance robot is from april tag
+     */
 
     public double getDistanceFromAprilTagInches()  {
         double angle = mountingAngle + getTy();
@@ -52,6 +67,11 @@ public class Limelight extends SubsystemBase {
 
     }
 
+    /**
+     * takes ty as reported from above and finds distance from low cone
+     * @return distance the robot is from the low cone
+     */
+
     public double getLowConeDistance() {
         double angle = mountingAngle + getTy();
         if (angle < 1 || angle > 89)
@@ -60,6 +80,11 @@ public class Limelight extends SubsystemBase {
         return (lowConeHeight - limelightHeight) / tan;
 
     }
+
+    /**
+     * takes ty from above and calculates distance from robot to high cone stand
+     * @return distance robot is from the high cone
+     */
     public double getHighConeDistance() {
         double angle = mountingAngle + getTy();
         if (angle < 1 || angle > 89)
@@ -70,7 +95,11 @@ public class Limelight extends SubsystemBase {
     }
 
 
-
+    /**
+     * Helper method to get an entry from the Limelight NetworkTable.
+     * @param key
+     * @return network table entry from network table
+     */
 
     private NetworkTableEntry getValue(String key) {
         if (table == null) {
@@ -80,13 +109,31 @@ public class Limelight extends SubsystemBase {
         return table.getTable("limelight").getEntry(key);
     }
 
+    /**
+     *
+     * @param mode
+     * what light mode the limelight is on
+     */
+
     public void setLedMode(LightMode mode) {
         getValue("ledMode").setNumber(mode.ordinal());
     }
 
+    /**
+     *
+     * @param mode
+     * gets camera mode for the limelight
+     */
+
     public void setCameraMode(CameraMode mode) {
         getValue("camMode").setNumber(mode.ordinal());
     }
+
+    /**
+     *
+     * @param number
+     * pipeline the robot is currently on (is between 0 and 9)
+     */
     public void setPipeline(int number) {
         getValue("pipeline").setNumber(number);
     }
