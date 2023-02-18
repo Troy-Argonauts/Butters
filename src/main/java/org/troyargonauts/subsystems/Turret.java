@@ -23,9 +23,8 @@ public class Turret extends SubsystemBase {
     public boolean leftLimitSwitchIsActive;
     public boolean rightLimitSwitchIsActive;
 
-    public final AbsoluteEncoder turretEncoder;
 
-    public double potentiometerValue;
+
 
 
     /**
@@ -37,7 +36,6 @@ public class Turret extends SubsystemBase {
         leftLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
-        turretEncoder = turretMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
     }
 
     /**
@@ -81,6 +79,9 @@ public class Turret extends SubsystemBase {
         return rightLimitSwitch.isLimitSwitchEnabled();
     }
 
+    public double getTurretPosition(){
+        return (turretMotor.getEncoder().getPosition() * 42);
+    }
     /**
      * Using a PID command, turret will rotate to a setpoint using the PID Controller. Will mainly be used in autonomous.
      * @param setAngle Point that turret wants to reach.
@@ -88,7 +89,7 @@ public class Turret extends SubsystemBase {
     public void turretPID(double setAngle){
         new PIDCommand (
             pid,
-            () -> turretEncoder.getPosition(),
+            () -> getTurretPosition(),
             setAngle,
             this::setPower,
             Robot.getTurret()
