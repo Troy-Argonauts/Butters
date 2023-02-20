@@ -17,29 +17,9 @@ public class PneumaticsSystem extends SubsystemBase {
         GRAB, RELEASE;
     }
 
-    public enum AlignIntakeState {
-        ALIGN, UNALIGN;
-    }
-
-    public enum GrabIntakeState {
-        GRAB, RELEASE;
-    }
-    public enum RotateIntakeState {
-        FLAT, ROTATED;
-    }
-
     public PneumaticsSystem() {
         manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Manipulator.kManipulatorForwardChannel, Manipulator.kManipulatorReverseChannel);
         manipulatorSolenoid.set(DoubleSolenoid.Value.kForward);
-        
-        alignSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.kAlignForwardChannel, IntakeConstants.kAlignReverseChannel);
-        alignSolenoid.set(DoubleSolenoid.Value.kForward);
-
-        grabSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.kGrabForwardChannel, IntakeConstants.kGrabReverseChannel);
-        grabSolenoid.set(DoubleSolenoid.Value.kForward);
-        
-        rotateSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.kRotateForwardChannel, IntakeConstants.kRotateReverseChannel);
-        rotateSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void setManipulatorState(ManipulatorState state) {
