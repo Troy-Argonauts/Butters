@@ -18,7 +18,7 @@ public class Turret extends SubsystemBase {
     private final CANSparkMax turretMotor;
     public final SparkMaxLimitSwitch rightLimitSwitch;
     public final SparkMaxLimitSwitch leftLimitSwitch;
-    PIDController pid;
+    private PIDController pid;
 
     public boolean leftLimitSwitchIsActive;
     public boolean rightLimitSwitchIsActive;

@@ -1,12 +1,10 @@
 package org.troyargonauts.subsystems;
 import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
-import org.troyargonauts.subsystems.PneumaticsSystem.*;
 
 /**
  * Elevator Code
@@ -20,12 +18,12 @@ public class Elevator extends SubsystemBase {
     private SparkMaxLimitSwitch lowerLimitSwitch;
     private boolean upperLimitSwitchValue;
     private boolean lowerLimitSwitchValue;
-    PIDController pid;
+    private PIDController pid;
 
 
 
     /**
-     * Here, the motors, limit switches, and PID controller are instantiated.
+     * Instantiates the motor controllers, limit switches, encoder, and PID controller for the Elevator. Left side motor is reversed
      * Additionally, the right motor is inverted for convenience
      */
     public Elevator() {
@@ -83,6 +81,9 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    /**
+     * @return Robots position in wheel revolutions
+     */
     public double getPosition() {
         return (rightMotor.getEncoder().getPosition() + leftMotor.getEncoder().getPosition()) / (2 * Constants.Elevator.kEncoderGearboxScale);
     }
@@ -101,16 +102,5 @@ public class Elevator extends SubsystemBase {
             this::setElevatorPower,
             Robot.getElevator()
         );
-    }
-
-    public void setManipulatorState(ManipulatorState state) {
-        switch (state) {
-            case GRAB:
-                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kForward);
-                break;
-            case RELEASE:
-                PneumaticsSystem.manipulatorSolenoid.set(DoubleSolenoid.Value.kReverse);
-                break;
-        }
     }
 }
