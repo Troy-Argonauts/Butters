@@ -7,6 +7,7 @@ package org.troyargonauts;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer
 {
-    XboxController controller = new XboxController(0);
+    ArgoController controller = new ArgoController(0, 0.3);
     public RobotContainer()
     {
         // Configure the trigger bindings
@@ -27,6 +28,17 @@ public class RobotContainer
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+        Robot.getElevator().setDefaultCommand(
+            new RunCommand(() -> {
+                Robot.getElevator().setPower(controller.getLeftJoystickY(), 1);
+            }, Robot.getElevator())
+        );
+
+        Robot.getTurret().setDefaultCommand(
+            new RunCommand(() -> {
+                Robot.getTurret().setPower(controller.getRightJoystickX(), 0.1);
+            }, Robot.getTurret())
+        );
 
     }
     
@@ -40,5 +52,9 @@ public class RobotContainer
     {
         // TODO: Implement properly
         return null;
+    }
+
+    public ArgoController getController() {
+        return controller;
     }
 }

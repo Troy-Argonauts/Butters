@@ -1,6 +1,8 @@
 package org.troyargonauts.subsystems;
 import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
@@ -14,8 +16,8 @@ import org.troyargonauts.Robot;
 public class Elevator extends SubsystemBase {
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
-    private SparkMaxLimitSwitch upperLimitSwitch;
-    private SparkMaxLimitSwitch lowerLimitSwitch;
+//    private SparkMaxLimitSwitch upperLimitSwitch;
+//    private SparkMaxLimitSwitch lowerLimitSwitch;
     private boolean upperLimitSwitchValue;
     private boolean lowerLimitSwitchValue;
     private PIDController pid;
@@ -29,15 +31,21 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
         leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightMotor = new CANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        leftMotor.getEncoder();
 
-        upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        upperLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        leftMotor.setInverted(false);
+        rightMotor.setInverted(false);
 
-        lowerLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        rightMotor.setInverted(true);
+        leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
+        rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
+
+//        upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+//        upperLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+//
+//        lowerLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+//        lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD, Constants.Elevator.PERIOD);
     }
 
@@ -47,8 +55,13 @@ public class Elevator extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        upperLimitSwitchValue = getUpperLimitSwitchState();
-        lowerLimitSwitchValue = getLowerLimitSwitchState();
+//        upperLimitSwitchValue = getUpperLimitSwitchState();
+//        lowerLimitSwitchValue = getLowerLimitSwitchState();
+        SmartDashboard.putNumber("Right Encoder", rightMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Left Encoder", leftMotor.getEncoder().getPosition());
+
+        SmartDashboard.putNumber("Left Draw", leftMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
     }
 
     /**
@@ -58,27 +71,21 @@ public class Elevator extends SubsystemBase {
      *
      * @return  returns whether the limit switch is enabled or not.
      */
-    public boolean getUpperLimitSwitchState() {
-        return upperLimitSwitch.isLimitSwitchEnabled();
-    }
-    public boolean getLowerLimitSwitchState() {
-        return lowerLimitSwitch.isLimitSwitchEnabled();
-    }
+//    public boolean getUpperLimitSwitchState() {
+//        return upperLimitSwitch.isLimitSwitchEnabled();
+//    }
+//    public boolean getLowerLimitSwitchState() {
+//        return lowerLimitSwitch.isLimitSwitchEnabled();
+//    }
 
     /**
      * Elevator power will be set to a given speed from -1 to 1
      *
      * @param speed desired elevator extension or retraction speed
      */
-    public void setElevatorPower(double speed) {
-        if((upperLimitSwitchValue && speed > 0) || (lowerLimitSwitchValue && speed < 0)) {
-            leftMotor.set(0);
-            rightMotor.set(0);
-        }
-        else {
-            leftMotor.set(speed);
-            rightMotor.set(speed);
-        }
+    public void setPower(double speed, double nerf) {
+        leftMotor.set(speed * nerf);
+        rightMotor.set(speed * nerf);
     }
 
     /**
@@ -99,7 +106,7 @@ public class Elevator extends SubsystemBase {
             pid,
             () -> getPosition(),
             setpoint,
-            this::setElevatorPower,
+            output -> setPower(output, 0.5),
             Robot.getElevator()
         );
     }

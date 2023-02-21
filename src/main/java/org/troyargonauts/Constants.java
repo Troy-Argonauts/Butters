@@ -7,8 +7,8 @@ public final class Constants {
     }
 
     public interface Elevator {
-        int LEFT = 0;
-        int RIGHT = 1;
+        int LEFT = 11;
+        int RIGHT = 12;
         
         double kP = 1;
         double kI = 0;
@@ -29,7 +29,7 @@ public final class Constants {
         double FULL_RANGE = 180;
         double OFFSET = 30;
 
-        int PORT = 0;
+        int PORT = 10;
     }
 
     public interface Manipulator {
