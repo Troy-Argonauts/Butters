@@ -5,6 +5,7 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.LEDSystem;
 import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,6 +26,8 @@ public class Robot extends TimedRobot {
 
     static PneumaticsSystem pneumatics;
 
+    private static LEDSystem led;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -32,6 +35,8 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
 
         pneumatics = new PneumaticsSystem();
+
+        led = new LEDSystem();
     }
 
     @Override
@@ -92,5 +97,12 @@ public class Robot extends TimedRobot {
             pneumatics = new PneumaticsSystem();
         }
         return pneumatics;
+    }
+
+    public static LEDSystem getLEDs(){
+        if(led==null){
+            led = new LEDSystem();
+        }
+        return led;
     }
 }
