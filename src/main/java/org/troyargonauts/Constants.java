@@ -2,7 +2,7 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public interface DriveConstants {
+    public interface DriveTrain {
         //CAN IDs
         int FRONT_RIGHT = 2;
         int MIDDLE_RIGHT = 3;
