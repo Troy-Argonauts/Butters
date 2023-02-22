@@ -4,7 +4,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package org.troyargonauts;
-import org.troyargonauts.subsystems.PneumaticsSystem;
+
+import org.troyargonauts.subsystems.Manipulator;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,20 +24,21 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
-    static PneumaticsSystem pneumatics;
-
     private static ColorSensor colorSensor;
+
+    public static Manipulator manipulator;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
-        pneumatics = new PneumaticsSystem();
 
         colorSensor = new ColorSensor();
 
         robotContainer = new RobotContainer();
+
+        manipulator = new Manipulator();
 
         ColorSensor.colorMatch.addColorMatch(ColorSensor.kYellow);
         ColorSensor.colorMatch.addColorMatch(ColorSensor.kPurple);
@@ -95,17 +97,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
-    
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-        }
-        return pneumatics;
-    }
 
     public static ColorSensor getColorSensor() {
         if (colorSensor == null) {
             colorSensor = new ColorSensor();
         }
         return colorSensor;
+    }
+
+    public static Manipulator getManipulator() {
+        if (manipulator == null) {
+            manipulator = new Manipulator();
+        }
+        return manipulator;
     }
 }

@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * code for color sensor detects color
+ * @author @SolidityContract @Aizakkuno
+ */
 public class ColorSensor extends SubsystemBase {
     private final ColorSensorV3 colorSensor;
 
@@ -22,6 +26,9 @@ public class ColorSensor extends SubsystemBase {
 
     ColorMatchResult match;
 
+    /** 
+     * Constructs a new ColorSensor object with a new ColorSensorV3 object and initializes the pre-defined colors and the ColorMatch object.
+     */
     public ColorSensor() {
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
@@ -32,6 +39,13 @@ public class ColorSensor extends SubsystemBase {
         colorMatch = new ColorMatch();
     }
 
+    
+    /** 
+     * Returns a String representing the color detected by the sensor.
+     * If the detected color matches a pre-defined color, the method returns the name of that color.
+     * Otherwise, it returns "Nothing" if the detected color is close to the pre-defined middle color, or "idle" if no color is detected.
+     * @return String name of color detected.
+     */
     public String getColor() {
         if (match.color == kPurple) {
             return "Purple";
@@ -44,6 +58,10 @@ public class ColorSensor extends SubsystemBase {
         }
     }
 
+    /** 
+     * Periodically updates the detected color and the closest match to a pre-defined color.
+     * It also updates the color and the detected color on the SmartDashboard.
+     */
     @Override
     public void periodic() {
         detectedColor = colorSensor.getColor();
