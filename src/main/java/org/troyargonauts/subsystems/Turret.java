@@ -9,15 +9,16 @@ import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * Turret Code
+ * Class representing the Turret. Includes PID control and limit switches.
  *
  * @author ASH-will-WIN, Aizakkuno, TeoElRey, SolidityContract
  */
 
 public class Turret extends SubsystemBase {
     private final CANSparkMax turretMotor;
-//    public final SparkMaxLimitSwitch rightLimitSwitch;
-//    public final SparkMaxLimitSwitch leftLimitSwitch;
+    public double turretPosition;
+    public final SparkMaxLimitSwitch rightLimitSwitch;
+    public final SparkMaxLimitSwitch leftLimitSwitch;
     private PIDController pid;
 
     public boolean leftLimitSwitchIsActive;
@@ -28,12 +29,12 @@ public class Turret extends SubsystemBase {
 
 
     /**
-     * Constructor for Turret Class. Instantiates motors, magnetic limit switches, PID Controllers, and potentiometer.
+     * Constructor for Turret Class. Instantiates motor, magnetic limit switches, PID Controllers, and encoders.
      */
     public Turret() {
         turretMotor = new CANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
-//        rightLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-//        leftLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        rightLimitSwitch = turretMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        leftLimitSwitch = turretMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
     }
@@ -41,9 +42,17 @@ public class Turret extends SubsystemBase {
     /**
      * This sets motor to given power. Will not allow turret to go past the two magnetic limit switches.
      * @param power Desired motor power.
-     *
+     * @param nerf Nerf of motor power.
      */
     public void setPower(double power, double nerf){
+//        if ((getLeftLimitSwitchState() && power < 0) || (getRightLimitSwitchState() && power > 0)) {
+//            turretMotor.set(0);
+//        }
+//        else {
+//            turretMotor.set(power * nerf);
+//        }
+
+
         turretMotor.set(power * nerf);
     }
 
@@ -53,9 +62,10 @@ public class Turret extends SubsystemBase {
      */
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Position", getTurretPosition();
+        SmartDashboard.putNumber("Position", getTurretPosition());
         SmartDashboard.putNumber("Motor Rotations", turretMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Turret Rotations", (turretMotor.getEncoder().getPosition() / 125));
+        turretPosition = turretMotor.getEncoder().getPosition();
     }
 
     /**
@@ -63,22 +73,20 @@ public class Turret extends SubsystemBase {
      * @return Status of left limit switch.
      */
 
-//    public boolean getLeftLimitSwitchState(){
-////        return leftLimitSwitch.isLimitSwitchEnabled();
-//    }
-//
-//    /**
-//     * Gives status of right limit switch as a boolean value.
-//     * @return Status of right limit switch.
-//     */
-//
-//    public boolean getRightLimitSwitchState() {
-////        return rightLimitSwitch.isLimitSwitchEnabled();
-//    }
-
-    public double getTurretPosition(){
-        return (turretMotor.getEncoder().getPosition() * 42);
+    public boolean getLeftLimitSwitchState(){
+        return leftLimitSwitch.isLimitSwitchEnabled();
     }
+
+    /**
+     * Gives status of right limit switch as a boolean value.
+     * @return Status of right limit switch.
+     */
+
+    public boolean getRightLimitSwitchState() {
+        return rightLimitSwitch.isLimitSwitchEnabled();
+    }
+
+    
     /**
      * Using a PID command, turret will rotate to a setpoint using the PID Controller. 
      * @param setpoint Setpoint for the Turret
@@ -86,9 +94,9 @@ public class Turret extends SubsystemBase {
     public void turretPID(double setpoint){
         new PIDCommand (
             pid,
-            () -> getTurretPosition(),
+            () -> turretPosition,
 
-            () -> turretMotor.getEncoder().getPosition(),
+            () -> turretPosition,
 
             setpoint,
             output -> setPower(output, 0.5),
