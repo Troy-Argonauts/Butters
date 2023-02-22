@@ -33,7 +33,7 @@ public class LEDSystem extends SubsystemBase {
         config.stripType = CANdle.LEDStripType.RGB;
         candle.configAllSettings(config);
     }
-    
+
 
     /**
      * This method turns the LEDs to a rainbow color pattern. We will generally use this during standby.
