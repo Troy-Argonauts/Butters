@@ -9,15 +9,16 @@ import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * Elevator Code
+ * Elevator Code: Extends elevator to max length, determined by limit switches.
+ * Elevator extends to score cone or cube which is taken in by intake
  *
- * @author Teodor Topan, Sudeep Gowda
+ * @author TeoElRey, sgowda260
  */
 public class Elevator extends SubsystemBase {
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
-//    private SparkMaxLimitSwitch upperLimitSwitch;
-//    private SparkMaxLimitSwitch lowerLimitSwitch;
+    private SparkMaxLimitSwitch upperLimitSwitch;
+    private SparkMaxLimitSwitch lowerLimitSwitch;
     private boolean upperLimitSwitchValue;
     private boolean lowerLimitSwitchValue;
     private PIDController pid;
@@ -26,7 +27,10 @@ public class Elevator extends SubsystemBase {
 
     /**
      * Instantiates the motor controllers, limit switches, encoder, and PID controller for the Elevator. Left side motor is reversed
-     * Additionally, the right motor is inverted for convenience
+     * Additionally, the left side motor is set to be inverted
+     * Encoders are built into the motor
+     * Motors are set to brake mode, meaning they will quickly stop when reaching limit instead of slowing on their own
+     * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
         leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -65,21 +69,28 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * Both of these methods access the state of each limit switch,
-     * we will check these in periodic and turn off motors when one of them returns true to prevent
-     * elevator from trying to extend when it is already at max extension
+     * Will check whether the upper limit switch is enabled or not.
+     * If it is, this means the elevator has extended to desired point and will stop extending
      *
      * @return  returns whether the limit switch is enabled or not.
      */
-//    public boolean getUpperLimitSwitchState() {
-//        return upperLimitSwitch.isLimitSwitchEnabled();
-//    }
-//    public boolean getLowerLimitSwitchState() {
-//        return lowerLimitSwitch.isLimitSwitchEnabled();
-//    }
+    public boolean getUpperLimitSwitchState() {
+        return upperLimitSwitch.isLimitSwitchEnabled();
+    }
+    /**
+     * Will check whether the lower limit switch is enabled or not.
+     * If it is, this means the elevator has retracted to desired point and will stop retracting
+     *
+     * @return  returns whether the limit switch is enabled or not.
+     */
+    public boolean getLowerLimitSwitchState() {
+        return lowerLimitSwitch.isLimitSwitchEnabled();
+    }
 
     /**
      * Elevator power will be set to a given speed from -1 to 1
+     * If it is positive, elevator will extend until upper limit switch turns on
+     * If it is negative, elevator retracts until lower limit switch turns on
      *
      * @param speed desired elevator extension or retraction speed
      */
@@ -97,9 +108,9 @@ public class Elevator extends SubsystemBase {
 
     /**
      * Using a PID command, the elevator will shift to a given setpoint using the
-     * predetermined PID Controller. Will be used mainly in Autonomous
+     * predetermined PID Controller.
      * 
-     * @param setpoint desired extension point
+     * @param setpoint will be the desired extension point
      */
     public void elevatorPID(double setpoint) {
         new PIDCommand(
