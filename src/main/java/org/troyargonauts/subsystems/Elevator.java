@@ -19,8 +19,8 @@ public class Elevator extends SubsystemBase {
     private final CANSparkMax rightMotor;
     private SparkMaxLimitSwitch upperLimitSwitch;
     private SparkMaxLimitSwitch lowerLimitSwitch;
-    private boolean upperLimitSwitchValue;
-    private boolean lowerLimitSwitchValue;
+    // private boolean upperLimitSwitchValue;
+    // private boolean lowerLimitSwitchValue;
     private PIDController pid;
 
 
@@ -68,24 +68,24 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
     }
 
-    /**
-     * Will check whether the upper limit switch is enabled or not.
-     * If it is, this means the elevator has extended to desired point and will stop extending
-     *
-     * @return  returns whether the limit switch is enabled or not.
-     */
-    public boolean getUpperLimitSwitchState() {
-        return upperLimitSwitch.isLimitSwitchEnabled();
-    }
-    /**
-     * Will check whether the lower limit switch is enabled or not.
-     * If it is, this means the elevator has retracted to desired point and will stop retracting
-     *
-     * @return  returns whether the limit switch is enabled or not.
-     */
-    public boolean getLowerLimitSwitchState() {
-        return lowerLimitSwitch.isLimitSwitchEnabled();
-    }
+    // /**
+    //  * Will check whether the upper limit switch is enabled or not.
+    //  * If it is, this means the elevator has extended to desired point and will stop extending
+    //  *
+    //  * @return  returns whether the limit switch is enabled or not.
+    //  */
+    // public boolean getUpperLimitSwitchState() {
+    //     return upperLimitSwitch.isLimitSwitchEnabled();
+    // }
+    // /**
+    //  * Will check whether the lower limit switch is enabled or not.
+    //  * If it is, this means the elevator has retracted to desired point and will stop retracting
+    //  *
+    //  * @return  returns whether the limit switch is enabled or not.
+    //  */
+    // public boolean getLowerLimitSwitchState() {
+    //     return lowerLimitSwitch.isLimitSwitchEnabled();
+    // }
 
     /**
      * Elevator power will be set to a given speed from -1 to 1
@@ -99,8 +99,9 @@ public class Elevator extends SubsystemBase {
         rightMotor.set(speed * nerf);
     }
 
-    /**
-     * @return Robots position in wheel revolutions
+    /** 
+     * Returns encoder position based on encoder values
+     * @return encoder position based on encoder values
      */
     public double getPosition() {
         return (rightMotor.getEncoder().getPosition() + leftMotor.getEncoder().getPosition()) / (2 * Constants.Elevator.kEncoderGearboxScale);
