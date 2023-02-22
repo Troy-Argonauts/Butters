@@ -92,12 +92,11 @@ public class Turret extends SubsystemBase {
      * @param setpoint Setpoint for the Turret
      */
     public void turretPID(double setpoint){
+        pid.setSetpoint(setpoint);
         new PIDCommand(
             pid,
             () -> turretPosition,
-
             () -> turretPosition,
-
             setpoint,
             output -> setPower(output, 0.5),
             Robot.getTurret()
