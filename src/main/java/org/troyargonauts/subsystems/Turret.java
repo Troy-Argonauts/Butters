@@ -11,7 +11,7 @@ import org.troyargonauts.Robot;
 /**
  * Turret Code
  *
- * @author Ashwin Shrivastav, Isaac Hatfield, Teodor Topan, Rohan Gajula-Ghosh
+ * @author ASH-will-WIN, Aizakkuno, TeoElRey, SolidityContract
  */
 
 public class Turret extends SubsystemBase {
@@ -28,7 +28,7 @@ public class Turret extends SubsystemBase {
 
 
     /**
-     * Constructor for Turret Class. Instantiate motors, magnetic limit switches, PID Controllers, and potentiometer.
+     * Constructor for Turret Class. Instantiates motors, magnetic limit switches, PID Controllers, and potentiometer.
      */
     public Turret() {
         turretMotor = new CANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -39,8 +39,8 @@ public class Turret extends SubsystemBase {
     }
 
     /**
-     * Sets motor to given power. Doesn't allow turret to go past the two magnetic limit switches.
-     * @param power Power of motors.
+     * This sets motor to given power. Will not allow turret to go past the two magnetic limit switches.
+     * @param power Desired motor power.
      *
      */
     public void setPower(double power){
@@ -58,7 +58,7 @@ public class Turret extends SubsystemBase {
      */
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Position", turretEncoder.getPosition());
+        SmartDashboard.putNumber("Position", getTurretPosition();
     }
 
     /**
@@ -83,7 +83,7 @@ public class Turret extends SubsystemBase {
         return (turretMotor.getEncoder().getPosition() * 42);
     }
     /**
-     * Using a PID command, turret will rotate to a setpoint using the PID Controller. Will mainly be used in autonomous.
+     * Using a PID command, turret will rotate to a setpoint using the PID Controller. 
      * @param setAngle Point that turret wants to reach.
      */
     public void turretPID(double setAngle){
