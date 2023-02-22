@@ -62,7 +62,7 @@ public class Turret extends SubsystemBase {
      */
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Position", getTurretPosition());
+        SmartDashboard.putNumber("Position", turretPosition);
         SmartDashboard.putNumber("Motor Rotations", turretMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Turret Rotations", (turretMotor.getEncoder().getPosition() / 125));
         turretPosition = turretMotor.getEncoder().getPosition();
@@ -86,13 +86,13 @@ public class Turret extends SubsystemBase {
         return rightLimitSwitch.isLimitSwitchEnabled();
     }
 
-    
+
     /**
      * Using a PID command, turret will rotate to a setpoint using the PID Controller. 
      * @param setpoint Setpoint for the Turret
      */
     public void turretPID(double setpoint){
-        new PIDCommand (
+        new PIDCommand(
             pid,
             () -> turretPosition,
 
