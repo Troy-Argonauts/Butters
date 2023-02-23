@@ -8,12 +8,14 @@ import org.troyargonauts.Constants;
 
 /**
  * Limelight code
- * @author Abhinav Daram, Teodor Topan
+ * @author Abhinav Daram, Teodor Topan, Somya Sakalle, Sharvayu Chavan
  */
+
 
 
 public class Limelight extends SubsystemBase {
 
+    public static int pipeNumber = 0;
     private NetworkTableInstance table = null;
     private final double limelightHeight = Constants.Limelight.LIMELIGHT_HEIGHT;
     private final double aprilTagHeight = Constants.Limelight.APRIL_TAG_HEIGHT;
@@ -44,8 +46,23 @@ public class Limelight extends SubsystemBase {
         return INSTANCE;
     }
 
-    /**
-     *
+/**
+ * methods to change value of pipeline
+ * @return integer value of pipeline
+ * */
+    public static int raisePipe(){
+       return pipeNumber++;
+    }
+
+    public static int lowerPipe(){
+        if(pipeNumber > 0) {
+            return pipeNumber--;
+        }
+        else{
+            return pipeNumber;
+        }
+    }
+     /**
      * @return vertical angle of offset from limelight crosshair to target
      */
 
@@ -134,8 +151,8 @@ public class Limelight extends SubsystemBase {
      * @param number
      * pipeline the robot is currently on (is between 0 and 9)
      */
-    public void setPipeline(int number) {
-        getValue("pipeline").setNumber(number);
+    public void setPipeline() {
+        getValue("pipeline").setNumber(pipeNumber);
     }
 
     @Override
@@ -143,7 +160,7 @@ public class Limelight extends SubsystemBase {
         SmartDashboard.putNumber("April Tag Distance", getDistanceFromAprilTagInches());
         SmartDashboard.putNumber("Low Cone Height", getLowConeDistance());
         SmartDashboard.putNumber("High Cone Height: ", getHighConeDistance());
-
+        setPipeline();
     }
 
 
