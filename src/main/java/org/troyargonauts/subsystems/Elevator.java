@@ -100,14 +100,8 @@ public class Elevator extends SubsystemBase {
         leftMotor.set(speed * nerf);
         rightMotor.set(speed * nerf);
     }
-
-    /** 
-     * Returns encoder position based on encoder values
-     * @return encoder position based on encoder values
-     */
-
     /**
-     * Using a PID command, the elevator will shift to a given setpoint using the
+     * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.
      * 
      * @param setpoint will be the desired extension point
