@@ -33,7 +33,6 @@ public class LEDSystem extends SubsystemBase {
         config.stripType = CANdle.LEDStripType.RGB;
         candle.configAllSettings(config);
     }
-    
 
     /**
      * This method turns the LEDs to a rainbow color pattern. We will generally use this during standby.
@@ -43,8 +42,10 @@ public class LEDSystem extends SubsystemBase {
     public void ledStandby(int ledLength, boolean enable) {
         if(enable) {
             // dim the LEDs to half brightness
+            
             config.brightnessScalar = 0.5;
             candle.configAllSettings(config);
+
             RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, ledLength);
             candle.animate(rainbowAnim);
         }
@@ -54,13 +55,11 @@ public class LEDSystem extends SubsystemBase {
      * This method displays the Argonauts' gold color. We plan to use it if we win.
      * @param win determines if argo colors are on or off
      */
-    // We could maybe set it up so that if we win, these are the lights that will display
     public void argoColors(boolean win) {
         if(win) {
             candle.setLEDs(goldR, goldG, goldB);
         }
     }
-    // Switches color from "Black" (dark gray) to gold
 
     /**
      * This method will turn the LEDs purple if we need a purple cube
@@ -83,22 +82,22 @@ public class LEDSystem extends SubsystemBase {
     }
 
     /**
-     * This method turns the LEDs off
-     * @param off turns the LEDs off
-     */
-    public void ledOff(boolean off) {
-        if(off) {
-            candle.setLEDs(0, 0, 0);
-        }
-    }
-
-    /**
      * This method makes the LEDs red. We plan to use this when we lose
      * @param lose determines if the LEDs are red or not
      */
     public void losingState(boolean lose) {
         if(lose) {
             candle.setLEDs(255, 0, 0);
+        }
+    }
+
+    /**
+     * This method turns the LEDs off
+     * @param off turns the LEDs off
+     */
+    public void ledOff(boolean off) {
+        if(off) {
+            candle.setLEDs(0, 0, 0);
         }
     }
 }
