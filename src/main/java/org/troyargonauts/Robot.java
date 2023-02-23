@@ -24,8 +24,6 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
-    private static ColorSensor colorSensor;
-
     public static Manipulator manipulator;
 
     @Override
@@ -33,8 +31,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
-
-        colorSensor = new ColorSensor();
 
         robotContainer = new RobotContainer();
 
@@ -97,13 +93,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
-
-    public static ColorSensor getColorSensor() {
-        if (colorSensor == null) {
-            colorSensor = new ColorSensor();
-        }
-        return colorSensor;
-    }
 
     public static Manipulator getManipulator() {
         if (manipulator == null) {

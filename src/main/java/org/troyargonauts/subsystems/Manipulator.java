@@ -3,12 +3,14 @@ package org.troyargonauts.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import sensors.ColorSensor;
 
-import org.troyargonauts.Constants.ManipulatorConstants;
+import org.troyargonauts.Constants;
 
 /**
- * runs 1 motor to run manipulator
+ * Runs motor to run manipulator, will be used to intake pieces.
  * @author @SolidityContract @sgowda260 @Shreyan-M
  */
 public class Manipulator extends SubsystemBase {
@@ -22,13 +24,16 @@ public class Manipulator extends SubsystemBase {
     }
 
     private final CANSparkMax main;
+
+    private final ColorSensor colorSensor;
     
     /** 
-     * The Manipulator class controls the motor of the Manipulator subsystem
-     * Instantiates the main CANSparkMax motor controller for the Manipulator subsystem.
+     * Creates a manipulator subsystem and instantiates the main CANSparkMax motor controller for the Manipulator subsystem.
      */
     public Manipulator() {
-        main = new CANSparkMax(ManipulatorConstants.MAIN, MotorType.kBrushless);
+        main = new CANSparkMax(Constants.Manipulator.MAIN, MotorType.kBrushless);
+
+        colorSensor = new ColorSensor();
     }
     
     
@@ -48,6 +53,16 @@ public class Manipulator extends SubsystemBase {
                 main.set(0);
                 break;
         }
+    }
+
+    /**
+     * Periodically updates the detected color and the closest match to a pre-defined color.
+     * It also updates the color and the detected color on the SmartDashboard.
+     */
+    @Override
+    public void periodic() {
+        SmartDashboard.putString("Color", colorSensor.getOutput().red + ", " + colorSensor.getOutput().green + ", " + colorSensor.getOutput().blue);
+        SmartDashboard.putString("Color Detected", colorSensor.getColor());
     }
 
 }

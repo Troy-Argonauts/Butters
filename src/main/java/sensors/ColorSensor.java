@@ -5,12 +5,11 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * code for color sensor detects color
+ * code for REV ColorSensorV3 detects game piece based on color detected.
  * @author @SolidityContract @Aizakkuno
  */
 public class ColorSensor extends SubsystemBase {
@@ -47,6 +46,7 @@ public class ColorSensor extends SubsystemBase {
      * @return String name of color detected.
      */
     public String getColor() {
+        match = colorMatch.matchClosestColor(detectedColor);
         if (match.color == kPurple) {
             return "Purple";
         } else if (match.color == kYellow){
@@ -58,17 +58,8 @@ public class ColorSensor extends SubsystemBase {
         }
     }
 
-    /** 
-     * Periodically updates the detected color and the closest match to a pre-defined color.
-     * It also updates the color and the detected color on the SmartDashboard.
-     */
-    @Override
-    public void periodic() {
-        detectedColor = colorSensor.getColor();
-        match = colorMatch.matchClosestColor(detectedColor);
-
-        SmartDashboard.putString("Color", detectedColor.red + ", " + detectedColor.green + ", " + detectedColor.blue);
-        SmartDashboard.putString("Color Detected", getColor());
+    public Color getOutput() {
+        return colorSensor.getColor();
     }
 
 }

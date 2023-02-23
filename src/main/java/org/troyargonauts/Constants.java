@@ -2,7 +2,7 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public interface ManipulatorConstants {
+    public interface Manipulator {
         int MAIN = 9;
     }
 
