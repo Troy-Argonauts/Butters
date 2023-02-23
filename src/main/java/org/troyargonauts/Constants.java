@@ -22,20 +22,15 @@ public final class Constants {
         double GEARBOX_SCALE = 8.54;
 
         //PID Tuning Values
-        double kLeftP = 1;
-        double kLeftI = 0;
-        double kLeftD = 0;
-
-        double kRightP = 1;
-        double kRightI = 0;
-        double kRightD = 0;
+        double kDriveP = 1;
+        double kDriveI = 0;
+        double kDriveD = 0;
         
         double kTurnP = 1;
         double kTurnI = 0;
         double kTurnD = 0;
 
-        double kLeftDriveTolerance = 1;
-        double kRightDriveTolerance = 1;
+        double kDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
     }
     

@@ -13,19 +13,20 @@ import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * using PID and stating our speed, turn, and nerf we made a code to run our 8 wheel tank drivetrain with 2 motors
+ * Drivetrain uses PID as well as runs with certian speed and turn to reach its desired target
  * @author @SolidityContract @sgowda260 @Shreyan-M
  */
 public class DriveTrain extends SubsystemBase {
 
-    private CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
+    private final CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
-    Pigeon2 pigeon;
+    private final Pigeon2 pigeon;
 
-    PIDController leftPID, rightPID, turnPID;
+    private final PIDController drivePID, turnPID;
 
     /**
-     * Creates a new drivetrain object for the code and states the motors needed for the drivetrain
+     * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder convertion factors and instantiates pid controllers.
+     * Motor controllers are reversed and set to follow other motor controllers.
      */
 
     public DriveTrain() {
@@ -59,12 +60,10 @@ public class DriveTrain extends SubsystemBase {
 
         pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
 
-        leftPID = new PIDController(Constants.DriveTrain.kLeftP, Constants.DriveTrain.kLeftI, Constants.DriveTrain.kLeftD);
-        rightPID = new PIDController(Constants.DriveTrain.kRightP, Constants.DriveTrain.kRightI, Constants.DriveTrain.kRightD);
+        drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
         turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
 
-        leftPID.setTolerance(Constants.DriveTrain.kLeftDriveTolerance);
-        rightPID.setTolerance(Constants.DriveTrain.kRightDriveTolerance);
+        drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance);
         turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg);
 
         turnPID.enableContinuousInput(-180, 180);
@@ -82,16 +81,26 @@ public class DriveTrain extends SubsystemBase {
 
     
     /** 
-     * Sets motors value based on speed and turn parameters
-     * @param speed speed of robot
-     * @param turn amount we want to turn
-     * @param nerf decreases the max speed and amount we want to turn the robot
+     * Sets motors value based on speed and turn parameters. 
+     * Robots speed and turn will be controlled by different joysticks.
+     * Allows robot to move in specified direction with more control.
+     * @param speed speed of robot.
+     * @param turn amount we want to turn.
+     * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
         frontRight.set(((speed - turn) + 0.0010) * nerf);
         frontLeft.set((speed + turn) * nerf);
     }
 
+    /** 
+     * Sets left and right motor values based on left and right parameters. 
+     * Robots left and right side will be controlled by different joysticks.
+     * Used for mainly testing and troubleshooting.
+     * @param left speed of the left side of the robot.
+     * @param right speed of the right side of the robot.
+     * @param nerf decreases the max speed and amount we want to turn the robot.
+     */
     public void tankDrive(double left, double right, double nerf) {
         frontRight.set(right * nerf);
         frontLeft.set(left * nerf);
@@ -99,24 +108,31 @@ public class DriveTrain extends SubsystemBase {
 
     
     /** 
-     * Returns encoder position based on encoder values
-     * @return encoder position based on encoder values
+     * Returns encoder position based on the average value from the frontLeft and frontRight motor controller encoders.
+     * @return encoder position based on encoder values.
      */
     public double getPosition() {
-        return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / (2 * Constants.DriveTrain.GEARBOX_SCALE);
+        return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / 2;
     }
 
+    /** 
+     * Returns encoder position based on the value from the frontLeft motor controller encoder.
+     * @return encoder position based on frontLeft motor controller encoder.
+     */
     public double getLeftPosition() {
-        return frontLeft.getEncoder().getPosition() / Constants.DriveTrain.GEARBOX_SCALE;
+        return frontLeft.getEncoder().getPosition();
     }
 
+    /** 
+     * Returns encoder position based on the value from the frontRight motor controller encoder.
+     * @return encoder position based on frontRight motor controller encoder.
+     */
     public double getRightPosition() {
-        return frontRight.getEncoder().getPosition() / Constants.DriveTrain.GEARBOX_SCALE;
+        return frontRight.getEncoder().getPosition();
     }
 
     /**
-     * Resets the encoders
-     * @return encoder value to 0
+     * Resets the encoders to a position of 0
      */
 
     public void resetEncoders() {
@@ -129,10 +145,8 @@ public class DriveTrain extends SubsystemBase {
     }
 
     /**
-     * Resets the angle
-     * @return the angle to 0
+     * Resets the pigeon to a yaw of 0
      */
-    
     public void resetAngle() {
         pigeon.setYaw(0);
     }
@@ -154,57 +168,29 @@ public class DriveTrain extends SubsystemBase {
         return output;
     }
 
-
     /** 
-     * Drives certian distance based parameter
-     * @param setpoint distance away we want robot to be
-     * @return PIDCommand that moved robot to setpoint
-     */
-    public PIDCommand leftPID(double setpoint) {
-        return new PIDCommand(
-            leftPID,
-            () -> getLeftPosition(),
-            setpoint,
-            output -> tankDrive(output, 0, 1),
-            Robot.getDrivetrain()
-        );
-    }
-
-    
-    /** 
-     * Drives certian distance based parameter
-     * @param setpoint distance away we want robot to be
-     * @return PIDCommand that moved robot to setpoint
-     */
-    public PIDCommand rightPID(double setpoint) {
-        return new PIDCommand(
-            rightPID,
-            () -> getRightPosition(),
-            setpoint * Constants.DriveTrain.DISTANCE_CONVERSION,
-            output -> tankDrive(0, output, 1),
-            Robot.getDrivetrain()
-        );
-    }
-
-    
-    /** 
-     * Turns certain angle based on PID
+     * Uses PIDController to turn the robot a certain angle based on the pigeons yaw
      * @param angle the angle we want the robot to be at
      * @return PIDCommand that turns robot to target angle
      */
-//    public PIDCommand turnPID(double angle) {
-//        return new PIDCommand(
-//            turnPID,
-//            () -> getAngle(),
-//            angle,
-//            output -> cheesyDrive(0, output, 1),
-//            Robot.getDrivetrain()
-//        );
-//    }
-
-    public PIDCommand PID(double setpoint) {
+    public PIDCommand turnPID(double angle) {
         return new PIDCommand(
-                rightPID,
+            turnPID,
+            () -> getAngle(),
+            angle,
+            output -> cheesyDrive(0, output, 1),
+            Robot.getDrivetrain()
+        );
+    }
+
+    /** 
+     * Uses PIDController to drive the robot a certain distance based on the average of the left and right encoder values
+     * @param setpoint the setpoint in inches we want the robot to drive to.
+     * @return PIDCommand that turns robot to target angle
+     */
+    public PIDCommand drivePID(double setpoint) {
+        return new PIDCommand(
+                drivePID,
                 () -> getPosition(),
                 setpoint,
                 output -> cheesyDrive(output, 0, 1),
@@ -212,9 +198,12 @@ public class DriveTrain extends SubsystemBase {
         );
     }
 
+    /** 
+     * Causes the robot to break.
+     * Resets encoders to 0.
+     */
     public void breakMode() {
         resetEncoders();
-        rightPID(0);
-        leftPID(0);
+        drivePID(0);
     }
 }
