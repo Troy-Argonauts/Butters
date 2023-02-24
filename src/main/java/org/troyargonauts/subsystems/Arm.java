@@ -4,14 +4,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * Arm Code
- * @author Ashwin Shrivastav, Teodor Topan, Rohan Gajula-Ghosh
+ * Class representing arm. Includes PID control and absolute encoders
+ * @author TeoElRey, ASH-will-WIN, SolidityContract
  */
 public class Arm extends SubsystemBase {
     private final CANSparkMax elbowMotor;
@@ -20,6 +21,8 @@ public class Arm extends SubsystemBase {
     private final AbsoluteEncoder elbowEncoder;
     private final AbsoluteEncoder wristEncoder;
     private final PIDController pid;
+    private double elbowEncoderValue;
+    private double wristEncoderValue;
 
     /**
      * Here, the motors, absolute encoders, and PID Controller are instantiated.
@@ -37,6 +40,14 @@ public class Arm extends SubsystemBase {
         wristEncoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
         pid = new PIDController(Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD, Constants.Arm.PERIOD);
+    }
+    @Override
+    public void periodic() {
+        elbowEncoderValue = elbowEncoder.getPosition();
+        wristEncoderValue = wristEncoder.getPosition();
+
+        SmartDashboard.putNumber("Elbow Encoder", elbowEncoderValue);
+        SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
     }
 
     /**
@@ -95,7 +106,7 @@ public class Arm extends SubsystemBase {
      * @return returns the position of elbow
      */
     public double getElbowPosition() {
-        return elbowEncoder.getPosition();
+        return elbowEncoderValue;
     }
 
     /**
@@ -103,7 +114,7 @@ public class Arm extends SubsystemBase {
      * @return returns the position of wrist
      */
     public double getWristPosition() {
-        return wristEncoder.getPosition();
+        return wristEncoderValue;
     }
 
     /**
