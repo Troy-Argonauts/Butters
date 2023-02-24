@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * code for REV ColorSensorV3 detects game piece based on color detected.
+ * Code for REV ColorSensorV3 detects game piece based on color detected.
  * @author @SolidityContract @Aizakkuno
  */
 public class ColorSensor extends SubsystemBase {
@@ -58,6 +58,11 @@ public class ColorSensor extends SubsystemBase {
         }
     }
 
+    /** 
+     * Gets the color detected from the color sensor.
+     * Used for getting color values in testing.
+     * @return color dectected from color sensor.
+     */
     public Color getOutput() {
         return colorSensor.getColor();
     }

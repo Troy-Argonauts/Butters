@@ -10,7 +10,7 @@ import sensors.ColorSensor;
 import org.troyargonauts.Constants;
 
 /**
- * Runs motor to run manipulator, will be used to intake pieces.
+ * Runs motor to run manipulator, will be used to intake pieces using the arm.
  * @author @SolidityContract @sgowda260 @Shreyan-M
  */
 public class Manipulator extends SubsystemBase {
