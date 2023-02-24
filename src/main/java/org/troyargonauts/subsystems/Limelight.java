@@ -51,7 +51,11 @@ public class Limelight extends SubsystemBase {
  * @return integer value of pipeline
  * */
     public static int raisePipe(){
-       return pipeNumber++;
+       if (pipeNumber < 2) {
+           return pipeNumber++;
+       }else{
+           return pipeNumber;
+       }
     }
 
     public static int lowerPipe(){
@@ -148,7 +152,6 @@ public class Limelight extends SubsystemBase {
 
     /**
      *
-     * @param number
      * pipeline the robot is currently on (is between 0 and 9)
      */
     public void setPipeline() {

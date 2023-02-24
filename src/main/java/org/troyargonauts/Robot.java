@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
 
     private Pigeon2 pigeon;
-    private WPI_Pigeon2 pigeon_wpi;
+
 
 
 
