@@ -2,18 +2,13 @@ package org.troyargonauts;
 
 public final class Constants {
 
-    public interface IntakeConstants {
-        int kRightIntakeID = 8;
-        int kLeftIntakeID = 7;
+    public interface Intake{
+        public static final double SQUEEZE_MOTOR_SPEED = 0.2;
+        public static final double ROTATE_MOTOR_SPEED = 0.2;
 
-        int kAlignForwardChannel = 2;
-        int kAlignReverseChannel = 3;
+        public static final int SQUEEZE_MOTOR_PORT = 0;
+        public static final int ROTATE_MOTOR_PORT = 1;
 
-        int kGrabForwardChannel = 4;
-        int kGrabReverseChannel = 5;
-
-        int kRotateForwardChannel = 6;
-        int kRotateReverseChannel = 7;
     }
 
 }
