@@ -32,6 +32,9 @@ public final class Constants {
 
         double kDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
+
+        //Correction Values
+        double RIGHT_CORRECTION = 0.0010;
     }
     
     public interface Manipulator {

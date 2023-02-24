@@ -13,7 +13,8 @@ import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * Drivetrain uses PID as well as runs with certian speed and turn to reach its desired target
+ * Drivetrain allows control of the robot's drivetrain in cheesy drive and tank drive. 
+ * Includes a distance PID and a turn PID using the Pigeon 2 from CTRE.
  * @author @SolidityContract @sgowda260 @Shreyan-M
  */
 public class DriveTrain extends SubsystemBase {
@@ -25,8 +26,8 @@ public class DriveTrain extends SubsystemBase {
     private final PIDController drivePID, turnPID;
 
     /**
-     * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder convertion factors and instantiates pid controllers.
-     * Motor controllers are reversed and set to follow other motor controllers.
+     * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder convertion factors and instantiates PID controllers.
+     * Motor controllers on the right side are reversed and set to follow other motor controllers.
      */
 
     public DriveTrain() {
@@ -89,7 +90,7 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
-        frontRight.set(((speed - turn) + 0.0010) * nerf);
+        frontRight.set(((speed - turn) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
         frontLeft.set((speed + turn) * nerf);
     }
 
@@ -102,7 +103,7 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void tankDrive(double left, double right, double nerf) {
-        frontRight.set(right * nerf);
+        frontRight.set((right + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
         frontLeft.set(left * nerf);
     }
 
