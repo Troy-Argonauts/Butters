@@ -7,4 +7,8 @@ public final class Constants {
         public static final int kReverseChannel = 1;
     }
 
+    public interface LEDs {
+        int kPort = 5;
+    }
+
 }
