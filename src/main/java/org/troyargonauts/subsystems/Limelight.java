@@ -75,7 +75,7 @@ public class Limelight extends SubsystemBase {
         if (angle < 1 || angle > 89)
             return 0;
         double tan = Math.tan(Math.toRadians(angle));
-        return (aprilTagHeight - Constants.Limelight.LIMELIGHT_HEIGHT) / tan;
+        return (Constants.Limelight.APRIL_TAG_HEIGHT - Constants.Limelight.LIMELIGHT_HEIGHT) / tan;
 
     }
 
