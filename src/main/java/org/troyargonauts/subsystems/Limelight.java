@@ -15,15 +15,6 @@ import org.troyargonauts.Constants;
 public class Limelight extends SubsystemBase {
 
     private NetworkTableInstance table = null;
-    private final double limelightHeight = Constants.Limelight.LIMELIGHT_HEIGHT;
-    private final double aprilTagHeight = Constants.Limelight.APRIL_TAG_HEIGHT;
-    private final double mountingAngle = Constants.Limelight.MOUNTING_ANGLE;
-
-    private final double lowConeHeight = Constants.Limelight.LOW_CONE_HEIGHT;
-
-    private final double highConeHeight =  Constants.Limelight.HIGH_CONE_HEIGHT;
-
-    private final double distanceBetweenCones =  Constants.Limelight.DISTANCE_BETWEEN_CONES;
 
     public enum LightMode {
         ON, OFF, BLINK
@@ -59,11 +50,11 @@ public class Limelight extends SubsystemBase {
      */
 
     public double getDistanceFromAprilTagInches()  {
-        double angle = mountingAngle + getTy();
+        double angle = Constants.Limelight.MOUNTING_ANGLE + getTy();
         if (angle < 1 || angle > 89)
             return 0;
         double tan = Math.tan(Math.toRadians(angle));
-        return (aprilTagHeight - limelightHeight) / tan;
+        return (aprilTagHeight - Constants.Limelight.LIMELIGHT_HEIGHT) / tan;
 
     }
 
@@ -73,11 +64,11 @@ public class Limelight extends SubsystemBase {
      */
 
     public double getLowConeDistance() {
-        double angle = mountingAngle + getTy();
+        double angle = Constants.Limelight.MOUNTING_ANGLE + getTy();
         if (angle < 1 || angle > 89)
             return 0;
         double tan = Math.tan(Math.toRadians(angle));
-        return (lowConeHeight - limelightHeight) / tan;
+        return (Constants.Limelight.LOW_CONE_HEIGHT - Constants.Limelight.LIMELIGHT_HEIGHT) / tan;
 
     }
 
@@ -86,11 +77,11 @@ public class Limelight extends SubsystemBase {
      * @return distance robot is from the high cone
      */
     public double getHighConeDistance() {
-        double angle = mountingAngle + getTy();
+        double angle = Constants.Limelight.MOUNTING_ANGLE + getTy();
         if (angle < 1 || angle > 89)
             return 0;
         double tan = Math.tan(Math.toRadians(angle));
-        return ((highConeHeight - limelightHeight) / tan) + distanceBetweenCones;
+        return ((Constants.Limelight.HIGH_CONE_HEIGHT - Constants.Limelight.LIMELIGHT_HEIGHT) / tan) + Constants.Limelight.DISTANCE_BETWEEN_CONES;
 
     }
 
