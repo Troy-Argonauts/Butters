@@ -106,9 +106,9 @@ public class Elevator extends SubsystemBase {
      * 
      * @param setpoint will be the desired extension point
      */
-    public void elevatorPID(double setpoint) {
+    public PIDCommand elevatorPID(double setpoint) {
         pid.setSetpoint(setpoint);
-        new PIDCommand(
+        return new PIDCommand(
             pid,
             () -> ((rightMotorPosition + leftMotorPosition) / (2 * Constants.Elevator.kEncoderGearboxScale)),
             setpoint,
