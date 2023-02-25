@@ -81,7 +81,7 @@ public class Turret extends SubsystemBase {
             () -> encoderPosition,
             () -> encoderPosition,
             setpoint,
-            output -> setPower(output, 0.5),
+            output -> setPower(output, Constants.Turret.NERF),
             Robot.getTurret()
         );
     }

@@ -30,6 +30,8 @@ public final class Constants {
         double OFFSET = 30;
 
         int PORT = 10;
+
+        double NERF = 0.5;
     }
 
     public interface Manipulator {
