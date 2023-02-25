@@ -6,7 +6,6 @@
 package org.troyargonauts;
 
 import org.troyargonauts.subsystems.Intake;
-import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
