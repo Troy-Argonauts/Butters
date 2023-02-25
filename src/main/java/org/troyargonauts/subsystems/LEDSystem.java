@@ -37,27 +37,14 @@ public class LEDSystem extends SubsystemBase {
         candle.configAllSettings(config);
     }
 
-
-    /**
-     * This method turns the LEDs to a rainbow color pattern. We will generally use this during standby.
-     * @param ledLength refers to the number of LEDs on the strip that will be turned on
-     */
-    public void Rainbow(int ledLength) {
-        // dim the LEDs to half brightness
-        config.brightnessScalar = 0.5;
-        candle.configAllSettings(config);
-        RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, ledLength);
-        candle.animate(rainbowAnim);
-    }
-
     /**
      * This method displays the Argonauts' gold color
      */
+
     // We could maybe set it up so that if we win, these are the lights that will display
     public void argoColors() {
         candle.setLEDs(goldR, goldG, goldB);
     }
-    // Switches color from "Black" (dark gray) to gold
 
     /**
      * This method will turn the LEDs purple
@@ -67,7 +54,7 @@ public class LEDSystem extends SubsystemBase {
     }
 
     /**
-     * This method will turn the LEDs yellow if we need a yellow cone
+     * This method will turn the LEDs yellow
      */
     public void yellowCone() {
         candle.setLEDs(yellowR, yellowG, yellowB);
@@ -86,4 +73,5 @@ public class LEDSystem extends SubsystemBase {
     public void losingState() {
         candle.setLEDs(255, 0, 0);
     }
+
 }

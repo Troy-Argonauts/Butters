@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
     }
 
     public static LEDSystem getLEDs(){
-        if(led==null){
+        if(led == null){
             led = new LEDSystem();
         }
         return led;
