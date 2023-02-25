@@ -16,7 +16,7 @@ import org.troyargonauts.Robot;
  */
 public class Arm extends SubsystemBase {
     private final CANSparkMax elbowMotor;
-    private final CANSparkMax intakeMotor;
+    private final CANSparkMax manipulatorMotor;
     private final CANSparkMax wristMotor;
     private final AbsoluteEncoder elbowEncoder;
     private final AbsoluteEncoder wristEncoder;
@@ -29,11 +29,11 @@ public class Arm extends SubsystemBase {
      */
     public Arm() {
         elbowMotor = new CANSparkMax(Constants.Arm.ARM_MOTOR, CANSparkMaxLowLevel.MotorType.kBrushless);
-        intakeMotor = new CANSparkMax(Constants.Arm.ARM_INTAKE, CANSparkMaxLowLevel.MotorType.kBrushless);
+        manipulatorMotor = new CANSparkMax(Constants.Arm.ARM_INTAKE, CANSparkMaxLowLevel.MotorType.kBrushless);
         wristMotor = new CANSparkMax(Constants.Arm.ARM_INTAKE, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         elbowMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        manipulatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         wristMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
@@ -64,13 +64,13 @@ public class Arm extends SubsystemBase {
     public void setIntakeState(intakeState state) {
         switch(state) {
             case FORWARD:
-                intakeMotor.set(Constants.Arm.FORWARD_INTAKE_SPEED);
+                manipulatorMotor.set(Constants.Arm.FORWARD_INTAKE_SPEED);
                 break;
             case OFF:
-                intakeMotor.set(0);
+                manipulatorMotor.set(0);
                 break;
             case BACKWARD:
-                intakeMotor.set(Constants.Arm.REVERSE_INTAKE_SPEED);
+                manipulatorMotor.set(Constants.Arm.REVERSE_INTAKE_SPEED);
                 break;
         }
     }
