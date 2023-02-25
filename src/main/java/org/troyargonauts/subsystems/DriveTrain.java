@@ -25,6 +25,10 @@ public class DriveTrain extends SubsystemBase {
 
     private final PIDController drivePID, turnPID;
 
+    public double frontRightEncoderValue, middleRightEncoderValue, backRightEncoderValue, frontLeftEncoderValue, middleLeftEncoderValue, backLeftEncoderValue;
+
+    public double gyroValue;
+
     /**
      * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder convertion factors and instantiates PID controllers.
      * Motor controllers on the right side are reversed and set to follow other motor controllers.
@@ -77,6 +81,16 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("Position", getPosition());
 
         SmartDashboard.putNumber("Angle", getAngle());
+
+        frontRightEncoderValue = frontRight.getEncoder().getPosition();
+        middleRightEncoderValue = middleRight.getEncoder().getPosition();
+        backRightEncoderValue = backRight.getEncoder().getPosition();
+        frontLeftEncoderValue = frontLeft.getEncoder().getPosition();
+        middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
+        backLeftEncoderValue = backLeft.getEncoder().getPosition();
+
+        gyroValue = pigeon.getYaw();
+
     }
 
 
@@ -113,23 +127,23 @@ public class DriveTrain extends SubsystemBase {
      * @return encoder position based on encoder values.
      */
     public double getPosition() {
-        return (frontRight.getEncoder().getPosition() + frontLeft.getEncoder().getPosition()) / 2;
+        return (getLeftPosition() + getRightPosition()) / 2;
     }
 
     /** 
-     * Returns encoder position based on the value from the frontLeft motor controller encoder.
+     * Returns encoder position based on the value from all the left motor controllers.
      * @return encoder position based on frontLeft motor controller encoder.
      */
     public double getLeftPosition() {
-        return frontLeft.getEncoder().getPosition();
+        return (frontLeftEncoderValue + middleLeftEncoderValue + backLeftEncoderValue) / 3;
     }
 
     /** 
-     * Returns encoder position based on the value from the frontRight motor controller encoder.
+     * Returns encoder position based on the value from all the right motor controllers.
      * @return encoder position based on frontRight motor controller encoder.
      */
     public double getRightPosition() {
-        return frontRight.getEncoder().getPosition();
+        return (frontRightEncoderValue + middleRightEncoderValue + backRightEncoderValue) / 3;
     }
 
     /**
@@ -158,7 +172,7 @@ public class DriveTrain extends SubsystemBase {
      * @return angle of robot
      */
     public double getAngle() {
-        double output = pigeon.getYaw() % 360;
+        double output = gyroValue % 360;
         while (Math.abs(output) > 180) {
             if (output < 0) {
                 output += 360;
@@ -203,7 +217,7 @@ public class DriveTrain extends SubsystemBase {
      * Causes the robot to break.
      * Resets encoders to 0.
      */
-    public void breakMode() {
+    public void brakeMode() {
         resetEncoders();
         drivePID(0);
     }
