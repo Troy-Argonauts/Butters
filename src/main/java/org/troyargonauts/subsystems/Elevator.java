@@ -9,9 +9,7 @@ import org.troyargonauts.Constants;
 import org.troyargonauts.Robot;
 
 /**
- * Elevator Code: Extends elevator to max length, determined by limit switches.
- * Elevator extends to score cone or cube which is taken in by intake
- *
+ * Class representing elevator subsystem. includes PID control and limit switches
  * @author TeoElRey, sgowda260
  */
 public class Elevator extends SubsystemBase {
@@ -22,14 +20,16 @@ public class Elevator extends SubsystemBase {
     // private boolean upperLimitSwitchValue;
     // private boolean lowerLimitSwitchValue;
     private PIDController pid;
+    private double rightMotorPosition;
+    private double leftMotorPosition;
 
 
 
     /**
-     * Instantiates the motor controllers, limit switches, encoder, and PID controller for the Elevator. Left side motor is reversed
+     * Instantiates the motor controllers, limit switches, encoder, and PID controller for the Elevator.
      * Additionally, the left side motor is set to be inverted
-     * Encoders are built into the motor
-     * Motors are set to brake mode, meaning they will quickly stop when reaching limit instead of slowing on their own
+     * Encoders built into the NEO 550 motors track position of the elevator's carriage
+     * Motors are set to brake mode
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
@@ -61,6 +61,8 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
 //        upperLimitSwitchValue = getUpperLimitSwitchState();
 //        lowerLimitSwitchValue = getLowerLimitSwitchState();
+        rightMotorPosition = rightMotor.getEncoder().getPosition();
+        leftMotorPosition = leftMotor.getEncoder().getPosition();
         SmartDashboard.putNumber("Right Encoder", rightMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Left Encoder", leftMotor.getEncoder().getPosition());
 
@@ -98,25 +100,17 @@ public class Elevator extends SubsystemBase {
         leftMotor.set(speed * nerf);
         rightMotor.set(speed * nerf);
     }
-
-    /** 
-     * Returns encoder position based on encoder values
-     * @return encoder position based on encoder values
-     */
-    public double getPosition() {
-        return (rightMotor.getEncoder().getPosition() + leftMotor.getEncoder().getPosition()) / (2 * Constants.Elevator.kEncoderGearboxScale);
-    }
-
     /**
-     * Using a PID command, the elevator will shift to a given setpoint using the
+     * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.
      * 
      * @param setpoint will be the desired extension point
      */
     public void elevatorPID(double setpoint) {
+        pid.setSetpoint(setpoint);
         new PIDCommand(
             pid,
-            () -> getPosition(),
+            () -> ((rightMotorPosition + leftMotorPosition) / (2 * Constants.Elevator.kEncoderGearboxScale)),
             setpoint,
             output -> setPower(output, 0.5),
             Robot.getElevator()
