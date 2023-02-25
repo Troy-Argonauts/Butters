@@ -100,6 +100,11 @@ public class Elevator extends SubsystemBase {
         leftMotor.set(speed * nerf);
         rightMotor.set(speed * nerf);
     }
+
+    public void resetEncoders(){
+        leftMotor.getEncoder().setPosition(0);
+        rightMotor.getEncoder().setPosition(0);
+    }
     /**
      * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.

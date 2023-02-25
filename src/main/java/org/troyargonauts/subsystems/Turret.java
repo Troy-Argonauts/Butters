@@ -53,6 +53,10 @@ public class Turret extends SubsystemBase {
         turretMotor.set(power * nerf);
     }
 
+    public void resetEncoders(){
+        turretMotor.getEncoder().setPosition(0);
+    }
+
 
 
     /**
