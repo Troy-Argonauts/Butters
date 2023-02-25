@@ -7,15 +7,15 @@ public final class Constants {
         public static final int kReverseChannel = 1;
     }
     public interface Limelight {
-        public static final double LIMELIGHT_HEIGHT = 32.625;
-        public static final double APRIL_TAG_HEIGHT = 18;
-        public static final double MOUNTING_ANGLE = 0;
+        double LIMELIGHT_HEIGHT = 32.625;
+        double APRIL_TAG_HEIGHT = 18;
+        double MOUNTING_ANGLE = 0;
 
-        public static final double LOW_CONE_HEIGHT = 23;
+        double LOW_CONE_HEIGHT = 23;
 
-        public static final double HIGH_CONE_HEIGHT = 43;
+        double HIGH_CONE_HEIGHT = 43;
 
-        public static final double DISTANCE_BETWEEN_CONES = 17;
+        double DISTANCE_BETWEEN_CONES = 17;
 
     }
 
