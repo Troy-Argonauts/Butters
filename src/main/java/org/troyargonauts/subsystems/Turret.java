@@ -76,7 +76,7 @@ public class Turret extends SubsystemBase {
      */
     public void turretPID(double setpoint){
         pid.setSetpoint(setpoint);
-        new PIDCommand(
+        return new PIDCommand(
             pid,
             () -> encoderPosition,
             () -> encoderPosition,
