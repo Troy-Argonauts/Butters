@@ -226,7 +226,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     /** 
-     * Causes the robot to break.
+     * Causes the robot to brake.
      * Resets encoders to 0.
      */
     public void brakeMode() {
