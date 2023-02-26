@@ -30,21 +30,7 @@ public class RobotContainer
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
-        driver.getLBButton().toggleOnTrue(
-            new StartEndCommand(
-                Robot.getLEDs()::purpleCube, 
-                Robot.getLEDs()::ledOff, 
-                Robot.getLEDs()
-            )
-        );
 
-        driver.getRBButton().toggleOnTrue(
-            new StartEndCommand(
-                Robot.getLEDs()::yellowCone, 
-                Robot.getLEDs()::ledOff, 
-                Robot.getLEDs()
-            )
-        );
     }
     
     
