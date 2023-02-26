@@ -35,14 +35,6 @@ public class RobotContainer {
                 }, Robot.getDrivetrain()
             )
         );
-
-        driver.getYButton().whileTrue(
-            Robot.getDrivetrain().autoBalance()
-        );
-
-        new POVButton(driver, 180).whileTrue(
-            new InstantCommand(Robot.getDrivetrain()::brakeMode)
-        );
     }
     
     
