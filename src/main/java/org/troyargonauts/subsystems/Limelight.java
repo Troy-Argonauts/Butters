@@ -15,14 +15,14 @@ import org.troyargonauts.Constants;
 
 public class Limelight extends SubsystemBase {
     /**
-     * instance variables for the code
+     * Instance variables for the code
      * PipeNumber value is the value of the current pipeline
      */
     public static int pipeNumber = 0;
     private NetworkTableInstance table = null;
 
     /**
-     * States of the LEDs for the limelight
+     * States of the LEDs on the limelight
      * The states are ON, OFF, and BLINK
      */
     public enum LightMode {
@@ -53,7 +53,7 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-    * method to raise value of pipeNumber variable
+    * Method to raise value of pipeNumber variable
     * @return new integer value of the pipeNumber variable
     * */
     public static int raisePipe(){
