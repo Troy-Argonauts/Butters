@@ -6,8 +6,9 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -16,11 +17,12 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
 
-    public static ArgoController argoController;
+    public static ArgoController driver;
+
     public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
-        argoController = new ArgoController(0, 0.1);
+        driver = new ArgoController(0, 0.1);
     }
     
     
@@ -29,9 +31,17 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
             new RunCommand(
                 () -> {
-                    Robot.getDrivetrain().cheesyDrive(argoController.getLeftJoystickY(), argoController.getRightJoystickX(), 1);
+                    Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
                 }, Robot.getDrivetrain()
             )
+        );
+
+        driver.getYButton().whileTrue(
+            Robot.getDrivetrain().autoBalance()
+        );
+
+        new POVButton(driver, 180).whileTrue(
+            new InstantCommand(Robot.getDrivetrain()::brakeMode)
         );
     }
     
@@ -47,7 +57,7 @@ public class RobotContainer {
         return null;
     }
 
-    public ArgoController getDriver() {
-        return argoController;
+    public static ArgoController getDriver() {
+        return driver;
     }
 }
