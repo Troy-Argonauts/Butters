@@ -5,7 +5,12 @@
 
 package org.troyargonauts;
 
+import org.troyargonauts.subsystems.Intake;
+import org.troyargonauts.subsystems.Intake.rotateStates;
+import org.troyargonauts.subsystems.Intake.squeezeStates;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -13,19 +18,45 @@ import edu.wpi.first.wpilibj2.command.Command;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
+public class RobotContainer { 
+    
+    private ArgoController driver;
+
     public RobotContainer()
     {
         // Configure the trigger bindings
         configureBindings();
+        
+        driver = new ArgoController(0, 0.1);
     }
     
     
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+        driver.getRBButton().whileTrue(
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.CLOSE))
+        ).whileFalse(
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP))
+        );
 
+        driver.getLBButton().whileTrue(
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.OPEN))
+        ).whileFalse(
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP))
+        );
+
+        driver.getBButton().whileTrue(
+            new InstantCommand(() -> Intake.setRotateIntakeState(rotateStates.UP))
+        ).whileFalse(
+            new InstantCommand(() -> Intake.setRotateIntakeState(rotateStates.STOP))
+        );
+
+        driver.getAButton().whileTrue(
+            new InstantCommand(() -> Intake.setRotateIntakeState(rotateStates.DOWN))
+        ).whileFalse(
+            new InstantCommand(() -> Intake.setRotateIntakeState(rotateStates.STOP))
+        );
     }
     
     

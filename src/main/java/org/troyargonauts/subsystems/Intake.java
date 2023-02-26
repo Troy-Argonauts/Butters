@@ -96,7 +96,7 @@ public class Intake extends SubsystemBase {
     public static void setRotateIntakeState(rotateStates state) {
         switch (state) {
             case UP:
-                if (rotateForwardLimitSwitch.isPressed()) {
+                if (rotateForwardLimitSwitch.isLimitSwitchEnabled()) {
                     rotateMotor.set(0.0);
                     intakeRotateState = "STOP";
                 } else {
@@ -105,7 +105,7 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case DOWN:
-                if (rotateBackwardLimitSwitch.isPressed()){
+                if (rotateBackwardLimitSwitch.isLimitSwitchEnabled()){
                     rotateMotor.set(0.0);
                     intakeRotateState = "STOP";
                 } else{
