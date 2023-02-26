@@ -100,15 +100,20 @@ public class Elevator extends SubsystemBase {
         leftMotor.set(speed * nerf);
         rightMotor.set(speed * nerf);
     }
+
+    public void resetEncoders(){
+        leftMotor.getEncoder().setPosition(0);
+        rightMotor.getEncoder().setPosition(0);
+    }
     /**
      * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.
      * 
      * @param setpoint will be the desired extension point
      */
-    public void elevatorPID(double setpoint) {
+    public PIDCommand elevatorPID(double setpoint) {
         pid.setSetpoint(setpoint);
-        new PIDCommand(
+        return new PIDCommand(
             pid,
             () -> ((rightMotorPosition + leftMotorPosition) / (2 * Constants.Elevator.kEncoderGearboxScale)),
             setpoint,

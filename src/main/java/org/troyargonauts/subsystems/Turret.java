@@ -53,6 +53,10 @@ public class Turret extends SubsystemBase {
         turretMotor.set(power * nerf);
     }
 
+    public void resetEncoders(){
+        turretMotor.getEncoder().setPosition(0);
+    }
+
 
 
     /**
@@ -74,11 +78,10 @@ public class Turret extends SubsystemBase {
      * Turret will rotate to a setpoint using the PID Controller.
      * @param setpoint Setpoint for the Turret
      */
-    public void turretPID(double setpoint){
+    public PIDCommand turretPID(double setpoint){
         pid.setSetpoint(setpoint);
         return new PIDCommand(
             pid,
-            () -> encoderPosition,
             () -> encoderPosition,
             setpoint,
             output -> setPower(output, Constants.Turret.NERF),
