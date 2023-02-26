@@ -8,19 +8,31 @@ import org.troyargonauts.Constants;
 
 /**
  * Limelight code
- * @author Abhinav Daram, Teodor Topan, Somya Sakalle, Sharvayu Chavan
+ * @author SavageCabbage360, TeoElRay and Sharvayu-Chavan
  */
 
 
 
 public class Limelight extends SubsystemBase {
-
+    /**
+     * instance variables for the code
+     * PipeNumber value is the value of the current pipeline
+     */
     public static int pipeNumber = 0;
     private NetworkTableInstance table = null;
 
+    /**
+     * States of the LEDs for the limelight
+     * The states are ON, OFF, and BLINK
+     */
     public enum LightMode {
         ON, OFF, BLINK
     }
+
+    /**
+     * The mode of the Limelight
+     * The modes are VISION and DRIVER
+     */
 
     public enum CameraMode {
         VISION, DRIVER
@@ -29,6 +41,9 @@ public class Limelight extends SubsystemBase {
 
     private final static Limelight INSTANCE = new Limelight();
 
+    /**
+     * Constructor for the limelight class
+     */
     private Limelight() {
 
     }
@@ -37,10 +52,10 @@ public class Limelight extends SubsystemBase {
         return INSTANCE;
     }
 
-/**
- * methods to change value of pipeline
- * @return integer value of pipeline
- * */
+    /**
+    * method to raise value of pipeNumber variable
+    * @return new integer value of the pipeNumber variable
+    * */
     public static int raisePipe(){
        if (pipeNumber < 2) {
            return pipeNumber++;
@@ -48,6 +63,11 @@ public class Limelight extends SubsystemBase {
            return pipeNumber;
        }
     }
+
+    /**
+     * method to lower value of pipeNumber variable
+     * @return new integer value of the pipeNumber variable
+     */
 
     public static int lowerPipe(){
         if(pipeNumber > 0) {
@@ -149,11 +169,15 @@ public class Limelight extends SubsystemBase {
         getValue("pipeline").setNumber(pipeNumber);
     }
 
+
+    /**
+     * Displays April tag distance, Low cone distance, High Cone distance on SmartDashboard
+     */
     @Override
     public void periodic() {
         SmartDashboard.putNumber("April Tag Distance", getDistanceFromAprilTagInches());
-        SmartDashboard.putNumber("Low Cone Height", getLowConeDistance());
-        SmartDashboard.putNumber("High Cone Height: ", getHighConeDistance());
+        SmartDashboard.putNumber("Low Cone Distance", getLowConeDistance());
+        SmartDashboard.putNumber("High Cone Distance: ", getHighConeDistance());
         setPipeline();
     }
 
