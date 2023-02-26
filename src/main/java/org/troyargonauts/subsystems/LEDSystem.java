@@ -10,7 +10,6 @@ import org.troyargonauts.Constants;
  * This is the class for all LED methods
  */
 public class LEDSystem extends SubsystemBase {
-    // The Variables
 
     public final static int goldR = 51;
     public final static int goldG = 51;
@@ -28,7 +27,8 @@ public class LEDSystem extends SubsystemBase {
     public CANdleConfiguration config;
 
     /**
-     * TThis instantiates and configures the CANdle
+     * This class uses REV's CANdle to control the LEDs on the robot.
+     * @author JJCgits, firearcher2012, ASH-will-WIN
      */
     public LEDSystem() {
         candle = new CANdle(Constants.LEDs.kPort);

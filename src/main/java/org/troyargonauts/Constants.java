@@ -10,7 +10,7 @@ public final class Constants {
     }
 
     public interface LEDs {
-        int kPort = 5;
+        int kCANdlePort = 5;
     }
 
 }
