@@ -33,8 +33,6 @@ public class Robot extends TimedRobot {
 
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-    static PneumaticsSystem pneumatics;
-
     static Pigeon2 pigeon;
 
 
@@ -45,7 +43,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         driveTrain = new DriveTrain();
-        pneumatics = new PneumaticsSystem();
         robotContainer = new RobotContainer();
 
         driveTrain.resetEncoders();
@@ -140,12 +137,5 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
-    }
-
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new PneumaticsSystem();
-        }
-        return pneumatics;
     }
 }

@@ -1,7 +1,6 @@
 package org.troyargonauts.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.Pigeon2Configuration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
