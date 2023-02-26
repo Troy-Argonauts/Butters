@@ -36,7 +36,7 @@ public class RobotContainer
 
         Robot.getTurret().setDefaultCommand(
             new RunCommand(() -> {
-                Robot.getTurret().setPower(controller.getRightJoystickX(), 0.1);
+                Robot.getTurret().setPower(controller.getRightJoystickX());
             }, Robot.getTurret())
         );
 

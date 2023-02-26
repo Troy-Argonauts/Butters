@@ -39,18 +39,17 @@ public class Turret extends SubsystemBase {
     /**
      * This sets motor to given power. Will not allow turret to go past the two magnetic limit switches.
      * @param power Desired motor power.
-     * @param nerf Percentage nerf of motor power
      **/
-    public void setPower(double power, double nerf){
+    public void setPower(double power){
 //        if ((leftLimitSwitch.isLimitSwitchEnabled() && power < 0) || (rightLimitSwitch.isLimitSwitchEnabled() && power > 0)) {
 //            turretMotor.set(0);
 //        }
 //        else {
-//            turretMotor.set(power * nerf);
+//           turretMotor.set(power * Constants.Turret.NERF);
 //        }
 
 
-        turretMotor.set(power * nerf);
+        turretMotor.set(power * Constants.Turret.NERF);
     }
 
     public void resetEncoders(){
@@ -84,7 +83,7 @@ public class Turret extends SubsystemBase {
             pid,
             () -> encoderPosition,
             setpoint,
-            output -> setPower(output, Constants.Turret.NERF),
+            output -> setPower(output),
             Robot.getTurret()
         );
     }
