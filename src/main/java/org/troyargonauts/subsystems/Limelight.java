@@ -5,35 +5,32 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
+import static org.troyargonauts.Robot.limelight;
 
 /**
  * Limelight code
- * @author SavageCabbage360, TeoElRay and Sharvayu-Chavan
+ * @author SavageCabbage360, TeoElRay, and Sharvayu-Chavan
  */
 
 
 
 public class Limelight extends SubsystemBase {
+
     /**
-     * Instance variables for the code
-     * PipeNumber value is the value of the current pipeline
+     * The current pipeline number being used by the Limelight.
      */
     public static int pipeNumber = 0;
     private NetworkTableInstance table = null;
 
     /**
-     * States of the LEDs on the limelight
-     * The states are ON, OFF, and BLINK
+     * The different modes the Limelight's LED can be set to.
      */
     public enum LightMode {
         ON, OFF, BLINK
     }
-
     /**
-     * The mode of the Limelight
-     * The modes are VISION and DRIVER
+     * The different modes the Limelight's camera can be set to.
      */
-
     public enum CameraMode {
         VISION, DRIVER
     }
@@ -41,21 +38,30 @@ public class Limelight extends SubsystemBase {
 
     private final static Limelight INSTANCE = new Limelight();
 
+
     /**
-     * Constructor for the limelight class
+     * Creates an instance of the Limelight subsystem and sets the initial LED mode to ON and the camera mode to VISION.
      */
     private Limelight() {
-
+        limelight.setLedMode(Limelight.LightMode.ON);
+        limelight.setCameraMode(Limelight.CameraMode.VISION);
     }
 
+
+    /**
+     * Returns the instance of the Limelight subsystem.
+     *
+     * @return The instance of the Limelight subsystem.
+     */
     public static Limelight getInstance() {
         return INSTANCE;
     }
 
     /**
-    * Method to raise value of pipeNumber variable
-    * @return new integer value of the pipeNumber variable
-    * */
+     * Raises the pipeline number by 1 if it is less than 2.
+     *
+     * @return The new pipeline number.
+     */
     public static int raisePipe(){
        if (pipeNumber < 2) {
            return pipeNumber++;
@@ -65,10 +71,10 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     * method to lower value of pipeNumber variable
-     * @return new integer value of the pipeNumber variable
+     * Lowers the pipeline number by 1 if it is greater than 0.
+     *
+     * @return The new pipeline number.
      */
-
     public static int lowerPipe(){
         if(pipeNumber > 0) {
             return pipeNumber--;
@@ -77,8 +83,10 @@ public class Limelight extends SubsystemBase {
             return pipeNumber;
         }
     }
-     /**
-     * @return vertical angle of offset from limelight crosshair to target
+    /**
+     * Returns the Ty (vertical offset from the crosshair to the target) value from the Limelight camera.
+     *
+     * @return The Ty(vertical offset from the crosshair to the target) value from the Limelight camera.
      */
 
     public double getTy() {
@@ -86,8 +94,9 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     *Takes ty as reported from above and finds distance of april tags
-     * @return distance robot is from april tag
+     * Calculates and returns the distance from the Limelight to the AprilTag target in inches.
+     *
+     * @return The distance from the Limelight to the AprilTag target in inches.
      */
 
     public double getDistanceFromAprilTagInches()  {
@@ -100,10 +109,10 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     * takes ty as reported from above and finds distance from low cone
-     * @return distance the robot is from the low cone
+     * Calculates and returns the distance from the Limelight to the low cone in inches.
+     *
+     * @return The distance from the Limelight to the low cone in inches.
      */
-
     public double getLowConeDistance() {
         double angle = Constants.Limelight.MOUNTING_ANGLE + getTy();
         if (angle < 1 || angle > 89)
@@ -114,8 +123,9 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     * takes ty from above and calculates distance from robot to high cone stand
-     * @return distance robot is from the high cone
+     * Calculates and returns the distance from the Limelight to the high cone in inches.
+     *
+     * @return The distance from the Limelight to the high cone in inches.
      */
     public double getHighConeDistance() {
         double angle = Constants.Limelight.MOUNTING_ANGLE + getTy();
@@ -128,9 +138,10 @@ public class Limelight extends SubsystemBase {
 
 
     /**
-     * Helper method to get an entry from the Limelight NetworkTable.
-     * @param key
-     * @return network table entry from network table
+     * Returns the network table entry for a given key in the Limelight table.
+     *
+     * @param key The key of the network table entry to retrieve.
+     * @return The network table entry for the given key in the Limelight table.
      */
 
     private NetworkTableEntry getValue(String key) {
@@ -141,37 +152,37 @@ public class Limelight extends SubsystemBase {
         return table.getTable("limelight").getEntry(key);
     }
 
-    /**
-     *
-     * @param mode
-     * what light mode the limelight is on
-     */
 
+    /**
+     * Sets the LED mode of the Limelight.
+     *
+     * @param mode the new LED mode to set
+     */
     public void setLedMode(LightMode mode) {
         getValue("ledMode").setNumber(mode.ordinal());
     }
 
     /**
+     * Sets the camera mode of the Limelight.
      *
-     * @param mode
-     * gets camera mode for the limelight
+     * @param mode the new camera mode to set
      */
-
     public void setCameraMode(CameraMode mode) {
         getValue("camMode").setNumber(mode.ordinal());
     }
 
     /**
+     * Sets the pipeline number of the Limelight.
      *
-     * pipeline the robot is currently on (is between 0 and 9)
      */
     public void setPipeline() {
         getValue("pipeline").setNumber(pipeNumber);
     }
 
-
     /**
-     * Displays April tag distance, Low cone distance, High Cone distance on SmartDashboard
+     * This method displays the April Tag Distance, Low Cone Distance, and High Cone Distance from the robot calculated from the getDistanceFromAprilTagInches,
+     * getLowConeDistance, and getHighConeDistance methods respectively. The setPipeline() calls the setPipeline method to check if the raise/lower pipeline method is called
+     * and if it is, then it will change the pipeline accordingly
      */
     @Override
     public void periodic() {

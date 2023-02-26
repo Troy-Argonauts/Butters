@@ -7,7 +7,7 @@ package org.troyargonauts;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.subsystems.Limelight;
-import org.troyargonauts.subsystems.PneumaticsSystem;
+
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,9 +35,9 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
-    static PneumaticsSystem pneumatics;
 
-    private static Limelight limelight;
+
+    public static Limelight limelight;
 
     private Pigeon2 pigeon;
 
@@ -50,12 +50,10 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
 
-        pneumatics = new PneumaticsSystem();
 
         limelight = Limelight.getInstance();
 
-        limelight.setLedMode(Limelight.LightMode.ON);
-        limelight.setCameraMode(Limelight.CameraMode.VISION);
+
 
         pigeon= new Pigeon2(11);
 
@@ -126,10 +124,5 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new PneumaticsSystem();
-        }
-        return pneumatics;
-    }
+
 }
