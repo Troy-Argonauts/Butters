@@ -31,7 +31,7 @@ public class LEDSystem extends SubsystemBase {
      * @author JJCgits, firearcher2012, ASH-will-WIN
      */
     public LEDSystem() {
-        candle = new CANdle(Constants.LEDs.kPort);
+        candle = new CANdle(Constants.LEDs.kCANdlePort);
         config = new CANdleConfiguration();
         config.stripType = CANdle.LEDStripType.RGB;
         candle.configAllSettings(config);
