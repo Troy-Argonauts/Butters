@@ -7,6 +7,7 @@ package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,12 +31,20 @@ public class RobotContainer
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
-        driver.getLBButton().whileTrue(
-            new InstantCommand(Robot.getLEDs()::purpleCube)
+        driver.getLBButton().toggleOnTrue(
+            new StartEndCommand(
+                Robot.getLEDs()::purpleCube, 
+                Robot.getLEDs()::ledOff, 
+                Robot.getLEDs()
+            )
         );
 
-        driver.getRBButton().whileTrue(
-            new InstantCommand(Robot.getLEDs()::yellowCone)
+        driver.getRBButton().toggleOnTrue(
+            new StartEndCommand(
+                Robot.getLEDs()::yellowCone, 
+                Robot.getLEDs()::ledOff, 
+                Robot.getLEDs()
+            )
         );
     }
     
