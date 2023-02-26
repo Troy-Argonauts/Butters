@@ -34,17 +34,17 @@ public class RobotContainer {
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
-        driver.getRBButton().whileTrue(
-            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.CLOSE))
-        ).whileFalse(
-            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP))
-        );
+        if (driver.getRightTrigger() > 0.5) {
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.CLOSE));
+        } else {
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP));
+        }
 
-        driver.getLBButton().whileTrue(
-            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.OPEN))
-        ).whileFalse(
-            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP))
-        );
+        if (driver.getLeftTrigger() > 0.5) {
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.OPEN));
+        } else {
+            new InstantCommand(() -> Intake.setSqueezeIntakeState(squeezeStates.STOP));
+        }
 
         driver.getBButton().whileTrue(
             new InstantCommand(() -> Intake.setRotateIntakeState(rotateStates.UP))
