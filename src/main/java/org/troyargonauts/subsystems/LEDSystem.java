@@ -67,11 +67,4 @@ public class LEDSystem extends SubsystemBase {
         candle.setLEDs(0, 0, 0);
     }
 
-    /**
-     * This method makes the LEDs red
-     */
-    public void losingState() {
-        candle.setLEDs(255, 0, 0);
-    }
-
 }
