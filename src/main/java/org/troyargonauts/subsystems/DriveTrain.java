@@ -24,7 +24,7 @@ public class DriveTrain extends SubsystemBase {
 
     private Pigeon2 pigeon;
 
-    private final PIDController drivePID, turnPID;
+    private final PIDController drivePID, turnPID, autoBalancePID;
 
     public double frontRightEncoderValue, middleRightEncoderValue, backRightEncoderValue, frontLeftEncoderValue, middleLeftEncoderValue, backLeftEncoderValue;
 
@@ -68,9 +68,11 @@ public class DriveTrain extends SubsystemBase {
 
         drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
         turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
+        autoBalancePID = new PIDController(Constants.DriveTrain.kBalanceP, Constants.DriveTrain.kBalanceI, Constants.DriveTrain.kBalanceP);
 
         drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance);
         turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg);
+        autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg);
 
         turnPID.enableContinuousInput(-180, 180);
     }
@@ -92,9 +94,11 @@ public class DriveTrain extends SubsystemBase {
 
         gyroValue = pigeon.getYaw();
 
+
         SmartDashboard.putNumber("Pigeon Yaw: " , pigeon.getYaw());
         SmartDashboard.putNumber("Pigeon Pitch: ", pigeon.getPitch());
         SmartDashboard.putNumber("Pigeon Roll: ", pigeon.getRoll());
+
 
     }
 
@@ -213,11 +217,11 @@ public class DriveTrain extends SubsystemBase {
      */
     public PIDCommand drivePID(double setpoint) {
         return new PIDCommand(
-                drivePID,
-                () -> getPosition(),
-                setpoint,
-                output -> cheesyDrive(output, 0, 1),
-                Robot.getDrivetrain()
+            drivePID,
+            () -> getPosition(),
+            setpoint,
+            output -> cheesyDrive(output, 0, 1),
+            Robot.getDrivetrain()
         );
     }
 
@@ -232,5 +236,21 @@ public class DriveTrain extends SubsystemBase {
 
 
 
+
+
+
+    /** 
+     * Uses PIDController to balance the robot on the charging station based on the angular offset determined by the gyro.
+     * @return PIDCommand that balances robot.
+     */
+    public PIDCommand autoBalance() {
+        return new PIDCommand(
+            autoBalancePID,
+            () -> pigeon.getPitch(),
+            0,
+            output -> cheesyDrive(output, 0, 0.2),
+            Robot.getDrivetrain()
+        );
+    }
 
 }

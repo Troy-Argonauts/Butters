@@ -30,8 +30,13 @@ public final class Constants {
         double kTurnI = 0;
         double kTurnD = 0;
 
+        double kBalanceP = 1;
+        double kBalanceI = 0;
+        double kBalanceD = 0;
+
         double kDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
+        double kBalanceToleranceDeg = 4;
 
         //Correction Values
         double RIGHT_CORRECTION = 0.0010;

@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 import org.troyargonauts.subsystems.*;
 
 /**
@@ -68,8 +70,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic()
     {
-        SmartDashboard.putNumber("Left Y", Robot.getRobotContainer().getDriver().getLeftJoystickY());
-        SmartDashboard.putNumber("Right X", Robot.getRobotContainer().getDriver().getRightJoystickX());
+        SmartDashboard.putNumber("Left Y", RobotContainer.getDriver().getLeftJoystickY());
+        SmartDashboard.putNumber("Right X", RobotContainer.getDriver().getRightJoystickX());
         CommandScheduler.getInstance().run();
     }
 
@@ -102,7 +104,9 @@ public class Robot extends TimedRobot {
     }
     
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        SmartDashboard.putBoolean("DPAD DOWN", new POVButton(RobotContainer.getDriver(), 180).getAsBoolean());
+    }
 
     @Override
     public void testInit()
