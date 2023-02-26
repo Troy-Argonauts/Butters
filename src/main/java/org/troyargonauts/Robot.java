@@ -5,6 +5,8 @@
 
 package org.troyargonauts;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
 import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,6 +33,11 @@ public class Robot extends TimedRobot {
 
     static PneumaticsSystem pneumatics;
 
+    static Pigeon2 pigeon;
+
+
+
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -43,6 +50,19 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(60));
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
+
+
+        pigeon.configFactoryDefault();
+        pigeon.clearStickyFaults();
+        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+        pigeonConfig.MountPosePitch = 0;
+        pigeonConfig.MountPoseRoll = 0;
+        pigeonConfig.MountPoseYaw = 0;
+        pigeon.configAllSettings(pigeonConfig);
+
+
+
+
     }
 
     @Override

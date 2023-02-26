@@ -1,6 +1,7 @@
 package org.troyargonauts.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
@@ -21,7 +22,7 @@ public class DriveTrain extends SubsystemBase {
 
     private final CANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
-    private final Pigeon2 pigeon;
+    private Pigeon2 pigeon;
 
     private final PIDController drivePID, turnPID;
 
@@ -30,7 +31,7 @@ public class DriveTrain extends SubsystemBase {
     public double gyroValue;
 
     /**
-     * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder convertion factors and instantiates PID controllers.
+     * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder conversion factors and instantiates PID controllers.
      * Motor controllers on the right side are reversed and set to follow other motor controllers.
      */
 
@@ -90,6 +91,10 @@ public class DriveTrain extends SubsystemBase {
         backLeftEncoderValue = backLeft.getEncoder().getPosition();
 
         gyroValue = pigeon.getYaw();
+
+        SmartDashboard.putNumber("Pigeon Yaw: " , pigeon.getYaw());
+        SmartDashboard.putNumber("Pigeon Pitch: ", pigeon.getPitch());
+        SmartDashboard.putNumber("Pigeon Roll: ", pigeon.getRoll());
 
     }
 
@@ -166,6 +171,9 @@ public class DriveTrain extends SubsystemBase {
         pigeon.setYaw(0);
     }
 
+
+
+
     
     /** 
      * Returns angles between -180 and 180 degrees from pigeon
@@ -221,4 +229,8 @@ public class DriveTrain extends SubsystemBase {
         resetEncoders();
         drivePID(0);
     }
+
+
+
+
 }
