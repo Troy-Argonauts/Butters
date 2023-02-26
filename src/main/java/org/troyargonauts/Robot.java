@@ -23,8 +23,6 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
 
-    static PneumaticsSystem pneumatics;
-
     private static Intake intake;
 
 
@@ -33,8 +31,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
-
-        pneumatics = new PneumaticsSystem();
 
         intake = new Intake();
     }
@@ -91,13 +87,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
-
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new PneumaticsSystem();
-        }
-        return pneumatics;
-    }
 
     public static Intake getIntake(){
         if(intake == null){
