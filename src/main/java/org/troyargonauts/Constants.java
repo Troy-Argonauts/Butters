@@ -17,6 +17,8 @@ public final class Constants {
         double PERIOD = 0.02;
 
         double kEncoderGearboxScale = 1;
+
+        double NERF = 0.3;
     }
 
     public interface Turret {
