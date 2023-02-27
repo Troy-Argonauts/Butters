@@ -5,11 +5,19 @@
 
 package org.troyargonauts;
 
-import org.troyargonauts.subsystems.PneumaticsSystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.troyargonauts.subsystems.Limelight;
+
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -18,12 +26,23 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
+/**
+ *
+ */
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
     
     private RobotContainer robotContainer;
 
-    static PneumaticsSystem pneumatics;
+
+
+    public static Limelight limelight;
+
+    private Pigeon2 pigeon;
+
+
+
 
     @Override
     public void robotInit() {
@@ -31,13 +50,30 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
 
-        pneumatics = new PneumaticsSystem();
+
+        limelight = Limelight.getInstance();
+
+
+        
+
+
+        pigeon.configFactoryDefault();
+        pigeon.clearStickyFaults();
+        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+        pigeonConfig.MountPosePitch = 0;
+        pigeonConfig.MountPoseRoll = 0;
+        pigeonConfig.MountPoseYaw = 0;
+        pigeon.configAllSettings(pigeonConfig);
     }
 
     @Override
     public void robotPeriodic()
     {
         CommandScheduler.getInstance().run();
+        SmartDashboard.putNumber("Limelight Distance", limelight.getTy());
+        SmartDashboard.putNumber("Pigeon yaw", pigeon.getYaw());
+        SmartDashboard.putNumber("Pigeon pitch", pigeon.getPitch());
+        SmartDashboard.putNumber("Pigeon roll", pigeon.getRoll());
     }
 
     @Override
@@ -87,10 +123,5 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new PneumaticsSystem();
-        }
-        return pneumatics;
-    }
+
 }
