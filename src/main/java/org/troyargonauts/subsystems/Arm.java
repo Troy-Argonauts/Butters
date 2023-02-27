@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
     /**
      * Enums are the states of the intake rollers (FORWARD, OFF, BACKWARD).
      */
-    public enum intakeState {
+    public enum IntakeState {
         FORWARD, OFF, BACKWARD
     }
 
@@ -61,7 +61,7 @@ public class Arm extends SubsystemBase {
      * Intake roller state is set here.
      * @param state desired state of intake rollers to a motor speed.
      */
-    public void setIntakeState(intakeState state) {
+    public void setIntakeState(IntakeState state) {
         switch(state) {
             case FORWARD:
                 manipulatorMotor.set(Constants.Arm.FORWARD_INTAKE_SPEED);
