@@ -54,8 +54,7 @@ public class Robot extends TimedRobot {
         limelight = Limelight.getInstance();
 
 
-
-        pigeon= new Pigeon2(11);
+        
 
 
         pigeon.configFactoryDefault();
