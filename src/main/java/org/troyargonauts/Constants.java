@@ -3,21 +3,26 @@ package org.troyargonauts;
 public final class Constants {
 
     public interface Arm {
-        public static final int ARM_MOTOR = 0;
-        public static final int ARM_INTAKE = 1;
+        int ARM_MOTOR = 0;
+        int ARM_INTAKE = 1;
 
-        public static final int TOP_ELBOW_ENCODER_LIMIT = 10;
-        public static final int LOWER_ELBOW_ENCODER_LIMIT = 10;
-        public static final int TOP_WRIST_ENCODER_LIMIT = 10;
-        public static final int LOWER_WRIST_ENCODER_LIMIT = 10;
+        double TOP_ELBOW_ENCODER_LIMIT = 10;
+        double LOWER_ELBOW_ENCODER_LIMIT = 10;
+        double TOP_WRIST_ENCODER_LIMIT = 10;
+        double LOWER_WRIST_ENCODER_LIMIT = 10;
 
-        public static final double FORWARD_INTAKE_SPEED = 0.25;
-        public static final double REVERSE_INTAKE_SPEED = -0.25;
+        double FORWARD_INTAKE_SPEED = 0.25;
+        double REVERSE_INTAKE_SPEED = -0.25;
         
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double PERIOD = 0.02;
+        double kWristP = 0;
+        double kWristI = 0;
+        double kWristD = 0;
+        double WRIST_PERIOD = 0.02;
+
+        double kElbowP = 0;
+        double kElbowI = 0;
+        double kElbowD = 0;
+        double ELBOW_PERIOD = 0.02;
     }
 
 }

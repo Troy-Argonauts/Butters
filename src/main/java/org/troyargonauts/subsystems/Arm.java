@@ -20,7 +20,7 @@ public class Arm extends SubsystemBase {
     private final CANSparkMax wristMotor;
     private final AbsoluteEncoder elbowEncoder;
     private final AbsoluteEncoder wristEncoder;
-    private final PIDController pid;
+    private final PIDController wristPID, elbowPID;
     private double elbowEncoderValue;
     private double wristEncoderValue;
 
@@ -39,7 +39,8 @@ public class Arm extends SubsystemBase {
         elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
         wristEncoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
-        pid = new PIDController(Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD, Constants.Arm.PERIOD);
+        wristPID = new PIDController(Constants.Arm.kWristP, Constants.Arm.kWristI, Constants.Arm.kWristD, Constants.Arm.WRIST_PERIOD);
+        elbowPID = new PIDController(Constants.Arm.kElbowP, Constants.Arm.kElbowI, Constants.Arm.kElbowD, Constants.Arm.ELBOW_PERIOD);
     }
     @Override
     public void periodic() {
@@ -124,7 +125,7 @@ public class Arm extends SubsystemBase {
     public PIDCommand elbowPid(double setpoint) {
         pid.setSetpoint(setpoint);
         return new PIDCommand(
-            pid,
+            elbowPID,
             this::getElbowPosition,
             setpoint,
             this::setElbowPower,
@@ -139,7 +140,7 @@ public class Arm extends SubsystemBase {
     public PIDCommand wristPid(double setpoint) {
         pid.setSetpoint(setpoint);
         return new PIDCommand(
-            pid,
+            wristPID,
             this::getWristPosition,
             setpoint,
             this::setWristPower,
