@@ -6,6 +6,8 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import org.troyargonauts.subsystems.Pneumatics;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer
 {
+    ArgoController driver = new ArgoController(0, 0.05);
     public RobotContainer()
     {
         // Configure the trigger bindings
@@ -25,6 +28,8 @@ public class RobotContainer
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+        driver.getRBButton().onTrue(new InstantCommand(() -> Robot.getPneumatics().setElevatorSolenoid(Pneumatics.State.OUT), Robot.getPneumatics()));
+        driver.getLBButton().onTrue(new InstantCommand(() -> Robot.getPneumatics().setElevatorSolenoid(Pneumatics.State.IN), Robot.getPneumatics()));
 
     }
     

@@ -25,15 +25,15 @@ public class Pneumatics extends SubsystemBase {
     public Pneumatics() {
 
         elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Elevator.kElevatorForwardChannel, Elevator.kElevatorReverseChannel);
-        elevatorState = DoubleSolenoid.Value.kForward;
+        setElevatorSolenoid(State.OUT);
     }
 
     /**
      * This enum displays the states that the pneumatics can go in
-     * The states that the pneumatics solenoid can go in are FORWARD and REVERSE
+     * The states that the pneumatics solenoid can go in are IN and OUT
      */
     public enum State {
-        FORWARD, REVERSE;
+        OUT, IN;
     }
 
     /**
@@ -42,10 +42,10 @@ public class Pneumatics extends SubsystemBase {
      */
     public void setElevatorSolenoid(State state) {
         switch (state) {
-            case REVERSE:
+            case IN:
                 elevatorState = DoubleSolenoid.Value.kReverse;
                 break;
-            case FORWARD:
+            case OUT:
                 elevatorState = DoubleSolenoid.Value.kForward;
                 break;
         }
