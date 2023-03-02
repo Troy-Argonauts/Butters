@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
 
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Drive PID", Robot.getArm().wristPid(60));
+        chooser.setDefaultOption("Drive PID", Robot.getArm().armPID(30));
     }
 
     @Override

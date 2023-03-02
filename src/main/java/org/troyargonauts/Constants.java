@@ -19,10 +19,12 @@ public final class Constants {
         double WRIST_D = 0;
         double WRIST_PERIOD = 0.02;
 
-        double ARM_P = 0.02;
+        double ARM_P = 0.4;
         double ARM_I = 0;
         double ARM_D = 0;
         double ARM_PERIOD = 0.02;
+
+        double ARM_GEAR_RATIO = 250;
     }
 
 }

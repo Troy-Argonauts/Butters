@@ -1,8 +1,5 @@
 package org.troyargonauts.subsystems;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -39,13 +36,16 @@ public class Arm extends SubsystemBase {
         elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
         wristEncoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
+        resetEncoders();
+
         wristPID = new PIDController(Constants.Arm.WRIST_P, Constants.Arm.WRIST_I, Constants.Arm.WRIST_D, Constants.Arm.WRIST_PERIOD);
         armPID = new PIDController(Constants.Arm.ARM_P, Constants.Arm.ARM_I, Constants.Arm.ARM_D, Constants.Arm.ARM_PERIOD);
+
     }
     @Override
     public void periodic() {
         wristEncoderValue = wristEncoder.getPosition();
-        elbowEncoderValue = elbowEncoder.getPosition();
+        elbowEncoderValue = elbowMotor.getEncoder().getPosition();
 
         SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
         SmartDashboard.putNumber("Arm Encoder", elbowEncoderValue);
@@ -81,12 +81,8 @@ public class Arm extends SubsystemBase {
      * @param speed sets elbow motor to desired speed given that it is within the encoder limits.
      */
     public void setArmPower(double speed) {
-        if ((getArmPosition() < Constants.Arm.TOP_ARM_ENCODER_LIMIT) && (getWristPosition() > Constants.Arm.LOWER_ARM_ENCODER_LIMIT)) {
-            elbowMotor.set(0);
-        }
-        else {
-            elbowMotor.set((speed * 0.3) + 0.08);
-        }
+        elbowMotor.set(speed * 0.5);
+        SmartDashboard.putNumber("Arm Speed", speed);
     }
 
     /**
@@ -94,12 +90,8 @@ public class Arm extends SubsystemBase {
      * @param speed sets wrist motor to desired speed given that it is within the encoder limits.
      */
     public void setWristPower(double speed) {
-        if ((getWristPosition() < Constants.Arm.TOP_WRIST_ENCODER_LIMIT) && (getWristPosition() > Constants.Arm.LOWER_WRIST_ENCODER_LIMIT)) {
-            wristMotor.set(0);
-        }
-        else {
-            wristMotor.set((speed * 0.3) + 0.08);
-        }
+            wristMotor.set((speed * 0.2));
+            SmartDashboard.putNumber("Wrist Speed", speed);
     }
 
     /**
@@ -116,6 +108,10 @@ public class Arm extends SubsystemBase {
      */
     public double getWristPosition() {
         return wristEncoderValue;
+    }
+
+    public void resetEncoders() {
+        elbowMotor.getEncoder().setPosition(0);
     }
 
     /**
