@@ -2,8 +2,8 @@ package org.troyargonauts;
 
 public final class Constants {
     public interface Elevator {
-        int kElevatorForwardChannel = 0;
-        int kElevatorReverseChannel = 1;
+        public static final int FORWARD_CHANNEL = 0;
+        public static final int REVERSE_CHANNEL = 1;
     }
 
 }

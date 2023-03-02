@@ -23,9 +23,8 @@ public class Pneumatics extends SubsystemBase {
      */
 
     public Pneumatics() {
-
-        elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Elevator.kElevatorForwardChannel, Elevator.kElevatorReverseChannel);
-        setElevatorSolenoid(State.IN);
+        elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Elevator.FORWARD_CHANNEL, Elevator.REVERSE_CHANNEL);
+        setElevatorSolenoid(State.OUT);
     }
 
     /**
