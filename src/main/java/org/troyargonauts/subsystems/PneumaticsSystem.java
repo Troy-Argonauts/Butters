@@ -13,7 +13,7 @@ public class PneumaticsSystem extends SubsystemBase {
 
     public PneumaticsSystem() {
         manipulatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Manipulator.kForwardChannel, Manipulator.kReverseChannel);
-        manipulatorState = DoubleSolenoid.Value.kForward;
+        manipulatorState = DoubleSolenoid.Value.kReverse;
         updateManipulatorState();
     }
 

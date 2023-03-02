@@ -4,12 +4,12 @@ public final class Constants {
 
     public interface DriveConstants {
         //CAN IDs
-        int FRONT_RIGHT = 2;
-        int MIDDLE_RIGHT = 3;
-        int BACK_RIGHT = 4;
-        int FRONT_LEFT = 5;
-        int MIDDLE_LEFT = 6;
-        int BACK_LEFT = 7;
+        int FRONT_RIGHT = 5;
+        int MIDDLE_RIGHT = 6;
+        int BACK_RIGHT = 7;
+        int FRONT_LEFT = 2;
+        int MIDDLE_LEFT = 3;
+        int BACK_LEFT = 4;
 
         int PIGEON = 6;
 
@@ -22,9 +22,9 @@ public final class Constants {
         double GEARBOX_SCALE = 8.54;
 
         //PID Tuning Values
-        double DRIVE_P = 0.015;
-        double DRIVE_I = 0.0005;
-        double DRIVE_D = 0;
+        double DRIVE_P = 0.08;
+        double DRIVE_I = 0;
+        double DRIVE_D = 0.0015;
         
         double TURN_P = 1;
         double TURN_I = 0;

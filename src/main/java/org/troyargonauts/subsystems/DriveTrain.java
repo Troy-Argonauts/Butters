@@ -66,6 +66,8 @@ public class DriveTrain extends SubsystemBase {
         turnPID.setTolerance(DriveConstants.TURN_TOLERANCE);
 
         turnPID.enableContinuousInput(-180, 180);
+
+        resetEncoders();
     }
 
     @Override
@@ -95,7 +97,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void tankDrive(double left, double right, double nerf) {
-        frontRight.set(right * nerf);
+        frontRight.set((right + 0.001) * nerf);
         frontLeft.set(left * nerf);
     }
 
@@ -177,7 +179,7 @@ public class DriveTrain extends SubsystemBase {
                 drivePID,
                 this::getPosition,
                 setpoint,
-                output -> cheesyDrive(output, 0, 1),
+                output -> tankDrive(output, output, 0.1),
                 Robot.getDrivetrain()
         );
     }
