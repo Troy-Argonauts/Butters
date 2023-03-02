@@ -33,8 +33,8 @@ public class RobotContainer
     {
         Robot.getArm().setDefaultCommand(
                 new RunCommand(() -> {
-                    Robot.getArm().setWristPower(driver.getRightJoystickY());
-                    Robot.getArm().setArmPower(driver.getLeftJoystickY());
+                    Robot.getArm().wristTeleOp(driver.getRightJoystickY());
+                    Robot.getArm().armTeleOp(driver.getLeftJoystickY());
                 }, Robot.getArm())
         );
 
