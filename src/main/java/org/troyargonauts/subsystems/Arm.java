@@ -95,7 +95,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void armTeleOp(double speed) {
-        armSetpoint += speed;
+        armSetpoint += (speed * 0.5);
     }
 
     /**
