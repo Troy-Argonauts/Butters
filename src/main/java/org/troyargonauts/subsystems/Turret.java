@@ -75,10 +75,10 @@ public class Turret extends SubsystemBase {
         encoderPosition = turretMotor.getEncoder().getPosition();
 
         if (!leftLimitSwitch.get()) {
-            resetEncoders();
+            turretMotor.getEncoder().setPosition(36);
         }
 
-        setPower(pid.calculate(encoderPosition, turretSetpoint));
+//        setPower(pid.calculate(encoderPosition, turretSetpoint));
 
         SmartDashboard.putNumber("Position", encoderPosition);
     }

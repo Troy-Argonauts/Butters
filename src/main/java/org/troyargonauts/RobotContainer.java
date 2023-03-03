@@ -57,6 +57,49 @@ public class RobotContainer {
                         new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
                 .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
 
+        //Cone - Human Player
+        operator.getAButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getArm().setArmSetpoint(5.5)).alongWith(
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-25))
+                )
+        );
+
+        //Cube - Human Player
+        operator.getBButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getArm().setArmSetpoint(13)).alongWith(
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-32))
+                )
+        );
+
+        //Home
+        operator.getXButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getArm().setArmSetpoint(-5)).alongWith(
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(0))
+                )
+        );
+
+        //Cone Score
+        operator.getYButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getArm().setArmSetpoint(39)).alongWith(
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-21))
+                )
+        );
+
+        //Something
+//        operator.getSTARTButton().toggleOnTrue(
+//                new InstantCommand(() -> Robot.getArm().setArmSetpoint(27.5)).alongWith(
+//                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-39))
+//                )
+//        );
+
+        //Floor Pickup
+        operator.getSTARTButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getArm().setArmSetpoint(75)).alongWith(
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-36))
+                )
+        );
+
+
 //                Robot.getElevator().setDefaultCommand(
 //                        new RunCommand(() -> {
 //                            Robot.getElevator().setPower(operator.getLeftJoystickY());
@@ -65,7 +108,8 @@ public class RobotContainer {
 
 //        Robot.getTurret().setDefaultCommand(
 //            new RunCommand(() -> {
-//                Robot.getTurret().turretManual(controller.getRightJoystickX());
+//                Robot.getTurret().turretManual(-operator.getLeftTrigger());
+//                Robot.getTurret().turretManual(operator.getRightTrigger());
 //            }, Robot.getTurret())
 //        );
 

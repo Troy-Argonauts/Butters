@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
         wristMotor = new LazyCANSparkMax(Constants.Arm.WRIST, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         armMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        manipulatorMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        manipulatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         wristMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
 //        elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
@@ -55,6 +55,10 @@ public class Arm extends SubsystemBase {
 
         setWristPower(wristPID.calculate(wristEncoderValue, wristSetpoint));
         setArmPower(armPID.calculate(armEncoderValue, armSetpoint));
+
+        SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
+        SmartDashboard.putNumber("Arm Encoder", armEncoderValue);
+
     }
 
     /**
@@ -92,7 +96,11 @@ public class Arm extends SubsystemBase {
     }
 
     public void armTeleOp(double speed) {
-        armSetpoint += (speed * 0.5);
+        armSetpoint += (speed * 0.6);
+    }
+
+    public void setArmSetpoint(double setpoint) {
+        armSetpoint = setpoint;
     }
 
     /**
@@ -105,7 +113,11 @@ public class Arm extends SubsystemBase {
     }
 
     public void wristTeleOp(double speed) {
-        wristSetpoint += speed;
+        wristSetpoint += speed * 1.1;
+    }
+
+    public void setWristSetpoint(double setpoint) {
+        wristSetpoint = setpoint;
     }
 
     /**
