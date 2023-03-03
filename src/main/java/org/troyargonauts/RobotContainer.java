@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.subsystems.Arm;
 
 import java.awt.*;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -23,14 +23,28 @@ public class RobotContainer
     ArgoController driver = new ArgoController(0, 0.05);
     public RobotContainer()
     {
+public class RobotContainer {
+
+    public static ArgoController driver;
+
+    public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
+        driver = new ArgoController(0, 0.1);
     }
     
     
     /** Use this method to define your trigger->command mappings. */
     private void configureBindings()
     {
+       Robot.getDrivetrain().setDefaultCommand(
+            new RunCommand(
+                () -> {
+                    Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
+                }, Robot.getDrivetrain()
+            )
+        );
+      
         Robot.getArm().setDefaultCommand(
                 new RunCommand(() -> {
                     Robot.getArm().wristTeleOp(driver.getRightJoystickY());
@@ -46,11 +60,7 @@ public class RobotContainer
 
         driver.getRBButton().onTrue(
                 new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
-                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
-    }
-
-
-    
+                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));\
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -60,5 +70,9 @@ public class RobotContainer
     {
         // TODO: Implement properly
         return null;
+    }
+
+    public static ArgoController getDriver() {
+        return driver;
     }
 }
