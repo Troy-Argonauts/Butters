@@ -5,15 +5,17 @@
 
 package org.troyargonauts;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.troyargonauts.subsystems.*;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2Configuration;
-import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import org.troyargonauts.subsystems.*;
@@ -34,17 +36,23 @@ public class Robot extends TimedRobot {
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
     static Pigeon2 pigeon;
-
-
-
+    private static Arm arm;
+    private final SendableChooser<Command> chooser = new SendableChooser<>();
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        // autonomous chooser on the dashboard.
+        // autonomous chooser on the dashboard
+
+        arm = new Arm();
         driveTrain = new DriveTrain();
         robotContainer = new RobotContainer();
 
+        // autonomous chooser on the dashboard.
+        SmartDashboard.putData("Autonomous modes", chooser);
+        chooser.setDefaultOption("Wrist PID", Robot.getArm().wristPid(0));
+        chooser.setDefaultOption("Arm PID", Robot.getArm().armPID(-30));
+      
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(60));
@@ -58,10 +66,6 @@ public class Robot extends TimedRobot {
         pigeonConfig.MountPoseRoll = 0;
         pigeonConfig.MountPoseYaw = 0;
         pigeon.configAllSettings(pigeonConfig);
-
-
-
-
     }
 
     @Override
@@ -121,6 +125,11 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
+    public static Arm getArm() {
+        if (arm == null) {
+            arm = new Arm();
+        }
+        return arm;
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class

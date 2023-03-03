@@ -6,6 +6,11 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import org.troyargonauts.subsystems.Arm;
+
+import java.awt.*;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -13,6 +18,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+public class RobotContainer
+{
+    ArgoController driver = new ArgoController(0, 0.05);
+    public RobotContainer()
+    {
 public class RobotContainer {
 
     public static ArgoController driver;
@@ -25,17 +35,32 @@ public class RobotContainer {
     
     
     /** Use this method to define your trigger->command mappings. */
-    private void configureBindings() {
-        Robot.getDrivetrain().setDefaultCommand(
+    private void configureBindings()
+    {
+       Robot.getDrivetrain().setDefaultCommand(
             new RunCommand(
                 () -> {
                     Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
                 }, Robot.getDrivetrain()
             )
         );
-    }
-    
-    
+      
+        Robot.getArm().setDefaultCommand(
+                new RunCommand(() -> {
+                    Robot.getArm().wristTeleOp(driver.getRightJoystickY());
+                    Robot.getArm().armTeleOp(driver.getLeftJoystickY());
+                }, Robot.getArm())
+        );
+
+
+
+        driver.getLBButton().onTrue(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
+                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
+
+        driver.getRBButton().onTrue(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
+                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));\
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

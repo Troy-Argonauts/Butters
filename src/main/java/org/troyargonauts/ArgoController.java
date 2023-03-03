@@ -86,6 +86,9 @@ public class ArgoController extends Joystick {
     }
 
     public double getRightJoystickY() {
+        if (Math.abs(getRawAxis(5)) < controllerDrift) {
+            return 0;
+        }
         return getRawAxis(5);
     }
 
