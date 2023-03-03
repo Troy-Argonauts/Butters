@@ -79,12 +79,6 @@ public class DriveTrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Left Encoder", getLeftPosition());
-        SmartDashboard.putNumber("Right Encoder", getRightPosition());
-        SmartDashboard.putNumber("Position", getPosition());
-
-        SmartDashboard.putNumber("Angle", getAngle());
-
         frontRightEncoderValue = frontRight.getEncoder().getPosition();
         middleRightEncoderValue = middleRight.getEncoder().getPosition();
         backRightEncoderValue = backRight.getEncoder().getPosition();
@@ -92,10 +86,6 @@ public class DriveTrain extends SubsystemBase {
         middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
         backLeftEncoderValue = backLeft.getEncoder().getPosition();
         gyroValue = pigeon.getYaw();
-
-        SmartDashboard.putNumber("Pigeon Yaw: " , pigeon.getYaw());
-        SmartDashboard.putNumber("Pigeon Pitch: ", pigeon.getPitch());
-        SmartDashboard.putNumber("Pigeon Roll: ", pigeon.getRoll());
     }
 
 

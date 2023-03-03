@@ -55,11 +55,6 @@ public class Arm extends SubsystemBase {
 
         setWristPower(wristPID.calculate(wristEncoderValue, wristSetpoint));
         setArmPower(armPID.calculate(armEncoderValue, armSetpoint));
-
-        SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
-        SmartDashboard.putNumber("Arm Encoder", armEncoderValue);
-        SmartDashboard.putBoolean("Wrist Finished", wristPID.atSetpoint());
-        SmartDashboard.putBoolean("Arm Finished", armPID.atSetpoint());
     }
 
     /**

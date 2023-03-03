@@ -1,5 +1,6 @@
 package org.troyargonauts.subsystems;
 
+import org.troyargonauts.Constants;
 import org.troyargonauts.Constants.*;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -23,7 +24,7 @@ public class Pneumatics extends SubsystemBase {
      */
 
     public Pneumatics() {
-        elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Elevator.FORWARD_CHANNEL, Elevator.REVERSE_CHANNEL);
+        elevatorSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Elevator.FORWARD_CHANNEL, Constants.Elevator.REVERSE_CHANNEL);
         setElevatorSolenoid(State.IN);
     }
 

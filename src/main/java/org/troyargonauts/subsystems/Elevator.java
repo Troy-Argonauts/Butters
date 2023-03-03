@@ -57,11 +57,6 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         rightMotorPosition = rightMotor.getEncoder().getPosition();
         leftMotorPosition = leftMotor.getEncoder().getPosition();
-        SmartDashboard.putNumber("Right Encoder", rightMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Left Encoder", leftMotor.getEncoder().getPosition());
-
-        SmartDashboard.putNumber("Left Draw", leftMotor.getOutputCurrent());
-        SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
     }
 
     /**

@@ -81,22 +81,6 @@ public class Turret extends SubsystemBase {
         setPower(pid.calculate(encoderPosition, turretSetpoint));
 
         SmartDashboard.putNumber("Position", encoderPosition);
-        SmartDashboard.putNumber("Motor Rotations", turretMotor.getEncoder().getPosition());
-        SmartDashboard.putBoolean("Turret Finished", pid.atSetpoint());
-        SmartDashboard.putNumber("Velocity", turretMotor.getAppliedOutput());
-        SmartDashboard.putBoolean("Right Limit Switch", !rightLimitSwitch.get());
-        SmartDashboard.putBoolean("Left Limit Switch", !leftLimitSwitch.get());
-
-        try {
-            Field m_haveMeasurement = pid.getClass().getField("m_haveMeasurement");
-            Field m_haveSetpoint = pid.getClass().getField("m_haveSetpoint");
-            m_haveSetpoint.setAccessible(true);
-            m_haveMeasurement.setAccessible(true);
-            SmartDashboard.putBoolean("setpoint", m_haveSetpoint.getBoolean(pid));
-            SmartDashboard.putBoolean("measurement", m_haveMeasurement.getBoolean(pid));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 

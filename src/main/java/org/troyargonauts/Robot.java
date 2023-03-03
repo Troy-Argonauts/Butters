@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
       
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(60));
+        chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(-60));
         chooser.setDefaultOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
