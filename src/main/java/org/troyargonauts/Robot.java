@@ -30,14 +30,12 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     
     private static RobotContainer robotContainer;
-
-    static DriveTrain driveTrain;
-
-    private final SendableChooser<Command> chooser = new SendableChooser<>();
-
-    static Pigeon2 pigeon;
+    private static DriveTrain driveTrain;
     private static Arm arm;
+
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+
+
 
     @Override
     public void robotInit() {
@@ -56,16 +54,17 @@ public class Robot extends TimedRobot {
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(60));
+        chooser.setDefaultOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
 
-        pigeon.configFactoryDefault();
-        pigeon.clearStickyFaults();
-        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
-        pigeonConfig.MountPosePitch = 0;
-        pigeonConfig.MountPoseRoll = 0;
-        pigeonConfig.MountPoseYaw = 0;
-        pigeon.configAllSettings(pigeonConfig);
+//        pigeon.configFactoryDefault();
+//        pigeon.clearStickyFaults();
+//        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+//        pigeonConfig.MountPosePitch = 0;
+//        pigeonConfig.MountPoseRoll = 0;
+//        pigeonConfig.MountPoseYaw = 0;
+//        pigeon.configAllSettings(pigeonConfig);
     }
 
     @Override
@@ -106,7 +105,6 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-        SmartDashboard.putBoolean("DPAD DOWN", new POVButton(RobotContainer.getDriver(), 180).getAsBoolean());
     }
 
     @Override
@@ -130,6 +128,7 @@ public class Robot extends TimedRobot {
             arm = new Arm();
         }
         return arm;
+    }
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class

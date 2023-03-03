@@ -37,6 +37,7 @@ public class Arm extends SubsystemBase {
 //        elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 //        wristEncoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
+        resetEncoders();
         wristPID = new PIDController(Constants.Arm.WRIST_P, Constants.Arm.WRIST_I, Constants.Arm.WRIST_D, Constants.Arm.WRIST_PERIOD);
         wristPID.setTolerance(Constants.Arm.WRIST_TOLERANCE);
         wristSetpoint = Constants.Arm.WRIST_DEFAULT;

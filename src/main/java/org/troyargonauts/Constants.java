@@ -12,22 +12,23 @@ public final class Constants {
 
         double FORWARD_INTAKE_SPEED = 0.75;
         double REVERSE_INTAKE_SPEED = -0.75;
-        
+
         double WRIST_P = 0.142;
         double WRIST_I = 0.2;
         double WRIST_D = 0;
         double WRIST_PERIOD = 0.02;
         double WRIST_TOLERANCE = 0.1;
-        double WRIST_DEFAULT = 3.26;
+        double WRIST_DEFAULT = 0.1;
 
         double ARM_P = 0.1;
         double ARM_I = 0.03;
         double ARM_D = 0;
         double ARM_PERIOD = 0.02;
         double ARM_TOLERANCE = 0.1;
-        double ARM_DEFAULT = -66;
+        double ARM_DEFAULT = -0.1;
 
         double ARM_GEAR_RATIO = 250;
+    }
   
     public interface DriveTrain {
         //CAN IDs
@@ -38,7 +39,7 @@ public final class Constants {
         int MIDDLE_LEFT = 6;
         int BACK_LEFT = 7;
 
-        int PIGEON = 6;
+        int PIGEON = 25;
 
         //Values in Inches
         double WHEEL_DIAMETER = 6;

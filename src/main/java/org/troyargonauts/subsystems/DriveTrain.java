@@ -90,15 +90,11 @@ public class DriveTrain extends SubsystemBase {
         frontLeftEncoderValue = frontLeft.getEncoder().getPosition();
         middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
         backLeftEncoderValue = backLeft.getEncoder().getPosition();
-
         gyroValue = pigeon.getYaw();
-
 
         SmartDashboard.putNumber("Pigeon Yaw: " , pigeon.getYaw());
         SmartDashboard.putNumber("Pigeon Pitch: ", pigeon.getPitch());
         SmartDashboard.putNumber("Pigeon Roll: ", pigeon.getRoll());
-
-
     }
 
 
