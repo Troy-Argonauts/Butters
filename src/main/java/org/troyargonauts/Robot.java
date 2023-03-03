@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        autonomousCommand = Robot.getTurret().turretPID(-38);
         if (autonomousCommand != null)
         {
             autonomousCommand.schedule();

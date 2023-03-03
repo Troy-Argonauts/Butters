@@ -43,8 +43,8 @@ public class Elevator extends SubsystemBase {
         leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
         rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
 
-        topLimitSwitch = new DigitalInput(0);
-        bottomDigitalInput = new DigitalInput(1);
+        topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_PORT);
+        bottomDigitalInput = new DigitalInput(Constants.Elevator.BOTTOM_PORT);
 
         pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD, Constants.Elevator.PERIOD);
     }
