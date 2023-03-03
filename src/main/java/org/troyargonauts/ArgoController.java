@@ -121,6 +121,7 @@ public class ArgoController extends Joystick {
         LEFT(90),
         RIGHT(270);
         private final int value;
+
         Direction(int value) {
             this.value = value;
         }
@@ -130,4 +131,3 @@ public class ArgoController extends Joystick {
         }
     }
 }
-

@@ -84,6 +84,8 @@ public final class Constants {
         double NERF = 0.3;
         int BOTTOM_PORT = 0;
         int TOP_PORT = 1;
+        int FORWARD_CHANNEL = 0;
+        int REVERSE_CHANNEL = 1;
     }
 
     public interface Turret {

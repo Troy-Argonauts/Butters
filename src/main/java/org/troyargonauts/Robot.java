@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.subsystems.*;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.Pigeon2Configuration;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,16 +43,16 @@ public class Robot extends TimedRobot {
     private static Elevator elevator;
 
     private static Turret turret;
+    static Pneumatics pneumatics;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        // autonomous chooser on the dashboard
-
         arm = new Arm();
         driveTrain = new DriveTrain();
         elevator = new Elevator();
         turret = new Turret();
+        pneumatics = new Pneumatics();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
@@ -138,6 +137,13 @@ public class Robot extends TimedRobot {
             arm = new Arm();
         }
         return arm;
+    }
+
+        public static Pneumatics getPneumatics() {
+        if (pneumatics == null) {
+            pneumatics = new Pneumatics();
+        }
+        return pneumatics;
     }
     /** 
      * Returns driveTrain object
