@@ -19,6 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import org.troyargonauts.subsystems.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.troyargonauts.subsystems.Elevator;
+import org.troyargonauts.subsystems.Turret;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -28,7 +34,6 @@ import org.troyargonauts.subsystems.*;
  */
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
-    
     private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
     private static Arm arm;
@@ -36,6 +41,9 @@ public class Robot extends TimedRobot {
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
 
+    private static Elevator elevator;
+
+    private static Turret turret;
 
     @Override
     public void robotInit() {
@@ -44,6 +52,8 @@ public class Robot extends TimedRobot {
 
         arm = new Arm();
         driveTrain = new DriveTrain();
+        elevator = new Elevator();
+        turret = new Turret();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
@@ -145,5 +155,18 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
+    }
+
+    public static Elevator getElevator() {
+        if (elevator == null) elevator = new Elevator();
+        return elevator;
+
+    }
+    public static Turret getTurret() {
+        if (turret == null){
+            turret = new Turret();
+        }
+
+        return turret;
     }
 }

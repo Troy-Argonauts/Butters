@@ -38,7 +38,6 @@ public final class Constants {
         int FRONT_LEFT = 5;
         int MIDDLE_LEFT = 6;
         int BACK_LEFT = 7;
-
         int PIGEON = 25;
 
         //Values in Inches
@@ -53,7 +52,7 @@ public final class Constants {
         double kDriveP = 1;
         double kDriveI = 0;
         double kDriveD = 0;
-        
+
         double kTurnP = 1;
         double kTurnI = 0;
         double kTurnD = 0;
@@ -68,5 +67,38 @@ public final class Constants {
 
         //Correction Values
         double RIGHT_CORRECTION = 0.0010;
+    }
+
+    public interface Elevator {
+        int LEFT = 11;
+        int RIGHT = 12;
+        
+        double kP = 1;
+        double kI = 0;
+        double kD = 0;
+
+        double PERIOD = 0.02;
+
+        double kEncoderGearboxScale = 1;
+
+        double NERF = 0.3;
+        int BOTTOM_PORT = 0;
+        int TOP_PORT = 1;
+    }
+
+    public interface Turret {
+        double kP = 0.049;
+        double kI = 0.0008;
+        double kD = 0.00005;
+        double TOLERANCE = 0.75;
+        double DEFAULT_SETPOINT = -36;
+
+        double PERIOD = 0.02;
+
+        int PORT = 10;
+
+        double NERF = 0.5;
+        int LEFT_PORT = 2;
+        int RIGHT_PORT = 3;
     }
 }

@@ -20,58 +20,83 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
 
-        public static ArgoController driver;
-        public static ArgoController operator;
+    public static ArgoController driver;
+    public static ArgoController operator;
 
-        public RobotContainer() {
-            // Configure the trigger bindings
-            driver = new ArgoController(0, 0.1);
-            operator = new ArgoController(1, 0.1);
-            configureBindings();
-        }
-            /**
-             * Use this method to define your trigger->command mappings.
-             */
-            private void configureBindings() {
-                Robot.getDrivetrain().setDefaultCommand(
-                        new RunCommand(
-                                () -> {
-                                    Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
-                                }, Robot.getDrivetrain()
-                        )
-                );
+    public RobotContainer() {
+        // Configure the trigger bindings
+        driver = new ArgoController(0, 0.1);
+        operator = new ArgoController(1, 0.1);
+        configureBindings();
+    }
 
-                Robot.getArm().setDefaultCommand(
-                        new RunCommand(() -> {
-                            Robot.getArm().wristTeleOp(operator.getRightJoystickY());
-                            Robot.getArm().armTeleOp(operator.getLeftJoystickY());
-                        }, Robot.getArm())
-                );
+    /**
+     * Use this method to define your trigger->command mappings.
+     */
+    private void configureBindings() {
+        Robot.getDrivetrain().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
+                        }, Robot.getDrivetrain()
+                )
+        );
 
-                operator.getLBButton().onTrue(
-                                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
-                        .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
+        Robot.getArm().setDefaultCommand(
+                new RunCommand(() -> {
+                    Robot.getArm().wristTeleOp(operator.getRightJoystickY());
+                    Robot.getArm().armTeleOp(operator.getLeftJoystickY());
+                }, Robot.getArm())
+        );
 
-                operator.getRBButton().onTrue(
-                                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
-                        .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
-            }
+        operator.getLBButton().onTrue(
+                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
+                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
 
-            /**
-             * Use this to pass the autonomous command to the main {@link Robot} class.
-             *
-             * @return the command to run in autonomous
-             */
-            public Command getAutonomousCommand() {
-                // TODO: Implement properly
-                return null;
-            }
+        operator.getRBButton().onTrue(
+                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
+                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
 
-            public static ArgoController getDriver() {
-                return driver;
-            }
+//                Robot.getElevator().setDefaultCommand(
+//                        new RunCommand(() -> {
+//                            Robot.getElevator().setPower(operator.getLeftJoystickY());
+//                        }, Robot.getElevator())
+//                );
 
-            public static ArgoController getOperator() {
-                return operator;
-        }
+//        Robot.getTurret().setDefaultCommand(
+//            new RunCommand(() -> {
+//                Robot.getTurret().turretManual(controller.getRightJoystickX());
+//            }, Robot.getTurret())
+//        );
+
+//        controller.getDirection(ArgoController.Direction.UP).onTrue(
+//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
+//
+//        controller.getDirection(ArgoController.Direction.RIGHT).onTrue(
+//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
+//
+//        controller.getDirection(ArgoController.Direction.DOWN).onTrue(
+//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
+//
+//        controller.getDirection(ArgoController.Direction.LEFT).onTrue(
+//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // TODO: Implement properly
+        return null;
+    }
+
+    public static ArgoController getDriver() {
+        return driver;
+    }
+
+    public static ArgoController getOperator() {
+        return operator;
+    }
 }
