@@ -92,7 +92,7 @@ public class RobotContainer {
         //Floor Pickup
         operator.getSTARTButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(75)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-28))
+                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
                 )
         );
 

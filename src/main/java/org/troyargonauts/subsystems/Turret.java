@@ -3,6 +3,7 @@ package org.troyargonauts.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
@@ -19,7 +20,7 @@ import org.troyargonauts.Robot;
 public class Turret extends SubsystemBase {
     private final LazyCANSparkMax turretMotor;
     public double encoderPosition, turretSetpoint;
-    public final InvertedDigitalInput rightLimitSwitch, leftLimitSwitch;
+    public final DigitalInput rightLimitSwitch, leftLimitSwitch;
     private PIDController pid;
 
 
@@ -29,8 +30,8 @@ public class Turret extends SubsystemBase {
     public Turret() {
         turretMotor = new LazyCANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         turretMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        rightLimitSwitch = new InvertedDigitalInput(Constants.Turret.RIGHT_PORT);
-        leftLimitSwitch = new InvertedDigitalInput(Constants.Turret.LEFT_PORT);
+        rightLimitSwitch = new DigitalInput(Constants.Turret.RIGHT_PORT);
+        leftLimitSwitch = new DigitalInput(Constants.Turret.LEFT_PORT);
 
         pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
         pid.setTolerance(Constants.Turret.TOLERANCE);
