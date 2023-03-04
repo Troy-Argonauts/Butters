@@ -27,7 +27,7 @@ public final class Constants {
         double ARM_TOLERANCE = 0.1;
         double ARM_DEFAULT = -0.1;
 
-        double ARM_GEAR_RATIO = 250;
+        int CURRENT_LIMIT = 30;
     }
   
     public interface DriveTrain {

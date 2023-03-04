@@ -1,11 +1,13 @@
 package org.troyargonauts.subsystems;
-import com.revrobotics.*;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
+import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
 
 /**
@@ -13,8 +15,8 @@ import org.troyargonauts.Robot;
  * @author TeoElRey, sgowda260, SolidityContract, ASH-will-WIN
  */
 public class Elevator extends SubsystemBase {
-    private final CANSparkMax leftMotor;
-    private final CANSparkMax rightMotor;
+    private final LazyCANSparkMax leftMotor;
+    private final LazyCANSparkMax rightMotor;
     private PIDController pid;
     private DigitalInput topLimitSwitch;
     private DigitalInput bottomDigitalInput;
@@ -31,8 +33,8 @@ public class Elevator extends SubsystemBase {
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
-        leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMotor = new CANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor = new LazyCANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMotor = new LazyCANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(false);

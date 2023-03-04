@@ -1,16 +1,14 @@
 package org.troyargonauts.subsystems;
 
-import com.revrobotics.*;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
+import org.troyargonauts.InvertedDigitalInput;
+import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
-
-import java.lang.reflect.Field;
 
 /**
  * Class representing the Turret. Includes PID control and limit switches.
@@ -19,9 +17,9 @@ import java.lang.reflect.Field;
  */
 
 public class Turret extends SubsystemBase {
-    private final CANSparkMax turretMotor;
+    private final LazyCANSparkMax turretMotor;
     public double encoderPosition, turretSetpoint;
-    public final DigitalInput rightLimitSwitch, leftLimitSwitch;
+    public final InvertedDigitalInput rightLimitSwitch, leftLimitSwitch;
     private PIDController pid;
 
 
@@ -29,10 +27,10 @@ public class Turret extends SubsystemBase {
      * Constructor for Turret Class. Instantiates motor, magnetic limit switches, PID Controller, and encoder.
      */
     public Turret() {
-        turretMotor = new CANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        turretMotor = new LazyCANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         turretMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        rightLimitSwitch = new DigitalInput(Constants.Turret.RIGHT_PORT);
-        leftLimitSwitch = new DigitalInput(Constants.Turret.LEFT_PORT);
+        rightLimitSwitch = new InvertedDigitalInput(Constants.Turret.RIGHT_PORT);
+        leftLimitSwitch = new InvertedDigitalInput(Constants.Turret.LEFT_PORT);
 
         pid = new PIDController(Constants.Turret.kP, Constants.Turret.kI ,Constants.Turret.kD, Constants.Turret.PERIOD);
         pid.setTolerance(Constants.Turret.TOLERANCE);
@@ -79,8 +77,6 @@ public class Turret extends SubsystemBase {
         }
 
 //        setPower(pid.calculate(encoderPosition, turretSetpoint));
-
-        SmartDashboard.putNumber("Position", encoderPosition);
     }
 
 
@@ -94,7 +90,7 @@ public class Turret extends SubsystemBase {
             pid,
             () -> encoderPosition,
             setpoint,
-            output -> setPower(output),
+                this::setPower,
             Robot.getTurret()
         );
     }

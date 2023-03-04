@@ -1,11 +1,9 @@
 package org.troyargonauts.subsystems;
 
-import org.troyargonauts.Constants;
-import org.troyargonauts.Constants.*;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.Constants;
 
 /**
  * Pneumatics are used on the elevator to lift and drop the elevator

@@ -1,14 +1,10 @@
 package org.troyargonauts.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import org.troyargonauts.Constants;
 import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
