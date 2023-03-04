@@ -20,9 +20,9 @@ public final class Constants {
         double WRIST_TOLERANCE = 0.1;
         double WRIST_DEFAULT = 0.1;
 
-        double ARM_P = 0.08;
-        double ARM_I = 0.03;
-        double ARM_D = 0;
+        double ARM_P = 0.05;
+        double ARM_I = 0.003;
+        double ARM_D = 0.02;
         double ARM_PERIOD = 0.02;
         double ARM_TOLERANCE = 0.1;
         double ARM_DEFAULT = -0.1;

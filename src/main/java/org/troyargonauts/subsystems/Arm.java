@@ -99,11 +99,13 @@ public class Arm extends SubsystemBase {
     }
 
     public void armTeleOp(double speed) {
-        if (armSetpoint >= 0) {
-            armSetpoint = 0;
-        } else {
-            armSetpoint += (speed * 0.6);
-        }
+//        if (armSetpoint >= 0) {
+//            armSetpoint = 0;
+//        } else {
+//            armSetpoint += (speed * 0.6);
+//        }
+
+        armSetpoint += (speed * 0.6);
     }
 
     public void setArmSetpoint(double setpoint) {
