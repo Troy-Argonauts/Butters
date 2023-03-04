@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
-import org.troyargonauts.InvertedDigitalInput;
-import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
+import org.troyargonauts.common.control.motorcontrol.LazySparkMax;
 
 /**
  * Class representing the Turret. Includes PID control and limit switches.
@@ -18,7 +17,7 @@ import org.troyargonauts.Robot;
  */
 
 public class Turret extends SubsystemBase {
-    private final LazyCANSparkMax turretMotor;
+    private final LazySparkMax turretMotor;
     public double encoderPosition, turretSetpoint;
     public final DigitalInput rightLimitSwitch, leftLimitSwitch;
     private PIDController pid;
@@ -28,7 +27,7 @@ public class Turret extends SubsystemBase {
      * Constructor for Turret Class. Instantiates motor, magnetic limit switches, PID Controller, and encoder.
      */
     public Turret() {
-        turretMotor = new LazyCANSparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        turretMotor = new LazySparkMax(Constants.Turret.PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         turretMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         rightLimitSwitch = new DigitalInput(Constants.Turret.RIGHT_PORT);
         leftLimitSwitch = new DigitalInput(Constants.Turret.LEFT_PORT);
