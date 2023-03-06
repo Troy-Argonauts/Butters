@@ -3,6 +3,7 @@ package org.troyargonauts.subsystems;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
@@ -53,12 +54,12 @@ public class DriveTrain extends SubsystemBase {
         backLeft.follow(frontLeft);
         middleLeft.follow(frontLeft);
 
-        frontRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
-        middleRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
-        backRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
-        frontLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
-        middleLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
-        backLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE);
+//        frontRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+//        middleRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+//        backRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+//        frontLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+//        middleLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+//        backLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
 
         pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
 
@@ -71,6 +72,8 @@ public class DriveTrain extends SubsystemBase {
         autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg);
 
         turnPID.enableContinuousInput(-180, 180);
+
+        resetEncoders();
     }
 
     @Override
@@ -81,6 +84,14 @@ public class DriveTrain extends SubsystemBase {
         frontLeftEncoderValue = frontLeft.getEncoder().getPosition();
         middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
         backLeftEncoderValue = backLeft.getEncoder().getPosition();
+
+        SmartDashboard.putNumber("frontRightEncoderValue", frontRightEncoderValue);
+        SmartDashboard.putNumber("middleRightEncoderValue", middleRightEncoderValue);
+        SmartDashboard.putNumber("backRightEncoderValue", backRightEncoderValue);
+        SmartDashboard.putNumber("frontLeftEncoderValue", frontLeftEncoderValue);
+        SmartDashboard.putNumber("middleLeftEncoderValue", middleLeftEncoderValue);
+        SmartDashboard.putNumber("backLeftEncoderValue", backLeftEncoderValue);
+
         gyroValue = pigeon.getYaw();
     }
 

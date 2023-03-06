@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.subsystems.*;
 
 
@@ -31,7 +32,7 @@ public class Robot extends TimedRobot {
     private static Elevator elevator;
 
     private static Turret turret;
-    static Pneumatics pneumatics;
+//    static Pneumatics pneumatics;
 
     @Override
     public void robotInit() {
@@ -40,18 +41,17 @@ public class Robot extends TimedRobot {
         driveTrain = new DriveTrain();
         elevator = new Elevator();
         turret = new Turret();
-        pneumatics = new Pneumatics();
+//        pneumatics = new Pneumatics();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
-        SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Wrist PID", Robot.getArm().wristPid(0));
-        chooser.setDefaultOption("Arm PID", Robot.getArm().armPID(-30));
-      
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(-60));
-        chooser.setDefaultOption("Nothing", null);
+        chooser.addOption("Wrist PID", Robot.getArm().wristPid(0));
+        chooser.addOption("Arm PID", Robot.getArm().armPID(-30));
+        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+        chooser.addOption("Drive Hybrid Score", new ChassisAuton());
+        chooser.addOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
 
@@ -127,12 +127,12 @@ public class Robot extends TimedRobot {
         return arm;
     }
 
-        public static Pneumatics getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new Pneumatics();
-        }
-        return pneumatics;
-    }
+//        public static Pneumatics getPneumatics() {
+//        if (pneumatics == null) {
+//            pneumatics = new Pneumatics();
+//        }
+//        return pneumatics;
+//    }
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class

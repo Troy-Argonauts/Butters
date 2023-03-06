@@ -43,15 +43,14 @@ public final class Constants {
         //Values in Inches
         double WHEEL_DIAMETER = 6;
         double ENCODER_NU_PER_REVOLUTION = 42;
-        double REVOLUTION_DISTANCE = WHEEL_DIAMETER * Math.PI;
+        double GEARBOX_SCALE = 8.54;
+        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI) * GEARBOX_SCALE;
         double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / ENCODER_NU_PER_REVOLUTION;
 
-        double GEARBOX_SCALE = 8.54;
-
         //PID Tuning Values
-        double kDriveP = 1;
-        double kDriveI = 0;
-        double kDriveD = 0;
+        double kDriveP = 0.08;
+        double kDriveI = 0.005;
+        double kDriveD = 0.03;
 
         double kTurnP = 1;
         double kTurnI = 0;
