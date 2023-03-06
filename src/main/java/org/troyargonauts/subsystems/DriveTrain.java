@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
-import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
+import org.troyargonauts.common.control.motorcontrol.LazySparkMax;
 
 /**
  * Drivetrain allows control of the robot's drivetrain in cheesy drive and tank drive. 
@@ -17,7 +17,7 @@ import org.troyargonauts.Robot;
  */
 public class DriveTrain extends SubsystemBase {
 
-    private final LazyCANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
+    private final LazySparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
 
     private Pigeon2 pigeon;
 
@@ -33,12 +33,12 @@ public class DriveTrain extends SubsystemBase {
      */
 
     public DriveTrain() {
-        frontRight = new LazyCANSparkMax(Constants.DriveTrain.FRONT_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleRight = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backRight = new LazyCANSparkMax(Constants.DriveTrain.BACK_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        frontLeft = new LazyCANSparkMax(Constants.DriveTrain.FRONT_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleLeft = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backLeft = new LazyCANSparkMax(Constants.DriveTrain.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontRight = new LazySparkMax(Constants.DriveTrain.FRONT_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        middleRight = new LazySparkMax(Constants.DriveTrain.MIDDLE_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        backRight = new LazySparkMax(Constants.DriveTrain.BACK_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontLeft = new LazySparkMax(Constants.DriveTrain.FRONT_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        middleLeft = new LazySparkMax(Constants.DriveTrain.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        backLeft = new LazySparkMax(Constants.DriveTrain.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         frontLeft.setInverted(false);
         middleLeft.setInverted(false);

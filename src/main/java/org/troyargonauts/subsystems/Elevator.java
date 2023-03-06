@@ -7,16 +7,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.Constants;
-import org.troyargonauts.LazyCANSparkMax;
 import org.troyargonauts.Robot;
+import org.troyargonauts.common.control.motorcontrol.LazySparkMax;
 
 /**
  * Class representing elevator subsystem. includes PID control and limit switches
  * @author TeoElRey, sgowda260, SolidityContract, ASH-will-WIN
  */
 public class Elevator extends SubsystemBase {
-    private final LazyCANSparkMax leftMotor;
-    private final LazyCANSparkMax rightMotor;
+    private final LazySparkMax leftMotor;
+    private final LazySparkMax rightMotor;
     private PIDController pid;
     private DigitalInput topLimitSwitch;
     private DigitalInput bottomDigitalInput;
@@ -33,8 +33,8 @@ public class Elevator extends SubsystemBase {
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
-        leftMotor = new LazyCANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMotor = new LazyCANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMotor = new LazySparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMotor = new LazySparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(false);

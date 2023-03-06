@@ -8,6 +8,8 @@ package org.troyargonauts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import org.troyargonauts.common.input.Gamepad;
+import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.subsystems.Arm;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,13 +19,12 @@ import org.troyargonauts.subsystems.Arm;
  */
 public class RobotContainer {
 
-    public static ArgoController driver;
-    public static ArgoController operator;
+    public static final Gamepad driver = new AutoGamepad(0);
+    public static final Gamepad operator = new AutoGamepad(1);
 
     public RobotContainer() {
         // Configure the trigger bindings
-        driver = new ArgoController(0, 0.1);
-        operator = new ArgoController(1, 0.15);
+
         configureBindings();
     }
 
@@ -34,93 +35,61 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
                 new RunCommand(
                         () -> {
-                            Robot.getDrivetrain().cheesyDrive(driver.getLeftJoystickY(), driver.getRightJoystickX(), 1);
+                            Robot.getDrivetrain().cheesyDrive(driver.getLeftY(), driver.getRightX(), 1);
                         }, Robot.getDrivetrain()
                 )
         );
 
         Robot.getArm().setDefaultCommand(
                 new RunCommand(() -> {
-                    Robot.getArm().wristTeleOp(operator.getRightJoystickY());
-                    Robot.getArm().armTeleOp(operator.getLeftJoystickY());
+                    Robot.getArm().wristTeleOp(operator.getRightY());
+                    Robot.getArm().armTeleOp(operator.getLeftY());
                 }, Robot.getArm())
         );
 
-        operator.getLBButton().onTrue(
+        operator.getLeftBumper().onTrue(
                         new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
                 .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
 
-        operator.getRBButton().onTrue(
+        operator.getRightBumper().onTrue(
                         new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
                 .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
 
-        //Cone - Human Player
-        operator.getAButton().toggleOnTrue(
+        //Cone - Human Player (A Button)
+        operator.getBottomButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(5.5)).alongWith(
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-25))
                 )
         );
 
-        //Cube - Human Player
-        operator.getBButton().toggleOnTrue(
+        //Cube - Human Player (B Button)
+        operator.getRightButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(13)).alongWith(
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-32))
                 )
         );
 
-        //Home
-        operator.getXButton().toggleOnTrue(
+        //Home (X Button)
+        operator.getRightButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(-5)).alongWith(
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(0))
                 )
         );
 
-        //Cone Score
-        operator.getYButton().toggleOnTrue(
+        //Cone Score (Y Button)
+        operator.getTopButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(39)).alongWith(
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-21))
                 )
         );
 
-        //Something
-//        operator.getSTARTButton().toggleOnTrue(
-//                new InstantCommand(() -> Robot.getArm().setArmSetpoint(27.5)).alongWith(
-//                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-39))
-//                )
-//        );
 
         //Floor Pickup
-        operator.getSTARTButton().toggleOnTrue(
+        operator.getStartButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getArm().setArmSetpoint(75)).alongWith(
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
                 )
         );
-
-
-//                Robot.getElevator().setDefaultCommand(
-//                        new RunCommand(() -> {
-//                            Robot.getElevator().setPower(operator.getLeftJoystickY());
-//                        }, Robot.getElevator())
-//                );
-
-//        Robot.getTurret().setDefaultCommand(
-//            new RunCommand(() -> {
-//                Robot.getTurret().turretManual(-operator.getLeftTrigger());
-//                Robot.getTurret().turretManual(operator.getRightTrigger());
-//            }, Robot.getTurret())
-//        );
-
-//        controller.getDirection(ArgoController.Direction.UP).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.RIGHT).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.DOWN).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.LEFT).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
     }
 
     /**
@@ -133,11 +102,11 @@ public class RobotContainer {
         return null;
     }
 
-    public static ArgoController getDriver() {
+    public static Gamepad getDriver() {
         return driver;
     }
 
-    public static ArgoController getOperator() {
+    public static Gamepad getOperator() {
         return operator;
     }
 }
