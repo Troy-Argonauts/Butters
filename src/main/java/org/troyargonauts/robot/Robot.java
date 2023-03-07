@@ -5,16 +5,14 @@
 
 package org.troyargonauts.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.troyargonauts.robot.subsystems.*;
-import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.Pigeon2Configuration;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import org.troyargonauts.robot.auton.DriveHybrid;
+import org.troyargonauts.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -24,51 +22,53 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  */
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
-    
     private static RobotContainer robotContainer;
-
-    static DriveTrain driveTrain;
-
-    private final SendableChooser<Command> chooser = new SendableChooser<>();
-
-    static Pigeon2 pigeon;
+    private static DriveTrain driveTrain;
     private static Arm arm;
+    private static Pneumatics pneumatics;
+
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+
+
+    private static Elevator elevator;
+
+    private static Turret turret;
+//    static Pneumatics pneumatics;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        // autonomous chooser on the dashboard
-
         arm = new Arm();
         driveTrain = new DriveTrain();
+        elevator = new Elevator();
+        turret = new Turret();
+//        pneumatics = new Pneumatics();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
-        SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Wrist PID", Robot.getArm().wristPid(0));
-        chooser.setDefaultOption("Arm PID", Robot.getArm().armPID(-30));
-      
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Drive PID", getDrivetrain().drivePID(60));
+        chooser.addOption("Wrist PID", Robot.getArm().wristPid(0));
+        chooser.addOption("Arm PID", Robot.getArm().armPID(-30));
+        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+        chooser.addOption("Drive Hybrid Score", new DriveHybrid());
+        chooser.addOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
 
-        pigeon.configFactoryDefault();
-        pigeon.clearStickyFaults();
-        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
-        pigeonConfig.MountPosePitch = 0;
-        pigeonConfig.MountPoseRoll = 0;
-        pigeonConfig.MountPoseYaw = 0;
-        pigeon.configAllSettings(pigeonConfig);
+//        pigeon.configFactoryDefault();
+//        pigeon.clearStickyFaults();
+//        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+//        pigeonConfig.MountPosePitch = 0;
+//        pigeonConfig.MountPoseRoll = 0;
+//        pigeonConfig.MountPoseYaw = 0;
+//        pigeon.configAllSettings(pigeonConfig);
     }
 
     @Override
-    public void robotPeriodic()
-    {
-        SmartDashboard.putNumber("Left Y", RobotContainer.getDriver().getLeftJoystickY());
-        SmartDashboard.putNumber("Right X", RobotContainer.getDriver().getRightJoystickX());
+    public void robotPeriodic() {
+        SmartDashboard.putNumber("Left Y", RobotContainer.getDriver().getLeftY());
+        SmartDashboard.putNumber("Right X", RobotContainer.getDriver().getRightX());
         CommandScheduler.getInstance().run();
     }
 
@@ -102,7 +102,6 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-        SmartDashboard.putBoolean("DPAD DOWN", new POVButton(RobotContainer.getDriver(), 180).getAsBoolean());
     }
 
     @Override
@@ -126,6 +125,14 @@ public class Robot extends TimedRobot {
             arm = new Arm();
         }
         return arm;
+    }
+
+    public static Pneumatics getPneumatics() {
+        if (pneumatics == null) {
+            pneumatics = new Pneumatics();
+        }
+        return pneumatics;
+    }
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class
@@ -142,5 +149,18 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
+    }
+
+    public static Elevator getElevator() {
+        if (elevator == null) elevator = new Elevator();
+        return elevator;
+
+    }
+    public static Turret getTurret() {
+        if (turret == null){
+            turret = new Turret();
+        }
+
+        return turret;
     }
 }

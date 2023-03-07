@@ -1,9 +1,12 @@
 package org.troyargonauts.robot.subsystems;
-import com.revrobotics.*;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.common.util.motorcontrol.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants;
 import org.troyargonauts.robot.Robot;
 
@@ -12,9 +15,7 @@ import org.troyargonauts.robot.Robot;
  * @author TeoElRey, ASH-will-WIN, SolidityContract
  */
 public class Arm extends SubsystemBase {
-    private final CANSparkMax armMotor;
-    private final CANSparkMax manipulatorMotor;
-    private final CANSparkMax wristMotor;
+    private final LazyCANSparkMax armMotor, manipulatorMotor, wristMotor;
 //    private final AbsoluteEncoder elbowEncoder;
 //    private final AbsoluteEncoder wristEncoder;
     private final PIDController wristPID, armPID;
@@ -26,17 +27,22 @@ public class Arm extends SubsystemBase {
      * Here, the motors, absolute encoders, and PID Controller are instantiated.
      */
     public Arm() {
-        armMotor = new CANSparkMax(Constants.Arm.ELBOW, CANSparkMaxLowLevel.MotorType.kBrushless);
-        manipulatorMotor = new CANSparkMax(Constants.Arm.MANIPULATOR, CANSparkMaxLowLevel.MotorType.kBrushless);
-        wristMotor = new CANSparkMax(Constants.Arm.WRIST, CANSparkMaxLowLevel.MotorType.kBrushless);
+        armMotor = new LazyCANSparkMax(Constants.Arm.ELBOW, CANSparkMaxLowLevel.MotorType.kBrushless);
+        manipulatorMotor = new LazyCANSparkMax(Constants.Arm.MANIPULATOR, CANSparkMaxLowLevel.MotorType.kBrushless);
+        wristMotor = new LazyCANSparkMax(Constants.Arm.WRIST, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         armMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        manipulatorMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        manipulatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         wristMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+        armMotor.setSmartCurrentLimit(Constants.Arm.CURRENT_LIMIT);
+        manipulatorMotor.setSmartCurrentLimit(Constants.Arm.CURRENT_LIMIT);
+        wristMotor.setSmartCurrentLimit(Constants.Arm.CURRENT_LIMIT);
 
 //        elbowEncoder = elbowMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 //        wristEncoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
+        resetEncoders();
         wristPID = new PIDController(Constants.Arm.WRIST_P, Constants.Arm.WRIST_I, Constants.Arm.WRIST_D, Constants.Arm.WRIST_PERIOD);
         wristPID.setTolerance(Constants.Arm.WRIST_TOLERANCE);
         wristSetpoint = Constants.Arm.WRIST_DEFAULT;
@@ -56,8 +62,7 @@ public class Arm extends SubsystemBase {
 
         SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
         SmartDashboard.putNumber("Arm Encoder", armEncoderValue);
-        SmartDashboard.putBoolean("Wrist Finished", wristPID.atSetpoint());
-        SmartDashboard.putBoolean("Arm Finished", armPID.atSetpoint());
+
     }
 
     /**
@@ -91,11 +96,20 @@ public class Arm extends SubsystemBase {
      */
     public void setArmPower(double speed) {
         armMotor.set(speed * 0.5);
-        SmartDashboard.putNumber("Arm Speed", speed);
     }
 
     public void armTeleOp(double speed) {
-        armSetpoint += (speed * 0.5);
+//        if (armSetpoint >= 0) {
+//            armSetpoint = 0;
+//        } else {
+//            armSetpoint += (speed * 0.6);
+//        }
+
+        armSetpoint += (speed * 0.6);
+    }
+
+    public void setArmSetpoint(double setpoint) {
+        armSetpoint = setpoint;
     }
 
     /**
@@ -104,11 +118,14 @@ public class Arm extends SubsystemBase {
      */
     public void setWristPower(double speed) {
             wristMotor.set((speed * 0.2));
-            SmartDashboard.putNumber("Wrist Speed", speed);
     }
 
     public void wristTeleOp(double speed) {
-        wristSetpoint += speed;
+        wristSetpoint += speed * 1.1;
+    }
+
+    public void setWristSetpoint(double setpoint) {
+        wristSetpoint = setpoint;
     }
 
     /**

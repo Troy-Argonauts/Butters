@@ -1,8 +1,8 @@
 package org.troyargonauts.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * Wrapper class for FRC joysticks.
@@ -121,6 +121,7 @@ public class ArgoController extends Joystick {
         LEFT(90),
         RIGHT(270);
         private final int value;
+
         Direction(int value) {
             this.value = value;
         }

@@ -2,7 +2,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.2.1"
+    id "edu.wpi.first.GradleRIO" version "2023.3.1"
     id "idea"
 }
 
@@ -49,40 +49,8 @@ wpi.java.debugJni = false
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
-tasks.register('getToken') {
-    File tokenFile = file("$projectDir/token.txt")
-    if (!tokenFile.exists()) {
-        tokenFile.createNewFile();
-        tokenFile.write("token=")
-    }
-    def token = tokenFile.getText().find(/(?<=token= ).+/)
-    return token;
-}
-
-tasks.register('getUsername') {
-    File usernameFile = file("$projectDir/token.txt")
-    if (!usernameFile.exists()) {
-        usernameFile.createNewFile();
-        usernameFile.write("actor=")
-    }
-    def username = usernameFile.getText().find(/(?<=actor= ).+/)
-    return username;
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url='https://maven.pkg.github.com/Troy-Argonauts/ocean'
-        credentials {
-            username = System.getenv("GITHUB_ACTOR") ?: getUsername
-            password = System.getenv("GITHUB_TOKEN") ?: getToken
-        }
-    }
-}
 
 dependencies {
-//    implementation 'org.troyargonauts:ocean:latest'
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
