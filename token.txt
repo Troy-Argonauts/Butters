@@ -1,2 +1,0 @@
-username= "ArgonautsStation"
-token= "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"
