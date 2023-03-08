@@ -40,13 +40,13 @@ public class DriveTrain extends SubsystemBase {
         middleLeft = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
         backLeft = new LazyCANSparkMax(Constants.DriveTrain.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        frontLeft.setInverted(false);
-        middleLeft.setInverted(false);
-        backLeft.setInverted(false);
+        frontLeft.setInverted(true);
+        middleLeft.setInverted(true);
+        backLeft.setInverted(true);
 
-        frontRight.setInverted(true);
-        middleRight.setInverted(true);
-        backRight.setInverted(true);
+        frontRight.setInverted(false);
+        middleRight.setInverted(false);
+        backRight.setInverted(false);
 
         backRight.follow(frontRight);
         middleRight.follow(frontRight);
@@ -106,8 +106,8 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
-        frontRight.set(((speed - turn) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
-        frontLeft.set((speed + turn) * nerf);
+        frontRight.set(((speed + turn) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
+        frontLeft.set((speed - turn) * nerf);
     }
 
     /** 
