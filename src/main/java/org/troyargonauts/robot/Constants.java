@@ -32,13 +32,15 @@ public final class Constants {
   
     public interface DriveTrain {
         //CAN IDs
-        int FRONT_RIGHT = 2;
-        int MIDDLE_RIGHT = 3;
-        int BACK_RIGHT = 4;
-        int FRONT_LEFT = 5;
-        int MIDDLE_LEFT = 6;
-        int BACK_LEFT = 7;
+        int FRONT_RIGHT = 5;
+        int MIDDLE_RIGHT = 6;
+        int BACK_RIGHT = 7;
+        int FRONT_LEFT = 2;
+        int MIDDLE_LEFT = 3;
+        int BACK_LEFT = 4;
         int PIGEON = 25;
+
+        double DEADBAND = 0.02;
 
         //Values in Inches
         double WHEEL_DIAMETER = 6;
