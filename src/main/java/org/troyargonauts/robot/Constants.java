@@ -46,13 +46,13 @@ public final class Constants {
         double WHEEL_DIAMETER = 6;
         double ENCODER_NU_PER_REVOLUTION = 42;
         double GEARBOX_SCALE = 8.54;
-        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI) * GEARBOX_SCALE;
-        double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / ENCODER_NU_PER_REVOLUTION;
+        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI);
+        double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / GEARBOX_SCALE;
 
         //PID Tuning Values
-        double kDriveP = 0.08;
-        double kDriveI = 0.005;
-        double kDriveD = 0.03;
+        double kDriveP = 0.015;
+        double kDriveI = 0;
+        double kDriveD = 0.003;
 
         double kTurnP = 1;
         double kTurnI = 0;
@@ -62,12 +62,13 @@ public final class Constants {
         double kBalanceI = 0;
         double kBalanceD = 0;
 
-        double kDriveTolerance = 1;
+        double kDriveTolerance = 0.5;
         double kTurnToleranceDeg = 1;
         double kBalanceToleranceDeg = 4;
+        double kVelcoityTolerance = 0.05;
 
         //Correction Values
-        double RIGHT_CORRECTION = 0.0010;
+        double RIGHT_CORRECTION = -0.0022;
     }
 
     public interface Elevator {

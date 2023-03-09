@@ -40,6 +40,13 @@ public class DriveTrain extends SubsystemBase {
         middleLeft = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
         backLeft = new LazyCANSparkMax(Constants.DriveTrain.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
+        frontRight.restoreFactoryDefaults();
+        middleRight.restoreFactoryDefaults();
+        backRight.restoreFactoryDefaults();
+        frontLeft.restoreFactoryDefaults();
+        middleLeft.restoreFactoryDefaults();
+        backLeft.restoreFactoryDefaults();
+
         frontLeft.setInverted(true);
         middleLeft.setInverted(true);
         backLeft.setInverted(true);
@@ -54,12 +61,12 @@ public class DriveTrain extends SubsystemBase {
         backLeft.follow(frontLeft);
         middleLeft.follow(frontLeft);
 
-//        frontRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
-//        middleRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
-//        backRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
-//        frontLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
-//        middleLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
-//        backLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.REVOLUTION_DISTANCE / 42);
+        frontRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        middleRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        backRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        frontLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        middleLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        backLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
 
         pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
 
@@ -67,13 +74,19 @@ public class DriveTrain extends SubsystemBase {
         turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
         autoBalancePID = new PIDController(Constants.DriveTrain.kBalanceP, Constants.DriveTrain.kBalanceI, Constants.DriveTrain.kBalanceP);
 
-        drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance);
-        turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg);
-        autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg);
+        drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance, Constants.DriveTrain.kVelcoityTolerance);
+        turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
+        autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
 
         turnPID.enableContinuousInput(-180, 180);
 
         resetEncoders();
+        frontRight.burnFlash();
+        middleRight.burnFlash();
+        backRight.burnFlash();
+        frontLeft.burnFlash();
+        middleLeft.burnFlash();
+        backLeft.burnFlash();
     }
 
     @Override
@@ -91,6 +104,11 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("frontLeftEncoderValue", frontLeftEncoderValue);
         SmartDashboard.putNumber("middleLeftEncoderValue", middleLeftEncoderValue);
         SmartDashboard.putNumber("backLeftEncoderValue", backLeftEncoderValue);
+
+        SmartDashboard.putNumber("Right Position", getRightPosition());
+        SmartDashboard.putNumber("Left Position", getLeftPosition());
+        SmartDashboard.putNumber("Position", getPosition());
+
 
         gyroValue = pigeon.getYaw();
     }
@@ -137,7 +155,7 @@ public class DriveTrain extends SubsystemBase {
      * @return encoder position based on frontLeft motor controller encoder.
      */
     public double getLeftPosition() {
-        return (frontLeftEncoderValue + middleLeftEncoderValue + backLeftEncoderValue) / 3;
+        return -(frontLeftEncoderValue + middleLeftEncoderValue + backLeftEncoderValue) / 3;
     }
 
     /** 
@@ -145,7 +163,7 @@ public class DriveTrain extends SubsystemBase {
      * @return encoder position based on frontRight motor controller encoder.
      */
     public double getRightPosition() {
-        return (frontRightEncoderValue + middleRightEncoderValue + backRightEncoderValue) / 3;
+        return -(frontRightEncoderValue + middleRightEncoderValue + backRightEncoderValue) / 3;
     }
 
     /**
@@ -213,7 +231,7 @@ public class DriveTrain extends SubsystemBase {
             drivePID,
             () -> getPosition(),
             setpoint,
-            output -> cheesyDrive(output, 0, 1),
+            output -> cheesyDrive(-output, 0, 1),
             Robot.getDrivetrain()
         );
     }

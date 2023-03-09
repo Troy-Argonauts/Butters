@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
         chooser.addOption("Wrist PID", Robot.getArm().wristPid(0));
         chooser.addOption("Arm PID", Robot.getArm().armPID(-30));
         chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+        chooser.addOption("Drive PID", Robot.getDrivetrain().drivePID(60));
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
@@ -81,6 +82,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
+        Robot.getDrivetrain().resetEncoders();
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
         {
