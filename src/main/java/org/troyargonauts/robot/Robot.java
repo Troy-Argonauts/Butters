@@ -5,6 +5,7 @@
 
 package org.troyargonauts.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,6 +64,8 @@ public class Robot extends TimedRobot {
 //        pigeonConfig.MountPoseRoll = 0;
 //        pigeonConfig.MountPoseYaw = 0;
 //        pigeon.configAllSettings(pigeonConfig);
+
+        CameraServer.startAutomaticCapture();
     }
 
     @Override
