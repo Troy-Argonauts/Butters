@@ -6,8 +6,8 @@ public final class Constants {
         double SQUEEZE_MOTOR_SPEED = 0.2;
         double ROTATE_MOTOR_SPEED = 0.2;
 
-        int SQUEEZE_MOTOR_PORT = 0;
-        int ROTATE_MOTOR_PORT = 1;
+        int SQUEEZE_MOTOR_PORT = 1;
+        int ROTATE_MOTOR_PORT = 8;
 
     }
 

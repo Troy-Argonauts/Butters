@@ -30,9 +30,8 @@ public class RobotContainer {
     public RobotContainer()
     {
         // Configure the trigger bindings
-        configureBindings();
-        
         driver = new ArgoController(0, 0.1);
+        configureBindings();
     }
     
     

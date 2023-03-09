@@ -28,12 +28,12 @@ public class Intake extends SubsystemBase {
     /**
      * The current state of the squeeze motor (either "OPEN", "CLOSE", or "STOP").
      */
-    private static String intakeSqueezeState;
+    private static String intakeSqueezeState = "";
 
     /**
      * The current state of the rotate motor (either "UP", "DOWN", or "STOP").
      */
-    private static String intakeRotateState;
+    private static String intakeRotateState = "";
 
     /**
      * The limit switch on the rotate motor in the forward direction.
