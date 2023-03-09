@@ -3,7 +3,7 @@
  Provides methods for controlling the state of the squeeze motor and rotate motor.
  */
 package org.troyargonauts.subsystems;
-import com.revrobotics.SparkMaxLimitSwitch;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.Constants;
 import com.revrobotics.CANSparkMax;
@@ -36,14 +36,10 @@ public class Intake extends SubsystemBase {
     private static String intakeRotateState = "";
 
     /**
-     * The limit switch on the rotate motor in the forward direction.
-     */
-    public static SparkMaxLimitSwitch rotateForwardLimitSwitch;
-
-    /**
      * The limit switch on the rotate motor in the backward direction.
      */
-    public static SparkMaxLimitSwitch rotateBackwardLimitSwitch;
+    public static DigitalInput rotateBackwardLimitSwitch;
+
 
     /**
      * Constructs a new Intake object with the squeeze and rotate motors initialized to the ports specified in Constants.
@@ -52,8 +48,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         squeezeMotor = new CANSparkMax(Constants.Intake.SQUEEZE_MOTOR_PORT, MotorType.kBrushless);
         rotateMotor = new CANSparkMax(Constants.Intake.ROTATE_MOTOR_PORT, MotorType.kBrushless);
-        rotateForwardLimitSwitch = rotateMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        rotateBackwardLimitSwitch = rotateMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        rotateBackwardLimitSwitch = new DigitalInput(Constants.Intake.LIMIT_SWITCH_PORT);
     }
     /**
      * Represents the possible states of the squeeze motor.
@@ -96,7 +91,7 @@ public class Intake extends SubsystemBase {
     public static void setRotateIntakeState(rotateStates state) {
         switch (state) {
             case UP:
-                if (rotateForwardLimitSwitch.isLimitSwitchEnabled()) {
+                if (rotateBackwardLimitSwitch.get()) {
                     rotateMotor.set(0.0);
                     intakeRotateState = "STOP";
                 } else {
@@ -105,14 +100,9 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case DOWN:
-                if (rotateBackwardLimitSwitch.isLimitSwitchEnabled()){
-                    rotateMotor.set(0.0);
-                    intakeRotateState = "STOP";
-                } else{
                     rotateMotor.set(-Constants.Intake.ROTATE_MOTOR_SPEED);
                     intakeRotateState = "DOWN";
-                }
-                break;
+                    break;
             case STOP:
                 rotateMotor.set(0.0);
                 intakeRotateState = "STOP";
@@ -130,7 +120,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putString("Intake Squeeze State", intakeSqueezeState);
         SmartDashboard.putString("Intake Squeeze State", intakeRotateState);
-        SmartDashboard.putBoolean("Rotate Limit Switch Forward", rotateForwardLimitSwitch.isPressed());
-        SmartDashboard.putBoolean("Rotate Limit Switch Backward", rotateBackwardLimitSwitch.isPressed());
+        SmartDashboard.putBoolean("Rotate Limit Switch Backward", !rotateBackwardLimitSwitch.get());
     }
 }
