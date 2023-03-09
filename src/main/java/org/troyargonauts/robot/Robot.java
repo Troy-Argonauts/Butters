@@ -5,6 +5,7 @@
 
 package org.troyargonauts.robot;
 
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -74,7 +75,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kCoast);
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -83,6 +86,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit()
     {
         Robot.getDrivetrain().resetEncoders();
+        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
         {

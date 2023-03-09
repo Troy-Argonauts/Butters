@@ -1,6 +1,7 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,14 +51,12 @@ public class DriveTrain extends SubsystemBase {
         frontLeft.setInverted(true);
         middleLeft.setInverted(true);
         backLeft.setInverted(true);
-
         frontRight.setInverted(false);
         middleRight.setInverted(false);
         backRight.setInverted(false);
 
         backRight.follow(frontRight);
         middleRight.follow(frontRight);
-
         backLeft.follow(frontLeft);
         middleLeft.follow(frontLeft);
 
@@ -262,6 +261,15 @@ public class DriveTrain extends SubsystemBase {
             output -> cheesyDrive(output, 0, 0.2),
             Robot.getDrivetrain()
         );
+    }
+
+    public void setIdleMode(CANSparkMax.IdleMode idleMode) {
+        frontLeft.setIdleMode(idleMode);
+        middleLeft.setIdleMode(idleMode);
+        backLeft.setIdleMode(idleMode);
+        frontRight.setIdleMode(idleMode);
+        middleRight.setIdleMode(idleMode);
+        backRight.setIdleMode(idleMode);
     }
 
 }
