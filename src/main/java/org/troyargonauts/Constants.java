@@ -8,7 +8,8 @@ public final class Constants {
 
         int SQUEEZE_MOTOR_PORT = 1;
         int ROTATE_MOTOR_PORT = 8;
-        int LIMIT_SWITCH_PORT = 0;
+        int TOP_LIMIT_SWITCH = 0;
+        int OUT_LIMIT_SWTICH = 1;
 
     }
 

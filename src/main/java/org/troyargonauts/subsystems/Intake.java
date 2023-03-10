@@ -4,6 +4,7 @@
  */
 package org.troyargonauts.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.troyargonauts.Constants;
 import com.revrobotics.CANSparkMax;
@@ -49,7 +50,14 @@ public class Intake extends SubsystemBase {
     public Intake() {
         squeezeMotor = new CANSparkMax(Constants.Intake.SQUEEZE_MOTOR_PORT, MotorType.kBrushless);
         rotateMotor = new CANSparkMax(Constants.Intake.ROTATE_MOTOR_PORT, MotorType.kBrushless);
-        rotateBackwardLimitSwitch = new DigitalInput(Constants.Intake.LIMIT_SWITCH_PORT);
+        outLimitSwitch = new DigitalInput(Constants.Intake.OUT_LIMIT_SWTICH);
+        rotateBackwardLimitSwitch = new DigitalInput(Constants.Intake.TOP_LIMIT_SWITCH);
+
+        squeezeMotor.restoreFactoryDefaults();
+        rotateMotor.restoreFactoryDefaults();
+
+        squeezeMotor.getEncoder().setPosition(0);
+        rotateMotor.getEncoder().setPosition(0);
     }
     /**
      * Represents the possible states of the squeeze motor.
@@ -69,14 +77,25 @@ public class Intake extends SubsystemBase {
      * @param state The state to set the squeeze motor to (either "OPEN", "CLOSE", or "STOP").
      */
     public static void setSqueezeIntakeState(squeezeStates state) {
+        DriverStation.reportWarning("Here", false);
         switch (state) {
             case OPEN:
-                squeezeMotor.set(Constants.Intake.SQUEEZE_MOTOR_SPEED);
-                intakeSqueezeState = "OPEN";
+                if (!outLimitSwitch.get()) {
+                    squeezeMotor.set(0);
+                    intakeSqueezeState = "STOP";
+                } else {
+                    squeezeMotor.set(Constants.Intake.SQUEEZE_MOTOR_SPEED);
+                    intakeSqueezeState = "OPEN";
+                }
                 break;
             case CLOSE:
-                squeezeMotor.set(-Constants.Intake.SQUEEZE_MOTOR_SPEED);
-                intakeSqueezeState = "CLOSE";
+                if (squeezeMotor.getEncoder().getPosition() < -24) {
+                    squeezeMotor.set(0);
+                    intakeSqueezeState = "STOP";
+                } else {
+                    squeezeMotor.set(-Constants.Intake.SQUEEZE_MOTOR_SPEED);
+                    intakeSqueezeState = "CLOSE";
+                }
                 break;
             case STOP:
                 squeezeMotor.set(0.0);
@@ -92,7 +111,7 @@ public class Intake extends SubsystemBase {
     public static void setRotateIntakeState(rotateStates state) {
         switch (state) {
             case UP:
-                if (rotateBackwardLimitSwitch.get()) {
+                if (!rotateBackwardLimitSwitch.get()) {
                     rotateMotor.set(0.0);
                     intakeRotateState = "STOP";
                 } else {
@@ -122,6 +141,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putString("Intake Squeeze State", intakeSqueezeState);
         SmartDashboard.putString("Intake Squeeze State", intakeRotateState);
         SmartDashboard.putBoolean("Rotate Limit Switch Backward", !rotateBackwardLimitSwitch.get());
-        SmartDashboard.putBoolean("Out Limit Switch", outLimitSwitch.get());
+        SmartDashboard.putBoolean("Out Limit Switch", !outLimitSwitch.get());
+        SmartDashboard.putNumber("Out Encoder", squeezeMotor.getEncoder().getPosition());
     }
 }
