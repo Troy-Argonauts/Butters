@@ -5,6 +5,8 @@
 
 package org.troyargonauts;
 
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.troyargonauts.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -41,7 +43,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        new InstantCommand(() -> Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kCoast));
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -49,6 +53,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
+        new InstantCommand(() -> Robot.getIntake().resetEndcoders());
+        new InstantCommand(() -> Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake));
         autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null)
         {

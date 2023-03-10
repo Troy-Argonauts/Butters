@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.sql.Driver;
+
 /**
  * Back Intake Code
  * @author Sharvayu-Chavan SavageCabbage360
@@ -58,6 +60,9 @@ public class Intake extends SubsystemBase {
 
         squeezeMotor.getEncoder().setPosition(0);
         rotateMotor.getEncoder().setPosition(0);
+
+        rotateMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        squeezeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
     /**
      * Represents the possible states of the squeeze motor.
@@ -80,16 +85,19 @@ public class Intake extends SubsystemBase {
         DriverStation.reportWarning("Here", false);
         switch (state) {
             case OPEN:
+                DriverStation.reportWarning("AT Open", false);
                 if (!outLimitSwitch.get()) {
+                    DriverStation.reportWarning("Limit Switch", false);
                     squeezeMotor.set(0);
                     intakeSqueezeState = "STOP";
                 } else {
+                    DriverStation.reportWarning("Applying Power", false);
                     squeezeMotor.set(Constants.Intake.SQUEEZE_MOTOR_SPEED);
                     intakeSqueezeState = "OPEN";
                 }
                 break;
             case CLOSE:
-                if (squeezeMotor.getEncoder().getPosition() < -24) {
+                if (squeezeMotor.getEncoder().getPosition() < -22) {
                     squeezeMotor.set(0);
                     intakeSqueezeState = "STOP";
                 } else {
@@ -115,14 +123,19 @@ public class Intake extends SubsystemBase {
                     rotateMotor.set(0.0);
                     intakeRotateState = "STOP";
                 } else {
-                    rotateMotor.set(Constants.Intake.SQUEEZE_MOTOR_SPEED);
+                    rotateMotor.set(-Constants.Intake.ROTATE_MOTOR_SPEED);
                     intakeRotateState = "OPEN";
                 }
                 break;
             case DOWN:
-                    rotateMotor.set(-Constants.Intake.ROTATE_MOTOR_SPEED);
+                if (rotateMotor.getEncoder().getPosition() < -1) {
+                    rotateMotor.set(0.0);
+                    intakeRotateState = "STOP";
+                } else {
+                    rotateMotor.set(Constants.Intake.ROTATE_MOTOR_SPEED);
                     intakeRotateState = "DOWN";
-                    break;
+                }
+                break;
             case STOP:
                 rotateMotor.set(0.0);
                 intakeRotateState = "STOP";
@@ -143,5 +156,16 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("Rotate Limit Switch Backward", !rotateBackwardLimitSwitch.get());
         SmartDashboard.putBoolean("Out Limit Switch", !outLimitSwitch.get());
         SmartDashboard.putNumber("Out Encoder", squeezeMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Rotate Encoder", rotateMotor.getEncoder().getPosition());
+    }
+
+    public void resetEndcoders() {
+        rotateMotor.getEncoder().setPosition(0);
+        squeezeMotor.getEncoder().setPosition(0);
+    }
+
+    public void setIdleState(CANSparkMax.IdleMode idleState) {
+        rotateMotor.setIdleMode(idleState);
+        squeezeMotor.setIdleMode(idleState);
     }
 }
