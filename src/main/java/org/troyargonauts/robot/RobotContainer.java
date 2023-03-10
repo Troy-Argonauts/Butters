@@ -98,6 +98,21 @@ public class RobotContainer {
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
                 )
         );
+
+        //LED - Purple
+        driver.getLeftBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
+        );
+
+        //LED - Yellow
+        driver.getRightBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
+        );
+
+        //LED -Rainbow
+        driver.getTopButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
+        );
     }
 
     /**

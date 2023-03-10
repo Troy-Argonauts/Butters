@@ -1,10 +1,15 @@
-package org.troyargonauts.subsystems;
+package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.RainbowAnimation;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.troyargonauts.Constants;
+import org.troyargonauts.robot.Constants;
+
+import static org.troyargonauts.robot.Constants.LEDs.ledLength;
+
 
 /**
  * This is the class for all LED methods
@@ -31,10 +36,17 @@ public class LEDSystem extends SubsystemBase {
      * @author JJCgits, firearcher2012, ASH-will-WIN
      */
     public LEDSystem() {
-        candle = new CANdle(Constants.LEDs.kCANdlePort);
+        candle = new CANdle(Constants.LEDs.CANDLE);
         config = new CANdleConfiguration();
         config.stripType = CANdle.LEDStripType.RGB;
         candle.configAllSettings(config);
+    }
+
+    public void rainbow(){
+        config.brightnessScalar = 0.5;
+        candle.configAllSettings(config);
+        RainbowAnimation rainbowAnimation = new RainbowAnimation(1,0.5,ledLength);
+        candle.animate(rainbowAnimation);
     }
 
     /**
@@ -50,6 +62,7 @@ public class LEDSystem extends SubsystemBase {
      * This method will turn the LEDs purple
      */
     public void purpleCube() {
+        DriverStation.reportWarning("Purple", false);
         candle.setLEDs(purpleR, purpleG, purpleB);
     }
 
@@ -57,6 +70,7 @@ public class LEDSystem extends SubsystemBase {
      * This method will turn the LEDs yellow
      */
     public void yellowCone() {
+        DriverStation.reportWarning("Yellow", false);
         candle.setLEDs(yellowR, yellowG, yellowB);
     }
 

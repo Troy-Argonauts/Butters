@@ -40,7 +40,7 @@ public final class Constants {
         int BACK_LEFT = 4;
         int PIGEON = 25;
 
-        double DEADBAND = 0.02;
+        double DEADBAND = 0.05;
 
         //Values in Inches
         double WHEEL_DIAMETER = 6;
@@ -103,5 +103,10 @@ public final class Constants {
         double NERF = 0.5;
         int LEFT_PORT = 2;
         int RIGHT_PORT = 3;
+    }
+
+    public interface LEDs {
+        int CANDLE = 24;
+        int ledLength = 141;
     }
 }

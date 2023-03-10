@@ -33,6 +33,9 @@ public class Robot extends TimedRobot {
     private static Elevator elevator;
 
     private static Turret turret;
+
+    private static LEDSystem led;
+
 //    static Pneumatics pneumatics;
 
     @Override
@@ -142,6 +145,13 @@ public class Robot extends TimedRobot {
             driveTrain = new DriveTrain();
         }
         return driveTrain;
+    }
+
+    public static LEDSystem getLEDs(){
+        if(led == null){
+            led = new LEDSystem();
+        }
+        return led;
     }
 
     public static RobotContainer getRobotContainer() {
