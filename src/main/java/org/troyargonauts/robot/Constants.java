@@ -103,4 +103,15 @@ public final class Constants {
         int LEFT_PORT = 2;
         int RIGHT_PORT = 3;
     }
+
+    public interface Intake {
+        double SQUEEZE_MOTOR_SPEED = 0.2;
+        double ROTATE_MOTOR_SPEED = 0.2;
+
+        int SQUEEZE_MOTOR_PORT = 1;
+        int ROTATE_MOTOR_PORT = 8;
+        int TOP_LIMIT_SWITCH = 0;
+        int OUT_LIMIT_SWTICH = 1;
+
+    }
 }

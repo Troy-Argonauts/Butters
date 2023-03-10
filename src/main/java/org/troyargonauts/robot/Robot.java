@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.subsystems.*;
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot {
     private static Elevator elevator;
 
     private static Turret turret;
-//    static Pneumatics pneumatics;
+    private static Intake intake;
 
     @Override
     public void robotInit() {
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
         driveTrain = new DriveTrain();
         elevator = new Elevator();
         turret = new Turret();
+        intake = new Intake();
 //        pneumatics = new Pneumatics();
         robotContainer = new RobotContainer();
 
@@ -77,6 +79,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kCoast);
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kCoast);
     }
 
     @Override
@@ -87,6 +90,9 @@ public class Robot extends TimedRobot {
     {
         Robot.getDrivetrain().resetEncoders();
         Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
+        Robot.getIntake().resetEndcoders();
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
+
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
         {
@@ -168,5 +174,12 @@ public class Robot extends TimedRobot {
         }
 
         return turret;
+    }
+
+    public static Intake getIntake(){
+        if(intake == null){
+            intake = new Intake();
+        }
+        return intake;
     }
 }

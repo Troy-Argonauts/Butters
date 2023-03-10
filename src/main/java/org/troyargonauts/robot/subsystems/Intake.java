@@ -2,7 +2,7 @@
  Represents the intake subsystem of the robot that includes the squeeze motor and rotate motor with their limit switches.
  Provides methods for controlling the state of the squeeze motor and rotate motor.
  */
-package org.troyargonauts.subsystems;
+package org.troyargonauts.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

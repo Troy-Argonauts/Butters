@@ -13,6 +13,7 @@ import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
 import org.troyargonauts.robot.subsystems.Arm;
+import org.troyargonauts.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -98,7 +99,30 @@ public class RobotContainer {
                         new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
                 )
         );
+
+        //Intake Up
+        operator.getLeftBumper().whileTrue(
+                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.UP), org.troyargonauts.Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), org.troyargonauts.Robot.getIntake()));
+
+        //Intake Down
+        operator.getRightBumper().whileTrue(
+                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.DOWN), org.troyargonauts.Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), org.troyargonauts.Robot.getIntake()));
+
+        //Claw Open
+        operator.getBottomButton().whileTrue(
+                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.OPEN), org.troyargonauts.Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), org.troyargonauts.Robot.getIntake()));
+
+        //Claw Close
+        operator.getRightButton().whileTrue(
+                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.CLOSE), org.troyargonauts.Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), org.troyargonauts.Robot.getIntake()));
+
     }
+
+
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
