@@ -6,7 +6,6 @@
 package org.troyargonauts;
 
 import org.troyargonauts.subsystems.LEDSystem;
-import org.troyargonauts.subsystems.PneumaticsSystem;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,9 +22,6 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     
     private RobotContainer robotContainer;
-
-    static PneumaticsSystem pneumatics;
-
     private static LEDSystem led;
 
     @Override
@@ -33,9 +29,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
-
-        pneumatics = new PneumaticsSystem();
-
         led = new LEDSystem();
     }
 
@@ -92,12 +85,6 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static PneumaticsSystem getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new PneumaticsSystem();
-        }
-        return pneumatics;
-    }
 
     public static LEDSystem getLEDs(){
         if(led == null){
