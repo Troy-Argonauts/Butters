@@ -39,6 +39,7 @@ public class Intake extends SubsystemBase {
      * The limit switch on the rotate motor in the backward direction.
      */
     public static DigitalInput rotateBackwardLimitSwitch;
+    public static DigitalInput outLimitSwitch;
 
 
     /**
@@ -121,5 +122,6 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putString("Intake Squeeze State", intakeSqueezeState);
         SmartDashboard.putString("Intake Squeeze State", intakeRotateState);
         SmartDashboard.putBoolean("Rotate Limit Switch Backward", !rotateBackwardLimitSwitch.get());
+        SmartDashboard.putBoolean("Out Limit Switch", outLimitSwitch.get());
     }
 }
