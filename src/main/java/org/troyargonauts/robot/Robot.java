@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
 //        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
-        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(140));
+        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145));
         chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Nothing", null);

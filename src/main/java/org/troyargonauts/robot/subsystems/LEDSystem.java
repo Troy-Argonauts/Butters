@@ -45,7 +45,7 @@ public class LEDSystem extends SubsystemBase {
     public void rainbow(){
         config.brightnessScalar = 0.5;
         candle.configAllSettings(config);
-        RainbowAnimation rainbowAnimation = new RainbowAnimation(1,0.5,ledLength);
+        RainbowAnimation rainbowAnimation = new RainbowAnimation(1,1,ledLength);
         candle.animate(rainbowAnimation);
     }
 
@@ -62,7 +62,6 @@ public class LEDSystem extends SubsystemBase {
      * This method will turn the LEDs purple
      */
     public void purpleCube() {
-        DriverStation.reportWarning("Purple", false);
         candle.setLEDs(purpleR, purpleG, purpleB);
     }
 
@@ -70,7 +69,6 @@ public class LEDSystem extends SubsystemBase {
      * This method will turn the LEDs yellow
      */
     public void yellowCone() {
-        DriverStation.reportWarning("Yellow", false);
         candle.setLEDs(yellowR, yellowG, yellowB);
     }
 

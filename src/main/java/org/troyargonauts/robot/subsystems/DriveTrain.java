@@ -79,6 +79,20 @@ public class DriveTrain extends SubsystemBase {
 
         turnPID.enableContinuousInput(-180, 180);
 
+        frontRight.setOpenLoopRampRate(0.35);
+        middleRight.setOpenLoopRampRate(0.35);
+        backRight.setOpenLoopRampRate(0.35);
+        frontLeft.setOpenLoopRampRate(0.35);
+        middleLeft.setOpenLoopRampRate(0.35);
+        backLeft.setOpenLoopRampRate(0.35);
+
+        frontRight.setClosedLoopRampRate(0.25);
+        middleRight.setClosedLoopRampRate(0.25);
+        backRight.setClosedLoopRampRate(0.25);
+        frontLeft.setClosedLoopRampRate(0.25);
+        middleLeft.setClosedLoopRampRate(0.25);
+        backLeft.setClosedLoopRampRate(0.25);
+
         resetEncoders();
 
         frontRight.burnFlash();
