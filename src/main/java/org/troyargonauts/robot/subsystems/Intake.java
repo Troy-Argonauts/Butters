@@ -46,7 +46,9 @@ public class Intake extends SubsystemBase {
 
     private PIDController squeezePID, rotatePID;
 
-    private int squeezeSetpoint, rotateSetpoint;
+    private double squeezeSetpoint, rotateSetpoint;
+
+    private double squeezePos, rotatePos;
 
 
     /**
@@ -156,8 +158,11 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Out Encoder", squeezeMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Rotate Encoder", rotateMotor.getEncoder().getPosition());
 
-        squeezeMotor.set(squeezePID.calculate(squeezeMotor.getEncoder().getPosition(), squeezeSetpoint));
-        rotateMotor.set(rotatePID.calculate(rotateMotor.getEncoder().getPosition(), rotateSetpoint));
+        squeezePos = squeezeMotor.getEncoder().getPosition();
+        rotatePos = rotateMotor.getEncoder().getPosition();
+
+        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
+        rotateMotor.set(rotatePID.calculate(rotatePos, rotateSetpoint));
     }
 
     public void resetEndcoders() {
