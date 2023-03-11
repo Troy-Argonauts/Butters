@@ -6,10 +6,10 @@ package org.troyargonauts.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.troyargonauts.Constants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.robot.Constants;
 
 import java.sql.Driver;
 

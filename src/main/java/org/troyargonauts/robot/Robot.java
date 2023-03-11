@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
+import org.troyargonauts.robot.auton.DropDriveOut;
 import org.troyargonauts.robot.subsystems.*;
 
 /**
@@ -26,15 +27,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
-    private static Arm arm;
-    private static Pneumatics pneumatics;
-
     private final SendableChooser<Command> chooser = new SendableChooser<>();
-
-
-    private static Elevator elevator;
-
-    private static Turret turret;
     private static Intake intake;
 
     private static LEDSystem led;
@@ -42,10 +35,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        arm = new Arm();
         driveTrain = new DriveTrain();
-        elevator = new Elevator();
-        turret = new Turret();
         intake = new Intake();
         led = new LEDSystem();
         robotContainer = new RobotContainer();
@@ -53,10 +43,9 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.addOption("Wrist PID", Robot.getArm().wristPid(0));
-        chooser.addOption("Arm PID", Robot.getArm().armPID(-30));
-        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
-        chooser.addOption("Drive PID", Robot.getDrivetrain().drivePID(60));
+//        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(140));
+        chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Nothing", null);
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
@@ -135,19 +124,6 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static Arm getArm() {
-        if (arm == null) {
-            arm = new Arm();
-        }
-        return arm;
-    }
-
-    public static Pneumatics getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new Pneumatics();
-        }
-        return pneumatics;
-    }
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class
@@ -172,18 +148,6 @@ public class Robot extends TimedRobot {
         return robotContainer;
     }
 
-    public static Elevator getElevator() {
-        if (elevator == null) elevator = new Elevator();
-        return elevator;
-
-    }
-    public static Turret getTurret() {
-        if (turret == null){
-            turret = new Turret();
-        }
-
-        return turret;
-    }
 
     public static Intake getIntake(){
         if(intake == null){
