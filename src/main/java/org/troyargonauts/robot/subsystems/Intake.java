@@ -161,12 +161,16 @@ public class Intake extends SubsystemBase {
         squeezePos = squeezeMotor.getEncoder().getPosition();
         rotatePos = rotateMotor.getEncoder().getPosition();
 
-        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
-        rotateMotor.set(rotatePID.calculate(rotatePos, rotateSetpoint));
+//        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
+//        rotateMotor.set(rotatePID.calculate(rotatePos, rotateSetpoint));
     }
 
     public void resetEndcoders() {
         rotateMotor.getEncoder().setPosition(0);
+        squeezeMotor.getEncoder().setPosition(0);
+    }
+
+    public void resetSqueezeEncoder() {
         squeezeMotor.getEncoder().setPosition(0);
     }
 
