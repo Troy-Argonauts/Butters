@@ -3,8 +3,8 @@
  Provides methods for controlling the state of the squeeze motor and rotate motor.
  */
 package org.troyargonauts.robot.subsystems;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -44,6 +44,12 @@ public class Intake extends SubsystemBase {
     public static DigitalInput rotateBackwardLimitSwitch;
     public static DigitalInput outLimitSwitch;
 
+    private PIDController squeezePID, rotatePID;
+
+    private double squeezeSetpoint, rotateSetpoint;
+
+    private double squeezePos, rotatePos;
+
 
     /**
      * Constructs a new Intake object with the squeeze and rotate motors initialized to the ports specified in Constants.
@@ -63,6 +69,9 @@ public class Intake extends SubsystemBase {
 
         rotateMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         squeezeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+        squeezePID = new PIDController(Constants.Intake.kSqueezeP, Constants.Intake.kSqueezeI, Constants.Intake.kSqueezeD);
+        rotatePID = new PIDController(Constants.Intake.kRotateP, Constants.Intake.kRotateI, Constants.Intake.kRotateD);
     }
     /**
      * Represents the possible states of the squeeze motor.
@@ -148,6 +157,12 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("Out Limit Switch", !outLimitSwitch.get());
         SmartDashboard.putNumber("Out Encoder", squeezeMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Rotate Encoder", rotateMotor.getEncoder().getPosition());
+
+        squeezePos = squeezeMotor.getEncoder().getPosition();
+        rotatePos = rotateMotor.getEncoder().getPosition();
+
+        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
+        rotateMotor.set(rotatePID.calculate(rotatePos, rotateSetpoint));
     }
 
     public void resetEndcoders() {
@@ -158,5 +173,13 @@ public class Intake extends SubsystemBase {
     public void setIdleState(CANSparkMax.IdleMode idleState) {
         rotateMotor.setIdleMode(idleState);
         squeezeMotor.setIdleMode(idleState);
+    }
+
+    public void setSqueezeSetpoint(int setpoint) {
+        squeezeSetpoint = setpoint;
+    }
+
+    public void setRotateSetpoint(int setpoint) {
+        rotateSetpoint = setpoint;
     }
 }
