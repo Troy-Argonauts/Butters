@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
 
     private PIDController squeezePID, rotatePID;
 
-    private double squeezeSetpoint, rotateSetpoint;
+    private double squeezeSetpoint = 0, rotateSetpoint = 0;
 
     private double squeezePos, rotatePos;
 
@@ -72,6 +72,11 @@ public class Intake extends SubsystemBase {
 
         squeezePID = new PIDController(Constants.Intake.kSqueezeP, Constants.Intake.kSqueezeI, Constants.Intake.kSqueezeD);
         rotatePID = new PIDController(Constants.Intake.kRotateP, Constants.Intake.kRotateI, Constants.Intake.kRotateD);
+        squeezePID.setTolerance(Constants.Intake.TOLERANCE, Constants.Intake.VELOCITY_TOLERANCE);
+        rotatePID.setTolerance(Constants.Intake.TOLERANCE, Constants.Intake.VELOCITY_TOLERANCE);
+
+        rotateMotor.burnFlash();
+        squeezeMotor.burnFlash();
     }
     /**
      * Represents the possible states of the squeeze motor.
@@ -102,7 +107,7 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case CLOSE:
-                if (squeezeMotor.getEncoder().getPosition() < -22) {
+                if (squeezeMotor.getEncoder().getPosition() < -28) {
                     squeezeMotor.set(0);
                     intakeSqueezeState = "STOP";
                 } else {
@@ -157,12 +162,18 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("Out Limit Switch", !outLimitSwitch.get());
         SmartDashboard.putNumber("Out Encoder", squeezeMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Rotate Encoder", rotateMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Squeeze Power", squeezeMotor.getOutputCurrent());
+        SmartDashboard.putString("Squeeze Brake", squeezeMotor.getIdleMode().toString());
 
         squeezePos = squeezeMotor.getEncoder().getPosition();
         rotatePos = rotateMotor.getEncoder().getPosition();
 
-//        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
+        squeezeMotor.set(squeezePID.calculate(squeezePos, squeezeSetpoint));
 //        rotateMotor.set(rotatePID.calculate(rotatePos, rotateSetpoint));
+//        SmartDashboard.putNumber("kSqueezeP", squeezePID.getP());
+//        SmartDashboard.putNumber("kSqueezeI", squeezePID.getI());
+//        SmartDashboard.putNumber("kSqueezeD", squeezePID.getD());
+//        squeezePID.setPID(SmartDashboard.getNumber("kSqueezeP", 0), SmartDashboard.getNumber("kSqueezeI", 0), SmartDashboard.getNumber("kSqueezeD", 0));
     }
 
     public void resetEndcoders() {
@@ -179,11 +190,15 @@ public class Intake extends SubsystemBase {
         squeezeMotor.setIdleMode(idleState);
     }
 
-    public void setSqueezeSetpoint(int setpoint) {
+    public void setSqueezeSetpoint(double setpoint) {
         squeezeSetpoint = setpoint;
     }
 
-    public void setRotateSetpoint(int setpoint) {
+    public void setRotateSetpoint(double setpoint) {
         rotateSetpoint = setpoint;
+    }
+
+    public void updateClawSetpoint(double addition) {
+        squeezeSetpoint += addition;
     }
 }

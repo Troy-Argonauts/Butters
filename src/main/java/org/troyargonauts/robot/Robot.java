@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.auton.DropDriveOut;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
         chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Nothing", null);
+        chooser.addOption("Claw PID", new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-19.5)));
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
 
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit()
     {
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
         if (autonomousCommand != null)
         {
             autonomousCommand.cancel();

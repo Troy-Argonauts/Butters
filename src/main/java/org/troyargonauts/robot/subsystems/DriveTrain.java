@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.util.motorcontrol.LazyCANSparkMax;
@@ -95,12 +97,12 @@ public class DriveTrain extends SubsystemBase {
 
         resetEncoders();
 
-        frontRight.burnFlash();
-        middleRight.burnFlash();
-        backRight.burnFlash();
-        frontLeft.burnFlash();
-        middleLeft.burnFlash();
-        backLeft.burnFlash();
+//        frontRight.burnFlash();
+//        middleRight.burnFlash();
+//        backRight.burnFlash();
+//        frontLeft.burnFlash();
+//        middleLeft.burnFlash();
+//        backLeft.burnFlash();
     }
 
     @Override
@@ -136,8 +138,8 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
-        frontRight.set(((speed + turn) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
-        frontLeft.set((speed - turn) * nerf);
+        frontRight.set(((speed + (turn * 0.85)) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
+        frontLeft.set((speed - (turn * 0.85)) * nerf);
     }
 
     /** 
@@ -282,5 +284,14 @@ public class DriveTrain extends SubsystemBase {
         frontRight.setIdleMode(idleMode);
         middleRight.setIdleMode(idleMode);
         backRight.setIdleMode(idleMode);
+    }
+
+    public void reverseRightMotors() {
+//        frontLeft.setInverted(true);
+//        middleLeft.setInverted(true);
+//        backLeft.setInverted(true);
+        frontRight.setInverted(true);
+        middleRight.setInverted(true);
+        backRight.setInverted(true);
     }
 }

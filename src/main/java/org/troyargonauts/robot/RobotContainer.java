@@ -37,6 +37,9 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
                 new RunCommand(
                         () -> {
+                            if ((driver.getLeftTrigger() == 1) && (driver.getRightTrigger() == 1)) {
+                                Robot.getDrivetrain().reverseRightMotors();
+                            }
                             double speed = IStream.create(driver::getLeftY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
@@ -47,6 +50,7 @@ public class RobotContainer {
                         }, Robot.getDrivetrain()
                 )
         );
+
 
         //Intake Up
         operator.getLeftBumper().whileTrue(
@@ -60,17 +64,30 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
                 );
 
-        //Claw Open
-        operator.getBottomButton().whileTrue(
-                        new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.OPEN), Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), Robot.getIntake())
+        //Claw Open - Manual
+        operator.getDPadRight().whileTrue(
+                        new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(1), Robot.getIntake())
                 );
 
-        //Claw Close
-        operator.getRightButton().whileTrue(
-                        new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.CLOSE), Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), Robot.getIntake())
+        //Claw Close - Manual
+        operator.getDPadLeft().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(-1), Robot.getIntake())
+        );
+
+        //Claw Close - Cone
+        operator.getTopButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-31), Robot.getIntake())
                 );
+
+        //Claw Close - Cube
+        operator.getLeftButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-23), Robot.getIntake())
+        );
+
+        //Claw Open
+        operator.getBottomButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(0), Robot.getIntake())
+        );
 
         //LED - Purple
         driver.getLeftBumper().toggleOnTrue(
@@ -85,6 +102,11 @@ public class RobotContainer {
         //LED -Rainbow
         driver.getTopButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
+        );
+
+        //Reset Encoders - Intake
+        operator.getStartButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getIntake().resetEndcoders(), Robot.getIntake())
         );
     }
 

@@ -105,20 +105,23 @@ public final class Constants {
 
     public interface Intake {
         double SQUEEZE_MOTOR_SPEED = 0.2;
-        double ROTATE_MOTOR_SPEED = 0.2;
+        double ROTATE_MOTOR_SPEED = 0.4;
 
         int SQUEEZE_MOTOR_PORT = 1;
         int ROTATE_MOTOR_PORT = 8;
         int TOP_LIMIT_SWITCH = 0;
         int OUT_LIMIT_SWTICH = 1;
 
-        double kSqueezeP = 1;
-        double kSqueezeI = 0;
-        double kSqueezeD = 0;
+        double kSqueezeP = 0.015;
+        double kSqueezeI = 0.0001;
+        double kSqueezeD = 0.001;
 
         double kRotateP = 1;
         double kRotateI = 0;
         double kRotateD = 0;
+
+        double TOLERANCE = 0.25;
+        double VELOCITY_TOLERANCE = 0.01;
     }
 
     public interface LEDs {
