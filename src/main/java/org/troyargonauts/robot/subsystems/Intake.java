@@ -82,16 +82,12 @@ public class Intake extends SubsystemBase {
      * @param state The state to set the squeeze motor to (either "OPEN", "CLOSE", or "STOP").
      */
     public static void setSqueezeIntakeState(squeezeStates state) {
-        DriverStation.reportWarning("Here", false);
         switch (state) {
             case OPEN:
-                DriverStation.reportWarning("AT Open", false);
                 if (!outLimitSwitch.get()) {
-                    DriverStation.reportWarning("Limit Switch", false);
                     squeezeMotor.set(0);
                     intakeSqueezeState = "STOP";
                 } else {
-                    DriverStation.reportWarning("Applying Power", false);
                     squeezeMotor.set(Constants.Intake.SQUEEZE_MOTOR_SPEED);
                     intakeSqueezeState = "OPEN";
                 }
@@ -128,14 +124,9 @@ public class Intake extends SubsystemBase {
                 }
                 break;
             case DOWN:
-                if (rotateMotor.getEncoder().getPosition() < -1) {
-                    rotateMotor.set(0.0);
-                    intakeRotateState = "STOP";
-                } else {
                     rotateMotor.set(Constants.Intake.ROTATE_MOTOR_SPEED);
                     intakeRotateState = "DOWN";
-                }
-                break;
+                    break;
             case STOP:
                 rotateMotor.set(0.0);
                 intakeRotateState = "STOP";
