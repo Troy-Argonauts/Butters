@@ -107,6 +107,7 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("Right Position", getRightPosition());
         SmartDashboard.putNumber("Left Position", getLeftPosition());
         SmartDashboard.putNumber("Position", getPosition());
+
         gyroValue = pigeon.getYaw();
     }
 

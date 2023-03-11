@@ -102,27 +102,43 @@ public class RobotContainer {
 
         //Intake Up
         operator.getLeftBumper().whileTrue(
-                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.UP), org.troyargonauts.Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), org.troyargonauts.Robot.getIntake()));
+                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.UP), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
+                );
 
         //Intake Down
         operator.getRightBumper().whileTrue(
-                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.DOWN), org.troyargonauts.Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), org.troyargonauts.Robot.getIntake()));
+                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.DOWN), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
+                );
 
         //Claw Open
         operator.getBottomButton().whileTrue(
-                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.OPEN), org.troyargonauts.Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), org.troyargonauts.Robot.getIntake()));
+                        new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.OPEN), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), Robot.getIntake())
+                );
 
         //Claw Close
         operator.getRightButton().whileTrue(
-                        new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.CLOSE), org.troyargonauts.Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> org.troyargonauts.Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), org.troyargonauts.Robot.getIntake()));
+                        new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.CLOSE), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setSqueezeIntakeState(Intake.squeezeStates.STOP), Robot.getIntake())
+                );
 
+        //LED - Purple
+        driver.getLeftBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
+        );
+
+        //LED - Yellow
+        driver.getRightBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
+        );
+
+        //LED -Rainbow
+        driver.getTopButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
+        );
     }
-
-
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

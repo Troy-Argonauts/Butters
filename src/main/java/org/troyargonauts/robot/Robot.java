@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.subsystems.*;
@@ -37,6 +36,8 @@ public class Robot extends TimedRobot {
     private static Turret turret;
     private static Intake intake;
 
+    private static LEDSystem led;
+
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -45,7 +46,7 @@ public class Robot extends TimedRobot {
         elevator = new Elevator();
         turret = new Turret();
         intake = new Intake();
-//        pneumatics = new Pneumatics();
+        led = new LEDSystem();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
@@ -154,6 +155,12 @@ public class Robot extends TimedRobot {
             driveTrain = new DriveTrain();
         }
         return driveTrain;
+    }
+    public static LEDSystem getLEDs(){
+        if(led == null){
+            led = new LEDSystem();
+        }
+        return led;
     }
 
     public static RobotContainer getRobotContainer() {

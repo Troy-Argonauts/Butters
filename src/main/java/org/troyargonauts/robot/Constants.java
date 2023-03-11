@@ -39,8 +39,7 @@ public final class Constants {
         int MIDDLE_LEFT = 3;
         int BACK_LEFT = 4;
         int PIGEON = 25;
-
-        double DEADBAND = 0.02;
+        double DEADBAND = 0.05;
 
         //Values in Inches
         double WHEEL_DIAMETER = 6;
@@ -112,6 +111,10 @@ public final class Constants {
         int ROTATE_MOTOR_PORT = 8;
         int TOP_LIMIT_SWITCH = 0;
         int OUT_LIMIT_SWTICH = 1;
+    }
 
+    public interface LEDs {
+        int CANDLE = 24;
+        int ledLength = 141;
     }
 }
