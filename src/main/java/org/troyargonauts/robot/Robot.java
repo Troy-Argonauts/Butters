@@ -5,13 +5,17 @@
 
 package org.troyargonauts.robot;
 
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
+import org.troyargonauts.robot.auton.DropDriveOut;
+import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
 
 /**
@@ -24,35 +28,29 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
-    private static Arm arm;
-    private static Pneumatics pneumatics;
-
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+    private static Intake intake;
 
-
-    private static Elevator elevator;
-
-    private static Turret turret;
-//    static Pneumatics pneumatics;
+    private static LEDSystem led;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        arm = new Arm();
         driveTrain = new DriveTrain();
-        elevator = new Elevator();
-        turret = new Turret();
-//        pneumatics = new Pneumatics();
+        intake = new Intake();
+        led = new LEDSystem();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.addOption("Wrist PID", Robot.getArm().wristPid(0));
-        chooser.addOption("Arm PID", Robot.getArm().armPID(-30));
-        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+//        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
+        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145).withTimeout(6));
+        chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
+        chooser.addOption("Score and Balance", new ScoreBalance());
         chooser.addOption("Nothing", null);
+        chooser.addOption("Claw PID", new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-19.5)));
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
 
@@ -63,6 +61,7 @@ public class Robot extends TimedRobot {
 //        pigeonConfig.MountPoseRoll = 0;
 //        pigeonConfig.MountPoseYaw = 0;
 //        pigeon.configAllSettings(pigeonConfig);
+        CameraServer.startAutomaticCapture();
     }
 
     @Override
@@ -73,7 +72,10 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kCoast);
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kCoast);
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -81,6 +83,11 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
+        Robot.getDrivetrain().resetEncoders();
+        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
+        Robot.getIntake().resetEndcoders();
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
+
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
         {
@@ -94,6 +101,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit()
     {
+        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
         if (autonomousCommand != null)
         {
             autonomousCommand.cancel();
@@ -120,19 +128,6 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {}
 
-    public static Arm getArm() {
-        if (arm == null) {
-            arm = new Arm();
-        }
-        return arm;
-    }
-
-    public static Pneumatics getPneumatics() {
-        if (pneumatics == null) {
-            pneumatics = new Pneumatics();
-        }
-        return pneumatics;
-    }
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class
@@ -143,6 +138,12 @@ public class Robot extends TimedRobot {
         }
         return driveTrain;
     }
+    public static LEDSystem getLEDs(){
+        if(led == null){
+            led = new LEDSystem();
+        }
+        return led;
+    }
 
     public static RobotContainer getRobotContainer() {
         if (robotContainer == null) {
@@ -151,16 +152,11 @@ public class Robot extends TimedRobot {
         return robotContainer;
     }
 
-    public static Elevator getElevator() {
-        if (elevator == null) elevator = new Elevator();
-        return elevator;
 
-    }
-    public static Turret getTurret() {
-        if (turret == null){
-            turret = new Turret();
+    public static Intake getIntake(){
+        if(intake == null){
+            intake = new Intake();
         }
-
-        return turret;
+        return intake;
     }
 }

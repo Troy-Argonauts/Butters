@@ -39,21 +39,19 @@ public final class Constants {
         int MIDDLE_LEFT = 3;
         int BACK_LEFT = 4;
         int PIGEON = 25;
-
-        double DEADBAND = 0.02;
+        double DEADBAND = 0.05;
 
         //Values in Inches
         double WHEEL_DIAMETER = 6;
         double ENCODER_NU_PER_REVOLUTION = 42;
         double GEARBOX_SCALE = 8.54;
-        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI) * GEARBOX_SCALE;
-        double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / ENCODER_NU_PER_REVOLUTION;
+        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI);
+        double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / GEARBOX_SCALE;
 
         //PID Tuning Values
-        double kDriveP = 0.08;
-        double kDriveI = 0.005;
-        double kDriveD = 0.03;
-
+        double kDriveP = 0.008;
+        double kDriveI = 0.001;
+        double kDriveD = 0.001;
         double kTurnP = 1;
         double kTurnI = 0;
         double kTurnD = 0;
@@ -61,13 +59,13 @@ public final class Constants {
         double kBalanceP = 1;
         double kBalanceI = 0;
         double kBalanceD = 0;
-
-        double kDriveTolerance = 1;
+        double kDriveTolerance = 0.5;
         double kTurnToleranceDeg = 1;
         double kBalanceToleranceDeg = 4;
+        double kVelcoityTolerance = 0.05;
 
         //Correction Values
-        double RIGHT_CORRECTION = 0.0010;
+        double RIGHT_CORRECTION = -0.0022;
     }
 
     public interface Elevator {
@@ -103,5 +101,31 @@ public final class Constants {
         double NERF = 0.5;
         int LEFT_PORT = 2;
         int RIGHT_PORT = 3;
+    }
+
+    public interface Intake {
+        double SQUEEZE_MOTOR_SPEED = 0.2;
+        double ROTATE_MOTOR_SPEED = 0.4;
+
+        int SQUEEZE_MOTOR_PORT = 1;
+        int ROTATE_MOTOR_PORT = 8;
+        int TOP_LIMIT_SWITCH = 0;
+        int OUT_LIMIT_SWTICH = 1;
+
+        double kSqueezeP = 0.015;
+        double kSqueezeI = 0.0001;
+        double kSqueezeD = 0.001;
+
+        double kRotateP = 1;
+        double kRotateI = 0;
+        double kRotateD = 0;
+
+        double TOLERANCE = 0.25;
+        double VELOCITY_TOLERANCE = 0.01;
+    }
+
+    public interface LEDs {
+        int CANDLE = 24;
+        int ledLength = 141;
     }
 }

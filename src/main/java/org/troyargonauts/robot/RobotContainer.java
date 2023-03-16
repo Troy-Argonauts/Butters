@@ -12,7 +12,7 @@ import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
-import org.troyargonauts.robot.subsystems.Arm;
+import org.troyargonauts.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,6 +37,9 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
                 new RunCommand(
                         () -> {
+                            if ((driver.getLeftTrigger() == 1) && (driver.getRightTrigger() == 1)) {
+                                Robot.getDrivetrain().reverseRightMotors();
+                            }
                             double speed = IStream.create(driver::getLeftY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
@@ -48,55 +51,62 @@ public class RobotContainer {
                 )
         );
 
-        Robot.getArm().setDefaultCommand(
-                new RunCommand(() -> {
-                    Robot.getArm().wristTeleOp(operator.getRightY());
-                    Robot.getArm().armTeleOp(operator.getLeftY());
-                }, Robot.getArm())
+
+        //Intake Up
+        operator.getLeftBumper().whileTrue(
+                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.UP), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
+                );
+
+        //Intake Down
+        operator.getRightBumper().whileTrue(
+                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.DOWN), Robot.getIntake()))
+                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
+                );
+
+        //Claw Open - Manual
+        operator.getDPadRight().whileTrue(
+                        new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(1), Robot.getIntake())
+                );
+
+        //Claw Close - Manual
+        operator.getDPadLeft().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(-1), Robot.getIntake())
         );
 
-        operator.getLeftBumper().onTrue(
-                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
-                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
+        //Claw Close - Cone
+        operator.getTopButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-31), Robot.getIntake())
+                );
 
-        operator.getRightBumper().onTrue(
-                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
-                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
-
-        //Cone - Human Player (A Button)
-        operator.getBottomButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(5.5)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-25))
-                )
+        //Claw Close - Cube
+        operator.getLeftButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-23), Robot.getIntake())
         );
 
-        //Cube - Human Player (B Button)
-        operator.getRightButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(13)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-32))
-                )
+        //Claw Open
+        operator.getBottomButton().whileTrue(
+                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(0), Robot.getIntake())
         );
 
-        //Home (X Button)
-        operator.getRightButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(-5)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(0))
-                )
+        //LED - Purple
+        driver.getLeftBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
         );
 
-        //Cone Score (Y Button)
-        operator.getTopButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(39)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-21))
-                )
+        //LED - Yellow
+        driver.getRightBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
         );
 
+        //LED -Rainbow
+        driver.getTopButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
+        );
 
-        //Floor Pickup
+        //Reset Encoders - Intake
         operator.getStartButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(75)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
-                )
+                new InstantCommand(() -> Robot.getIntake().resetEndcoders(), Robot.getIntake())
         );
     }
 
