@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.auton.DropDriveOut;
+import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
 
 /**
@@ -45,9 +45,10 @@ public class Robot extends TimedRobot {
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
 //        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
-        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145));
+        chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145).withTimeout(6));
         chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
+        chooser.addOption("Score and Balance", new ScoreBalance());
         chooser.addOption("Nothing", null);
         chooser.addOption("Claw PID", new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-19.5)));
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));

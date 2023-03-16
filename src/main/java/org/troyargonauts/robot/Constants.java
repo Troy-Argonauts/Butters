@@ -49,9 +49,9 @@ public final class Constants {
         double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / GEARBOX_SCALE;
 
         //PID Tuning Values
-        double kDriveP = 0.015;
-        double kDriveI = 0;
-        double kDriveD = 0.003;
+        double kDriveP = 0.008;
+        double kDriveI = 0.001;
+        double kDriveD = 0.001;
         double kTurnP = 1;
         double kTurnI = 0;
         double kTurnD = 0;

@@ -256,6 +256,7 @@ public class DriveTrain extends SubsystemBase {
      */
     public void brakeMode() {
         resetEncoders();
+        setIdleMode(CANSparkMax.IdleMode.kBrake);
         drivePID(0);
     }
 
