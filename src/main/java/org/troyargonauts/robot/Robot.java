@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.auton.DropDriveOut;
 import org.troyargonauts.robot.auton.ScoreBalance;
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
         chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145).withTimeout(6));
         chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
-        chooser.addOption("Score and Balance", new ScoreBalance());
+        chooser.addOption("Score and Balance", new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain()));
         chooser.addOption("Nothing", null);
         chooser.addOption("Claw PID", new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-19.5)));
 //        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
@@ -73,8 +74,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kCoast);
-        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kCoast);
     }
 
     @Override
@@ -87,6 +86,7 @@ public class Robot extends TimedRobot {
         Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
         Robot.getIntake().resetEndcoders();
         Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
+        new InstantCommand(() -> Robot.getLEDs().ledOff());
 
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null)
@@ -101,7 +101,10 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit()
     {
+        Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
         Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
+        new InstantCommand(() -> Robot.getLEDs().ledOff());
+
         if (autonomousCommand != null)
         {
             autonomousCommand.cancel();

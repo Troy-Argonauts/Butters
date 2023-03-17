@@ -108,6 +108,10 @@ public class RobotContainer {
         operator.getStartButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getIntake().resetEndcoders(), Robot.getIntake())
         );
+
+        driver.getBottomButton().whileTrue(
+                new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
+        );
     }
 
     /**

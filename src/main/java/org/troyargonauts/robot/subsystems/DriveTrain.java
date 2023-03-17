@@ -24,11 +24,11 @@ public class DriveTrain extends SubsystemBase {
 
     private Pigeon2 pigeon;
 
-    private final PIDController drivePID, turnPID, autoBalancePID;
+    private final PIDController drivePID, turnPID;
 
     public double frontRightEncoderValue, middleRightEncoderValue, backRightEncoderValue, frontLeftEncoderValue, middleLeftEncoderValue, backLeftEncoderValue;
 
-    public double gyroValue;
+    public double gyroYawValue, gyroRollValue;
 
     /**
      * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder conversion factors and instantiates PID controllers.
@@ -73,11 +73,9 @@ public class DriveTrain extends SubsystemBase {
 
         drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
         turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
-        autoBalancePID = new PIDController(Constants.DriveTrain.kBalanceP, Constants.DriveTrain.kBalanceI, Constants.DriveTrain.kBalanceP);
 
         drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance, Constants.DriveTrain.kVelcoityTolerance);
         turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
-        autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
 
         turnPID.enableContinuousInput(-180, 180);
 
@@ -114,17 +112,9 @@ public class DriveTrain extends SubsystemBase {
         middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
         backLeftEncoderValue = backLeft.getEncoder().getPosition();
 
-        SmartDashboard.putNumber("frontRightEncoderValue", frontRightEncoderValue);
-        SmartDashboard.putNumber("middleRightEncoderValue", middleRightEncoderValue);
-        SmartDashboard.putNumber("backRightEncoderValue", backRightEncoderValue);
-        SmartDashboard.putNumber("frontLeftEncoderValue", frontLeftEncoderValue);
-        SmartDashboard.putNumber("middleLeftEncoderValue", middleLeftEncoderValue);
-        SmartDashboard.putNumber("backLeftEncoderValue", backLeftEncoderValue);
-        SmartDashboard.putNumber("Right Position", getRightPosition());
-        SmartDashboard.putNumber("Left Position", getLeftPosition());
-        SmartDashboard.putNumber("Position", getPosition());
-
-        gyroValue = pigeon.getYaw();
+        SmartDashboard.putNumber("Pigeon Roll", gyroRollValue);
+        gyroYawValue = pigeon.getYaw();
+        gyroRollValue = pigeon.getRoll();
     }
 
 
@@ -209,7 +199,7 @@ public class DriveTrain extends SubsystemBase {
      * @return angle of robot
      */
     public double getAngle() {
-        double output = gyroValue % 360;
+        double output = gyroYawValue % 360;
         while (Math.abs(output) > 180) {
             if (output < 0) {
                 output += 360;
@@ -260,24 +250,6 @@ public class DriveTrain extends SubsystemBase {
         drivePID(0);
     }
 
-
-
-
-
-
-    /** 
-     * Uses PIDController to balance the robot on the charging station based on the angular offset determined by the gyro.
-     * @return PIDCommand that balances robot.
-     */
-    public PIDCommand autoBalance() {
-        return new PIDCommand(
-            autoBalancePID,
-            () -> pigeon.getPitch(),
-            0,
-            output -> cheesyDrive(output, 0, 0.2),
-            Robot.getDrivetrain()
-        );
-    }
     public void setIdleMode(CANSparkMax.IdleMode idleMode) {
         frontLeft.setIdleMode(idleMode);
         middleLeft.setIdleMode(idleMode);
@@ -294,5 +266,16 @@ public class DriveTrain extends SubsystemBase {
         frontRight.setInverted(true);
         middleRight.setInverted(true);
         backRight.setInverted(true);
+    }
+
+    public void balance() {
+        if (gyroRollValue > Constants.DriveTrain.BALANCE_THRESHOLD) {
+            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.05);
+        } else if (gyroRollValue < -Constants.DriveTrain.BALANCE_THRESHOLD) {
+            Robot.getDrivetrain().cheesyDrive(1, 0, 0.05);
+        } else {
+            Robot.getDrivetrain().cheesyDrive(0, 0, 0.05);
+            Robot.getLEDs().rainbow();
+        }
     }
 }

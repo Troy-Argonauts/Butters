@@ -12,7 +12,8 @@ public class ScoreBalance extends SequentialCommandGroup {
         super(
                 new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(-0.2, 0, 1), Robot.getDrivetrain()).withTimeout(0.5),
                 new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(0.6),
-                Robot.getDrivetrain().drivePID(88).withTimeout(6)
+                Robot.getDrivetrain().drivePID(88).withTimeout(6),
+                new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
         );
     }
 }

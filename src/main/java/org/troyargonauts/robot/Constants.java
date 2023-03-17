@@ -56,9 +56,7 @@ public final class Constants {
         double kTurnI = 0;
         double kTurnD = 0;
 
-        double kBalanceP = 1;
-        double kBalanceI = 0;
-        double kBalanceD = 0;
+        double BALANCE_THRESHOLD = 1.5;
         double kDriveTolerance = 0.5;
         double kTurnToleranceDeg = 1;
         double kBalanceToleranceDeg = 4;
