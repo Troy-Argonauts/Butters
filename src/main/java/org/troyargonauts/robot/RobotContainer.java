@@ -6,13 +6,11 @@
 package org.troyargonauts.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
-import org.troyargonauts.robot.subsystems.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,57 +43,6 @@ public class RobotContainer {
                                     .get();
                             Robot.getDrivetrain().cheesyDrive(speed, angle, 1);
                         }, Robot.getDrivetrain()
-                )
-        );
-
-        Robot.getArm().setDefaultCommand(
-                new RunCommand(() -> {
-                    Robot.getArm().wristTeleOp(operator.getRightY());
-                    Robot.getArm().armTeleOp(operator.getLeftY());
-                }, Robot.getArm())
-        );
-
-        operator.getLeftBumper().onTrue(
-                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD), Robot.getArm()))
-                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
-
-        operator.getRightBumper().onTrue(
-                        new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD), Robot.getArm()))
-                .onFalse(new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF), Robot.getArm()));
-
-        //Cone - Human Player (A Button)
-        operator.getBottomButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(5.5)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-25))
-                )
-        );
-
-        //Cube - Human Player (B Button)
-        operator.getRightButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(13)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-32))
-                )
-        );
-
-        //Home (X Button)
-        operator.getRightButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(-5)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(0))
-                )
-        );
-
-        //Cone Score (Y Button)
-        operator.getTopButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(39)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-21))
-                )
-        );
-
-
-        //Floor Pickup
-        operator.getStartButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getArm().setArmSetpoint(75)).alongWith(
-                        new InstantCommand(() -> Robot.getArm().setWristSetpoint(-26))
                 )
         );
     }
