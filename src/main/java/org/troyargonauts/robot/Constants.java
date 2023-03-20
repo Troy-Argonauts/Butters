@@ -1,5 +1,8 @@
 package org.troyargonauts.robot;
 
+import edu.wpi.first.math.util.Units;
+import org.troyargonauts.common.motors.wrappers.MotorController;
+
 public final class Constants {
     public interface Arm {
         int ELBOW = 9;
@@ -38,16 +41,14 @@ public final class Constants {
         int FRONT_LEFT = 2;
         int MIDDLE_LEFT = 3;
         int BACK_LEFT = 4;
-        int PIGEON = 25;
 
         double DEADBAND = 0.02;
 
         //Values in Inches
-        double WHEEL_DIAMETER = 6;
-        double ENCODER_NU_PER_REVOLUTION = 42;
-        double GEARBOX_SCALE = 8.54;
-        double REVOLUTION_DISTANCE = (WHEEL_DIAMETER * Math.PI) * GEARBOX_SCALE;
-        double DISTANCE_CONVERSION = REVOLUTION_DISTANCE / ENCODER_NU_PER_REVOLUTION;
+        int WHEEL_DIAMETER = 6;
+
+        MotorController.GearingParameters gearingLowGear = new MotorController.GearingParameters(1.0 / 19.6, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
+        MotorController.GearingParameters gearingHighGear = new MotorController.GearingParameters(1.0 / 9.06677, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
 
         //PID Tuning Values
         double kDriveP = 0.08;
@@ -68,6 +69,10 @@ public final class Constants {
 
         //Correction Values
         double RIGHT_CORRECTION = 0.0010;
+
+        int LOW_HIGH_THRESHOLD = 4362;
+        int HIGH_LOW_THRESHOLD = 2018;
+        double SHIFTING_THRESHOLD = 0.1;
     }
 
     public interface Elevator {

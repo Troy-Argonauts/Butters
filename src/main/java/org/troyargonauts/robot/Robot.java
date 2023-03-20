@@ -20,11 +20,12 @@ import org.troyargonauts.robot.subsystems.*;
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private static RobotContainer robotContainer;
-    private static DriveTrainNeo driveTrainNeo;
+    private static DriveTrain driveTrain;
 
     @Override
     public void robotInit() {
-        driveTrainNeo = new DriveTrainNeo();
+        driveTrain = new DriveTrain();
+
         robotContainer = new RobotContainer();
     }
 
@@ -82,11 +83,11 @@ public class Robot extends TimedRobot {
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class
      */
-    public static DriveTrainNeo getDrivetrain() {
-        if (driveTrainNeo == null) {
-            driveTrainNeo = new DriveTrainNeo();
+    public static DriveTrain getDrivetrain() {
+        if (driveTrain == null) {
+            driveTrain = new DriveTrain();
         }
-        return driveTrainNeo;
+        return driveTrain;
     }
 
     public static RobotContainer getRobotContainer() {

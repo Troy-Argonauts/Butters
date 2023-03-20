@@ -4,6 +4,8 @@ package org.troyargonauts.common.math;
 /* This work is licensed under the terms of the MIT license */
 /* found in the root directory of this project. */
 
+import static java.lang.Math.PI;
+
 /**
  * OMath (StuyLib Math) is a class containing many algorithms that are useful for developing robot
  * code. Algorithms include limit, deadband, raising to powers while keeping the sign, and some
@@ -15,6 +17,8 @@ public final class OMath {
 
     // Prevent the class from being extended at all
     private OMath() {}
+
+    public static final double Tau = 2 * PI;
 
     /*********************/
     /*** INTERPOLATION ***/
@@ -226,5 +230,15 @@ public final class OMath {
      */
     public static boolean isZero(double num) {
         return Math.abs(num) < FLT_ELIPSON;
+    }
+
+    /**
+     * Converts radians per second to rotations per minute.
+     *
+     * @param radiansPerSecond radians per second
+     * @return rotations per minute
+     */
+    public static double radiansToRotations(final double radiansPerSecond) {
+        return radiansPerSecond * 60.0 / Tau;
     }
 }
