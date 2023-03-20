@@ -40,10 +40,6 @@ public final class MotorControllerGroup<T> {
         return success;
     }
 
-    public void followMaster(final boolean invert) {
-        m_slaves.forEach(slave -> slave.follow(m_master, invert));
-    }
-
     public void setSafe() {
         forEach(MotorController::setNeutral);
     }
