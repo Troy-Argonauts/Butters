@@ -21,6 +21,8 @@ public class DualSpeedTransmission extends SubsystemBase {
 	public DualSpeedTransmission(DriveTrain driveTrain) {
 		this.driveTrain = driveTrain;
 		this.timer = new Timer();
+
+		// TODO: Find what channel is right and left sides
 		rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
 		leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,2, 3);
 	}
@@ -29,6 +31,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 		LOW, HIGH
 	}
 
+	// TODO: Find what value is low gear and high gear
 	public void setGear(Gear gear) {
 		switch(gear) {
 		case LOW:
