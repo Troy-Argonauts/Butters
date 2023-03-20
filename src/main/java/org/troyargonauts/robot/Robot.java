@@ -40,10 +40,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
-        getDrivetrain().set((rightSide, leftSide) -> {
-            rightSide.forEach(motor -> motor.setNeutralBehaviour(MotorController.NeutralBehaviour.COAST));
-            leftSide.forEach(motor -> motor.setNeutralBehaviour(MotorController.NeutralBehaviour.COAST));
-        });
     }
     
     @Override
