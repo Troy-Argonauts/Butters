@@ -16,17 +16,11 @@ import static org.troyargonauts.robot.Constants.LEDs.ledLength;
  */
 public class LEDSystem extends SubsystemBase {
 
-    public final static int goldR = 51;
-    public final static int goldG = 51;
-    public final static int goldB = 58;
+    public final static int gold[] = {51, 51, 58};
 
-    public final static int yellowR = 255;
-    public final static int yellowG = 255;
-    public final static int yellowB = 0;
+    public final static int yellow[] = {255, 255, 0};
 
-    public final static int purpleR = 70;
-    public final static int purpleG = 0;
-    public final static int purpleB = 106;
+    public final static int purple[] = {70, 0, 106};
 
     private final CANdle candle;
     public CANdleConfiguration config;
@@ -42,6 +36,9 @@ public class LEDSystem extends SubsystemBase {
         candle.configAllSettings(config);
     }
 
+    /**
+     * This method makes the LEDs rainbow
+     */
     public void rainbow(){
         config.brightnessScalar = 0.5;
         candle.configAllSettings(config);
@@ -55,7 +52,7 @@ public class LEDSystem extends SubsystemBase {
 
     // We could maybe set it up so that if we win, these are the lights that will display
     public void argoColors() {
-        candle.setLEDs(goldR, goldG, goldB);
+        candle.setLEDs(gold[0], gold[1], gold[2]);
     }
 
     /**
@@ -63,7 +60,7 @@ public class LEDSystem extends SubsystemBase {
      */
     public void purpleCube() {
         DriverStation.reportWarning("Purple", false);
-        candle.setLEDs(purpleR, purpleG, purpleB);
+        candle.setLEDs(purple[0], purple[1], purple[2]);
     }
 
     /**
@@ -71,7 +68,7 @@ public class LEDSystem extends SubsystemBase {
      */
     public void yellowCone() {
         DriverStation.reportWarning("Yellow", false);
-        candle.setLEDs(yellowR, yellowG, yellowB);
+        candle.setLEDs(yellow[0], yellow[1], yellow[2]);
     }
 
     /**
