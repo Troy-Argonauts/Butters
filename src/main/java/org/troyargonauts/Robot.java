@@ -50,7 +50,6 @@ public class Robot extends TimedRobot {
 
         // autonomous chooser on the dashboard.
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Wrist PID", Robot.getArm().wristPid(0));
         chooser.setDefaultOption("Arm PID", Robot.getArm().armPID(-30));
       
         driveTrain.resetEncoders();
