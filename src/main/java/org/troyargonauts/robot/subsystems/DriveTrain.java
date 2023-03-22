@@ -1,9 +1,10 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
@@ -15,7 +16,6 @@ import org.troyargonauts.robot.Robot;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -33,9 +33,9 @@ public class DriveTrain extends SubsystemBase {
     /**
      * Collects encoder values from the right and left sides of the drivetrain. Uses master motor (frontRight and frontLeft) for encoder values.
      */
-    private double rightEncoderValue, leftEncoderValue;
+    private double frontRightValue, frontLeftValue, middleRightValue, backRightValue, middleLeftValue, backLeftValue;
 
-    private DualSpeedTransmission dualSpeedTransmission;
+    private final DualSpeedTransmission dualSpeedTransmission;
 
     /**
      * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder conversion factors and instantiates PID controllers.
@@ -71,8 +71,13 @@ public class DriveTrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
-        leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        frontRightValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        middleRightValue = rightSide.getSlaves().get(0).getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        backLeftValue = rightSide.getSlaves().get(1).getInternalController().getSensorCollection().getIntegratedSensorPosition();
+
+        frontLeftValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        middleLeftValue = leftSide.getSlaves().get(0).getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        backLeftValue = leftSide.getSlaves().get(1).getInternalController().getSensorCollection().getIntegratedSensorPosition();
     }
 
     /**
@@ -112,8 +117,12 @@ public class DriveTrain extends SubsystemBase {
      * Returns encoder position based on the average value from the frontLeft and frontRight motor controller encoders.
      * @return encoder position based on encoder values.
      */
-    public double getEncoderValue() {
-        return (leftEncoderValue + rightEncoderValue) / 2;
+    public double getMasterEncoderValue() {
+        return (frontLeftValue + frontRightValue) / 2;
+    }
+
+    public double getAverageEncoderValue() {
+        return (((frontLeftValue + middleLeftValue + backLeftValue) / 3) + ((frontRightValue + middleRightValue + backRightValue) / 3)) / 2;
     }
 
     /**
@@ -124,7 +133,7 @@ public class DriveTrain extends SubsystemBase {
     public void drivePID(double setpoint) {
         new PIDCommand(
                 drivePID,
-                this::getEncoderValue,
+                this::getMasterEncoderValue,
                 setpoint,
                 output -> cheesyDrive(output, 0, 1),
                 Robot.getDrivetrain()
@@ -159,5 +168,92 @@ public class DriveTrain extends SubsystemBase {
 
     public DualSpeedTransmission getDualSpeedTransmission() {
         return dualSpeedTransmission;
+    }
+
+    public static class DualSpeedTransmission extends SubsystemBase {
+
+        private final DoubleSolenoid rightSolenoid;
+        private final DoubleSolenoid leftSolenoid;
+        private final DriveTrain driveTrain;
+        private final Timer timer;
+        private double shiftTime;
+        private boolean automaticShifting = true;
+
+        public DualSpeedTransmission(DriveTrain driveTrain) {
+            this.driveTrain = driveTrain;
+            this.timer = new Timer();
+
+            // TODO: Find what channel is right and left sides
+            rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+            leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,2, 3);
+        }
+
+        public enum Gear {
+            LOW, HIGH
+        }
+
+        // TODO: Find what value is low gear and high gear
+        public void setGear(Gear gear) {
+            switch(gear) {
+            case LOW:
+                rightSolenoid.set(DoubleSolenoid.Value.kReverse);
+                leftSolenoid.set(DoubleSolenoid.Value.kReverse);
+                break;
+            case HIGH:
+                rightSolenoid.set(DoubleSolenoid.Value.kForward);
+                leftSolenoid.set(DoubleSolenoid.Value.kForward);
+                break;
+            }
+        }
+
+        public Gear getGear() {
+            if(rightSolenoid.get() == DoubleSolenoid.Value.kForward && leftSolenoid.get() == DoubleSolenoid.Value.kForward) {
+                return Gear.HIGH;
+            } else {
+                return Gear.LOW;
+            }
+        }
+
+        public void disableAutomaticShifting() {
+            automaticShifting = false;
+        }
+
+        public void enableAutomaticShifting() {
+            automaticShifting = true;
+        }
+
+        public boolean isAutomaticShifting() {
+            return automaticShifting;
+        }
+
+        /**
+         * If this method overloads the roborio main thread, implement CompletableFuture.
+         */
+        @Override
+        public void periodic() {
+            MotorController<TalonFX> rightMaster = driveTrain.getRightSide().getMaster();
+            MotorController<TalonFX> leftMaster = driveTrain.getLeftSide().getMaster();
+            if (isAutomaticShifting()) {
+                if ((rightMaster.getMotorRotations() > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (leftMaster.getMotorRotations() > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (getGear() == Gear.LOW)) {
+                    shiftTime += Timer.getFPGATimestamp() - timer.get();
+                    if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
+                        setGear(Gear.HIGH);
+                        driveTrain.set((rightSide, leftSide) -> {
+                            rightSide.getMaster().getInternalController().configVoltageCompSaturation(8.5);
+                            leftSide.getMaster().getInternalController().configVoltageCompSaturation(8.5);
+                        });
+                        driveTrain.setGearingParameters(Constants.DriveTrain.gearingHighGear);
+                        shiftTime = 0;
+                    }
+                } else if ((rightMaster.getMotorRotations() < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (leftMaster.getMotorRotations() < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (getGear() == Gear.HIGH)) {
+                    setGear(Gear.LOW);
+                    driveTrain.set((rightSide, leftSide) -> {
+                        rightSide.getMaster().getInternalController().configVoltageCompSaturation(12);
+                        leftSide.getMaster().getInternalController().configVoltageCompSaturation(12);
+                    });
+                    driveTrain.setGearingParameters(Constants.DriveTrain.gearingLowGear);
+                }
+            }
+        }
     }
 }

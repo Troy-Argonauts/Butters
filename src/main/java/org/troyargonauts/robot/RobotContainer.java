@@ -6,11 +6,13 @@
 package org.troyargonauts.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
+import org.troyargonauts.robot.subsystems.DriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +46,14 @@ public class RobotContainer {
                             Robot.getDrivetrain().cheesyDrive(speed, angle, 1);
                         }, Robot.getDrivetrain()
                 )
+        );
+
+        driver.getRightBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
+        );
+
+        driver.getLeftBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
         );
     }
 
