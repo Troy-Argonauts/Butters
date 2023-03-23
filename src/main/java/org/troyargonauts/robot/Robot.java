@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.troyargonauts.common.motors.wrappers.MotorController;
 import org.troyargonauts.robot.subsystems.*;
 
 /**
@@ -38,12 +39,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        getDrivetrain().getDualSpeedTransmission().setGear(DriveTrain.DualSpeedTransmission.Gear.HIGH);
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
     }
     
     @Override
     public void autonomousInit() {
-        getDrivetrain().getDualSpeedTransmission().setGear(DriveTrain.DualSpeedTransmission.Gear.LOW);
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
@@ -51,7 +52,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        getDrivetrain().getDualSpeedTransmission().setGear(DriveTrain.DualSpeedTransmission.Gear.LOW);
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

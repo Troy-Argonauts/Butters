@@ -108,6 +108,7 @@ public class LazyTalon<TalonType extends BaseTalon> implements MotorController<T
 
 	@Override
 	public synchronized boolean follow(final MotorController<TalonType> other, final boolean invert) {
+		other.setInverted(invert);
 		m_internal.setInverted(invert ? InvertType.OpposeMaster : InvertType.FollowMaster);
 		m_internal.set(ControlMode.Follower, other.getDeviceID());
 		m_leader = other;
@@ -129,7 +130,7 @@ public class LazyTalon<TalonType extends BaseTalon> implements MotorController<T
 	public void set(final double value) {
 		if (value != m_lastValue) {
 			m_internal.set(ControlMode.PercentOutput, value);
-
+			DriverStation.reportWarning(String.valueOf(value), false);
 			m_lastMode = ControlMode.PercentOutput;
 			m_lastValue = value;
 

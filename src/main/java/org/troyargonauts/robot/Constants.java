@@ -35,12 +35,12 @@ public final class Constants {
   
     public interface DriveTrain {
         //CAN IDs
-        int FRONT_RIGHT = 5;
-        int MIDDLE_RIGHT = 6;
-        int BACK_RIGHT = 7;
-        int FRONT_LEFT = 2;
-        int MIDDLE_LEFT = 3;
-        int BACK_LEFT = 4;
+        int FRONT_RIGHT = 6;
+        int TOP_RIGHT = 4;
+        int REAR_RIGHT = 5;
+        int FRONT_LEFT = 1;
+        int TOP_LEFT = 3;
+        int REAR_LEFT = 2;
 
         double DEADBAND = 0.02;
 
@@ -66,9 +66,6 @@ public final class Constants {
         double kDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
         double kBalanceToleranceDeg = 4;
-
-        //Correction Values
-        double RIGHT_CORRECTION = 0.0010;
 
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
