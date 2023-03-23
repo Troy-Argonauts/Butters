@@ -1,5 +1,6 @@
 package org.troyargonauts.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +37,9 @@ public class DriveTrain extends SubsystemBase {
     private double rightEncoderValue, leftEncoderValue;
 
     private DualSpeedTransmission dualSpeedTransmission;
+    private static final StatorCurrentLimitConfiguration CURRENT_LIMIT = new StatorCurrentLimitConfiguration(
+            true, 60, 60,0.2
+    );
 
     /**
      * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder conversion factors and instantiates PID controllers.
@@ -51,8 +55,11 @@ public class DriveTrain extends SubsystemBase {
         LazyTalon<TalonFX> middleLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_LEFT, true);
         LazyTalon<TalonFX> backLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_LEFT, true);
 
-        rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), false);
+        rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true);
         leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false);
+
+        configMotors(rightSide);
+        configMotors(leftSide);
 
         drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
         turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
@@ -159,5 +166,14 @@ public class DriveTrain extends SubsystemBase {
 
     public DualSpeedTransmission getDualSpeedTransmission() {
         return dualSpeedTransmission;
+    }
+
+    private void configMotors(final MotorControllerGroup<TalonFX> motors) {
+        motors.forEach(motor -> {
+            motor.setNeutralBehaviour(MotorController.NeutralBehaviour.BRAKE);
+            motor.getInternalController().configVoltageCompSaturation(12.0);
+            motor.getInternalController().enableVoltageCompensation(true);
+            motor.getInternalController().configStatorCurrentLimit(CURRENT_LIMIT);
+        });
     }
 }

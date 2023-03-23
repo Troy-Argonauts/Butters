@@ -12,6 +12,7 @@ public final class MotorControllerGroup<T> {
         m_master = master;
         m_slaves = slaves;
 
+        m_master.setInverted(invertControl);
         m_slaves.forEach(slave -> slave.follow(m_master, invertControl));
     }
 

@@ -108,8 +108,7 @@ public class LazyTalon<TalonType extends BaseTalon> implements MotorController<T
 
 	@Override
 	public synchronized boolean follow(final MotorController<TalonType> other, final boolean invert) {
-		other.setInverted(invert);
-		m_internal.setInverted(invert ? InvertType.OpposeMaster : InvertType.FollowMaster);
+		m_internal.setInverted(invert ? InvertType.FollowMaster : InvertType.OpposeMaster);
 		m_internal.set(ControlMode.Follower, other.getDeviceID());
 		m_leader = other;
 		return true;
