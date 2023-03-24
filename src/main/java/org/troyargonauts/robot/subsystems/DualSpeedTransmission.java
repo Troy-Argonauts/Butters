@@ -72,7 +72,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 		MotorController<TalonFX> rightMaster = driveTrain.getRightSide().getMaster();
 		MotorController<TalonFX> leftMaster = driveTrain.getLeftSide().getMaster();
 		if (isAutomaticShifting()) {
-			if ((rightMaster.getMotorRotations() > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (leftMaster.getMotorRotations() > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (getGear() == Gear.LOW)) {
+			if ((Math.abs(rightMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (Math.abs(leftMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (getGear() == Gear.LOW)) {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.HIGH);
@@ -83,7 +83,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 					driveTrain.setGearingParameters(Constants.DriveTrain.gearingHighGear);
 					shiftTime = 0;
 				}
-			} else if ((rightMaster.getMotorRotations() < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (leftMaster.getMotorRotations() < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (getGear() == Gear.HIGH)) {
+			} else if ((Math.abs(rightMaster.getMotorRotations()) < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (Math.abs(leftMaster.getMotorRotations()) < Constants.DriveTrain.HIGH_LOW_THRESHOLD) && (getGear() == Gear.HIGH)) {
 				setGear(Gear.LOW);
 				driveTrain.set((rightSide, leftSide) -> {
 					rightSide.getMaster().getInternalController().configVoltageCompSaturation(12);

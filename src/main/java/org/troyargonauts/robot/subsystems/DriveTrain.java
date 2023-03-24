@@ -1,10 +1,12 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
@@ -55,8 +57,8 @@ public class DriveTrain extends SubsystemBase {
         LazyTalon<TalonFX> middleLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_LEFT, true);
         LazyTalon<TalonFX> backLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_LEFT, true);
 
-        rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true);
-        leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false);
+        rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true, false);
+        leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false, false);
 
         configMotors(rightSide);
         configMotors(leftSide);
@@ -80,6 +82,11 @@ public class DriveTrain extends SubsystemBase {
     public void periodic() {
         rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
         leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+
+        SmartDashboard.putNumber("motor rotations right", rightSide.getMaster().getMotorRotations());
+        SmartDashboard.putNumber("motor rotations left", leftSide.getMaster().getMotorRotations());
+        SmartDashboard.putBoolean("gear low", getDualSpeedTransmission().getGear() == DualSpeedTransmission.Gear.LOW);
+        SmartDashboard.putBoolean("automatic shifting", getDualSpeedTransmission().isAutomaticShifting());
     }
 
     /**
@@ -113,6 +120,8 @@ public class DriveTrain extends SubsystemBase {
     public void resetEncoders() {
         rightSide.getMaster().getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50);
         leftSide.getMaster().getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50);
+
+
     }
 
     /**

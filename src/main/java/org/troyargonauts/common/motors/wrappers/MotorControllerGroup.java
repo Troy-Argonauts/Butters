@@ -8,12 +8,12 @@ public final class MotorControllerGroup<T> {
     private final MotorController<T> m_master;
     private final List<MotorController<T>> m_slaves;
 
-    public MotorControllerGroup(final MotorController<T> master, final List<MotorController<T>> slaves, boolean invertControl) {
+    public MotorControllerGroup(final MotorController<T> master, final List<MotorController<T>> slaves, boolean invertControl, boolean oppose) {
         m_master = master;
         m_slaves = slaves;
 
         m_master.setInverted(invertControl);
-        m_slaves.forEach(slave -> slave.follow(m_master, invertControl));
+        m_slaves.forEach(slave -> slave.follow(m_master, oppose));
     }
 
     public MotorController<T> getMaster() {
