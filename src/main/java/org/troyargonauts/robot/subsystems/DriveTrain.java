@@ -38,6 +38,11 @@ public class DriveTrain extends SubsystemBase {
      */
     private double rightEncoderValue, leftEncoderValue;
 
+    private Pigeon2 pigeon;
+
+    public double pigeonRoll, pigeonYaw;
+    public short[] pigeonAccelValue = new short[3];
+
     private DualSpeedTransmission dualSpeedTransmission;
     private static final StatorCurrentLimitConfiguration CURRENT_LIMIT = new StatorCurrentLimitConfiguration(
             true, 60, 60,0.2
@@ -76,6 +81,8 @@ public class DriveTrain extends SubsystemBase {
         leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
 
         dualSpeedTransmission = new DualSpeedTransmission(this);
+
+        pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
     }
 
     @Override
@@ -83,10 +90,16 @@ public class DriveTrain extends SubsystemBase {
         rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
         leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
 
-        SmartDashboard.putNumber("motor rotations right", rightSide.getMaster().getMotorRotations());
-        SmartDashboard.putNumber("motor rotations left", leftSide.getMaster().getMotorRotations());
-        SmartDashboard.putBoolean("gear low", getDualSpeedTransmission().getGear() == DualSpeedTransmission.Gear.LOW);
-        SmartDashboard.putBoolean("automatic shifting", getDualSpeedTransmission().isAutomaticShifting());
+        pigeon.getBiasedAccelerometer(pigeonAccelValue);
+        System.out.println(pigeon.getYaw());
+
+        SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
+        SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
+        SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
+        SmartDashboard.putNumber("DT Amperage Right Master: ", rightSide.getMaster().getDrawnCurrentAmps());
+        SmartDashboard.putNumber("DT Amperage Left Master: ", leftSide.getMaster().getDrawnCurrentAmps());
+        SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
+        SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
     }
 
     /**

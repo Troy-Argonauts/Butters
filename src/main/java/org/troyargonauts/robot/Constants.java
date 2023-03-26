@@ -41,6 +41,7 @@ public final class Constants {
         int FRONT_LEFT = 1;
         int TOP_LEFT = 3;
         int REAR_LEFT = 2;
+        int PIGEON = 25;
 
         double DEADBAND = 0.02;
 
@@ -50,6 +51,7 @@ public final class Constants {
         MotorController.GearingParameters gearingLowGear = new MotorController.GearingParameters(1.0 / 19.6, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
         MotorController.GearingParameters gearingHighGear = new MotorController.GearingParameters(1.0 / 9.06677, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
 
+        int AMPS_THRESHOLD = 10;
         //PID Tuning Values
         double kDriveP = 0.08;
         double kDriveI = 0.005;

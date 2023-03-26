@@ -67,12 +67,13 @@ public class DualSpeedTransmission extends SubsystemBase {
 	/**
 	 * If this method overloads the roborio main thread, implement CompletableFuture.
 	 */
+
 	@Override
 	public void periodic() {
 		MotorController<TalonFX> rightMaster = driveTrain.getRightSide().getMaster();
 		MotorController<TalonFX> leftMaster = driveTrain.getLeftSide().getMaster();
 		if (isAutomaticShifting()) {
-			if ((Math.abs(rightMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (Math.abs(leftMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (getGear() == Gear.LOW)) {
+			if ((Math.abs(rightMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (Math.abs(leftMaster.getMotorRotations()) > Constants.DriveTrain.LOW_HIGH_THRESHOLD) && (Math.abs(rightMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.AMPS_THRESHOLD) && (Math.abs(leftMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.AMPS_THRESHOLD) && (getGear() == Gear.LOW)) {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.HIGH);
