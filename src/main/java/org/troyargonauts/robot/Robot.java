@@ -62,13 +62,6 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-//        System.out.println("ID: 1" + getDrivetrain().getRightSide().getMaster().getInternalController().getInverted());
-//        System.out.println("ID: 2" + getDrivetrain().getRightSide().getSlaves().get(0).getInternalController().getInverted());
-//        System.out.println("ID: 3" + getDrivetrain().getRightSide().getSlaves().get(1).getInternalController().getInverted());
-//
-//        System.out.println("ID: 4" + getDrivetrain().getLeftSide().getMaster().getInternalController().getInverted());
-//        System.out.println("ID: 5" + getDrivetrain().getLeftSide().getSlaves().get(0).getInternalController().getInverted());
-//        System.out.println("ID: 6" + getDrivetrain().getLeftSide().getSlaves().get(1).getInternalController().getInverted());
     }
 
     @Override

@@ -53,59 +53,20 @@ public final class Constants {
 
         int AMPS_THRESHOLD = 10;
         //PID Tuning Values
-        double kDriveP = 0.08;
-        double kDriveI = 0.005;
-        double kDriveD = 0.03;
+        double DRIVE_P = 0.08;
+        double DRIVE_I = 0.005;
+        double DRIVE_D = 0.03;
 
-        double kTurnP = 1;
-        double kTurnI = 0;
-        double kTurnD = 0;
+        double TURN_P = 1;
+        double TURN_I = 0;
+        double TURN_D = 0;
 
-        double kBalanceP = 1;
-        double kBalanceI = 0;
-        double kBalanceD = 0;
-
-        double kDriveTolerance = 1;
-        double kTurnToleranceDeg = 1;
-        double kBalanceToleranceDeg = 4;
+        double DRIVE_TOLERANCE = 1;
+        double TURN_TOLERANCE_DEG = 1;
+        double VELOCITY_TOLERANCE = 0.05;
 
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
         double SHIFTING_THRESHOLD = 0.1;
-    }
-
-    public interface Elevator {
-        int LEFT = 11;
-        int RIGHT = 12;
-        
-        double kP = 1;
-        double kI = 0;
-        double kD = 0;
-
-        double PERIOD = 0.02;
-
-        double kEncoderGearboxScale = 1;
-
-        double NERF = 0.3;
-        int BOTTOM_PORT = 0;
-        int TOP_PORT = 1;
-        int FORWARD_CHANNEL = 0;
-        int REVERSE_CHANNEL = 1;
-    }
-
-    public interface Turret {
-        double kP = 0.049;
-        double kI = 0.0008;
-        double kD = 0.00005;
-        double TOLERANCE = 0.75;
-        double DEFAULT_SETPOINT = 0;
-
-        double PERIOD = 0.02;
-
-        int PORT = 10;
-
-        double NERF = 0.5;
-        int LEFT_PORT = 2;
-        int RIGHT_PORT = 3;
     }
 }

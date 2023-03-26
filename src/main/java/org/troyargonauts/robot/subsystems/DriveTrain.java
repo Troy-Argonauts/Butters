@@ -1,11 +1,9 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +16,6 @@ import org.troyargonauts.robot.Robot;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -65,24 +62,23 @@ public class DriveTrain extends SubsystemBase {
         rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true, false);
         leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false, false);
 
+        dualSpeedTransmission = new DualSpeedTransmission(this);
+
+        pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
+
         configMotors(rightSide);
         configMotors(leftSide);
 
-        drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
-        turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
+        drivePID = new PIDController(Constants.DriveTrain.DRIVE_P, Constants.DriveTrain.DRIVE_I, Constants.DriveTrain.DRIVE_D);
+        turnPID = new PIDController(Constants.DriveTrain.TURN_P, Constants.DriveTrain.TURN_I, Constants.DriveTrain.TURN_D);
 
-        drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance);
-        turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg);
+        drivePID.setTolerance(Constants.DriveTrain.DRIVE_TOLERANCE, Constants.DriveTrain.VELOCITY_TOLERANCE);
+        turnPID.setTolerance(Constants.DriveTrain.TURN_TOLERANCE_DEG, Constants.DriveTrain.VELOCITY_TOLERANCE);
 
         turnPID.enableContinuousInput(-180, 180);
 
         rightSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
-
         leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
-
-        dualSpeedTransmission = new DualSpeedTransmission(this);
-
-        pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
     }
 
     @Override
@@ -96,8 +92,6 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
         SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
         SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
-        SmartDashboard.putNumber("DT Amperage Right Master: ", rightSide.getMaster().getDrawnCurrentAmps());
-        SmartDashboard.putNumber("DT Amperage Left Master: ", leftSide.getMaster().getDrawnCurrentAmps());
         SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
         SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
     }
@@ -131,10 +125,8 @@ public class DriveTrain extends SubsystemBase {
 
 
     public void resetEncoders() {
-        rightSide.getMaster().getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50);
-        leftSide.getMaster().getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50);
-
-
+        rightSide.forEach(talonFX -> talonFX.getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50));
+        leftSide.forEach(talonFX -> talonFX.getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50));
     }
 
     /**
