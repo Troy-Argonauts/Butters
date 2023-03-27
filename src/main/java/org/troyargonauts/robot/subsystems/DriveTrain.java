@@ -87,7 +87,7 @@ public class DriveTrain extends SubsystemBase {
         leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
 
         pigeon.getBiasedAccelerometer(pigeonAccelValue);
-        System.out.println(pigeon.getYaw());
+        //System.out.println(pigeon.getYaw());
 
         SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
         SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());

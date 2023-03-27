@@ -86,15 +86,18 @@ public class DualSpeedTransmission extends SubsystemBase {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.HIGH);
+					System.out.println("high");
 					shiftTime = 0;
 				}
 			} else if (drivetrainReady() && (getGear() == Gear.HIGH)) {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.LOW);
+					System.out.println("low");
 					shiftTime = 0;
 				}
 			}
+
 		}
 
 		SmartDashboard.putBoolean("Low Gear", getGear() == Gear.LOW);

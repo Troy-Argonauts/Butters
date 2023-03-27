@@ -67,6 +67,6 @@ public final class Constants {
 
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
-        double SHIFTING_THRESHOLD = 0.1;
+        double SHIFTING_THRESHOLD = 1;
     }
 }
