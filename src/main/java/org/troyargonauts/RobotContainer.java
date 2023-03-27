@@ -29,7 +29,7 @@ public class RobotContainer
     {
         Robot.getElevator().setDefaultCommand(
             new RunCommand(() -> {
-                Robot.getElevator().setPower(controller.getLeftJoystickY());
+                Robot.getElevator().setPower(controller.getTriggers());
             }, Robot.getElevator())
         );
     }

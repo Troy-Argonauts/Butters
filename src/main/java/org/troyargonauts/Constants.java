@@ -11,7 +11,7 @@ public final class Constants {
 
         double ELEVATOR_GEARBOX_SCALE = 1;
 
-        int BOTTOM_PORT = 0;
         int TOP_PORT = 1;
+        int BOTTOM_PORT = 0;
     }
 }

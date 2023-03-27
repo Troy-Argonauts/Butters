@@ -17,8 +17,9 @@ public class Elevator extends SubsystemBase {
     private final CANSparkMax liftMotor;
     // private final DigitalInput topLimitSwitch;
     private final DigitalInput bottomLimitSwitch;
-    private final PIDController pid;
+    private final PIDController liftPID;
     private double liftMotorPosition;
+    private double liftMotorSetpoint;
 
 
 
@@ -41,7 +42,7 @@ public class Elevator extends SubsystemBase {
         // topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_PORT);
         bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_PORT);
 
-        pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
+        liftPID = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
     }
 
     /**
@@ -52,9 +53,12 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         liftMotorPosition = liftMotor.getEncoder().getPosition();
 
+        liftPID.calculate(liftMotorPosition, liftMotorSetpoint);
+
         SmartDashboard.putNumber("Lift Motor Position", liftMotorPosition);
         // SmartDashboard.putBoolean("Top Limit Switch", topLimitSwitch.get());
         SmartDashboard.putBoolean("Bottom Limit Switch", bottomLimitSwitch.get());
+        SmartDashboard.putBoolean("Elevator Setpoint", liftPID.atSetpoint());
     }
 
     /**
@@ -95,6 +99,10 @@ public class Elevator extends SubsystemBase {
         return liftMotorPosition / Constants.Elevator.ELEVATOR_GEARBOX_SCALE;
     }
 
+    public void setElevatorSetpoint(double setpoint) {
+        liftMotorSetpoint = setpoint;
+    }
+
     /**
      * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.
@@ -102,9 +110,9 @@ public class Elevator extends SubsystemBase {
      * @param setpoint will be the desired extension point
      */
     public PIDCommand elevatorPID(double setpoint) {
-        pid.setSetpoint(setpoint);
+        liftPID.setSetpoint(setpoint);
         return new PIDCommand(
-            pid,
+            liftPID,
             () -> getPosition(),
             setpoint,
             output -> setPower(output),
