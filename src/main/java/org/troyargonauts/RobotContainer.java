@@ -6,7 +6,6 @@
 package org.troyargonauts;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
@@ -33,25 +32,6 @@ public class RobotContainer
                 Robot.getElevator().setPower(controller.getLeftJoystickY());
             }, Robot.getElevator())
         );
-
-//        Robot.getTurret().setDefaultCommand(
-//            new RunCommand(() -> {
-//                Robot.getTurret().turretManual(controller.getRightJoystickX());
-//            }, Robot.getTurret())
-//        );
-
-//        controller.getDirection(ArgoController.Direction.UP).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.RIGHT).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.DOWN).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-//
-//        controller.getDirection(ArgoController.Direction.LEFT).onTrue(
-//                new InstantCommand(() -> Robot.getTurret().setTurretSetpoint(0), Robot.getTurret()));
-
     }
     
     
