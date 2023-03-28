@@ -20,6 +20,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 	private boolean automaticShifting = true;
 	MotorController<TalonFX> rightMaster;
 	MotorController<TalonFX> leftMaster;
+
 	public DualSpeedTransmission(DriveTrain driveTrain) {
 		this.driveTrain = driveTrain;
 		this.timer = new Timer();
@@ -97,7 +98,6 @@ public class DualSpeedTransmission extends SubsystemBase {
 					shiftTime = 0;
 				}
 			}
-
 		}
 
 		SmartDashboard.putBoolean("Low Gear", getGear() == Gear.LOW);

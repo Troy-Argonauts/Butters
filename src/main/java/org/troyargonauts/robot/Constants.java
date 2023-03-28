@@ -4,34 +4,6 @@ import edu.wpi.first.math.util.Units;
 import org.troyargonauts.common.motors.wrappers.MotorController;
 
 public final class Constants {
-    public interface Arm {
-        int ELBOW = 9;
-        int MANIPULATOR = 13;
-        int WRIST = 8;
-        double TOP_ARM_ENCODER_LIMIT = 10;
-        double LOWER_ARM_ENCODER_LIMIT = 10;
-        double TOP_WRIST_ENCODER_LIMIT = 10;
-        double LOWER_WRIST_ENCODER_LIMIT = 10;
-
-        double FORWARD_INTAKE_SPEED = 0.75;
-        double REVERSE_INTAKE_SPEED = -0.75;
-
-        double WRIST_P = 0.142;
-        double WRIST_I = 0.2;
-        double WRIST_D = 0;
-        double WRIST_PERIOD = 0.02;
-        double WRIST_TOLERANCE = 0.1;
-        double WRIST_DEFAULT = 0.1;
-
-        double ARM_P = 0.045;
-        double ARM_I = 0.001;
-        double ARM_D = 0.01;
-        double ARM_PERIOD = 0.02;
-        double ARM_TOLERANCE = 0.1;
-        double ARM_DEFAULT = -0.1;
-
-        int CURRENT_LIMIT = 30;
-    }
   
     public interface DriveTrain {
         //CAN IDs
@@ -68,5 +40,8 @@ public final class Constants {
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
         double SHIFTING_THRESHOLD = 1;
+
+        double LOW_GEARBOX_RATIO = 19.61;
+        double HIGH_GEARBOX_RATIO = 9.07;
     }
 }

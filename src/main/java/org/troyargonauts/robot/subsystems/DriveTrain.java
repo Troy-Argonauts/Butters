@@ -13,6 +13,7 @@ import org.troyargonauts.common.motors.wrappers.MotorController;
 import org.troyargonauts.common.motors.wrappers.MotorControllerGroup;
 import org.troyargonauts.robot.Constants;
 import org.troyargonauts.robot.Robot;
+import org.troyargonauts.robot.subsystems.DualSpeedTransmission.Gear;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -133,8 +134,12 @@ public class DriveTrain extends SubsystemBase {
      * Returns encoder position based on the average value from the frontLeft and frontRight motor controller encoders.
      * @return encoder position based on encoder values.
      */
-    public double getEncoderValue() {
-        return (leftEncoderValue + rightEncoderValue) / 2;
+    public double getPosition() {
+        if (dualSpeedTransmission.getGear().equals(Gear.LOW)) {
+            return (leftEncoderValue + rightEncoderValue) / (2 * Constants.DriveTrain.LOW_GEARBOX_RATIO);
+        } else {
+            return (leftEncoderValue + rightEncoderValue) / (2 * Constants.DriveTrain.HIGH_GEARBOX_RATIO);
+        }
     }
 
     /**
@@ -144,11 +149,11 @@ public class DriveTrain extends SubsystemBase {
      */
     public void drivePID(double setpoint) {
         new PIDCommand(
-                drivePID,
-                this::getEncoderValue,
-                setpoint,
-                output -> cheesyDrive(output, 0, 1),
-                Robot.getDrivetrain()
+            drivePID,
+            this::getPosition,
+            setpoint,
+            output -> cheesyDrive(output, 0, 1),
+            Robot.getDrivetrain()
         );
     }
 
