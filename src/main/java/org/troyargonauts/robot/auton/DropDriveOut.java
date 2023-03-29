@@ -2,10 +2,8 @@ package org.troyargonauts.robot.auton;
 
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.troyargonauts.robot.Robot;
-import org.troyargonauts.robot.subsystems.Intake;
 
 public class DropDriveOut extends SequentialCommandGroup {
     public DropDriveOut() {
