@@ -14,8 +14,7 @@ public final class Constants {
         int TOP_LEFT = 3;
         int REAR_LEFT = 2;
         int PIGEON = 25;
-
-        double DEADBAND = 0.02;
+        double DEADBAND = 0.05;
 
         //Values in Inches
         int WHEEL_DIAMETER = 6;
@@ -40,5 +39,31 @@ public final class Constants {
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
         double SHIFTING_THRESHOLD = 1;
+    }
+
+    public interface Intake {
+        double SQUEEZE_MOTOR_SPEED = 0.2;
+        double ROTATE_MOTOR_SPEED = 0.4;
+
+        int SQUEEZE_MOTOR_PORT = 1;
+        int ROTATE_MOTOR_PORT = 8;
+        int TOP_LIMIT_SWITCH = 0;
+        int OUT_LIMIT_SWTICH = 1;
+
+        double kSqueezeP = 0.015;
+        double kSqueezeI = 0.0001;
+        double kSqueezeD = 0.001;
+
+        double kRotateP = 1;
+        double kRotateI = 0;
+        double kRotateD = 0;
+
+        double TOLERANCE = 0.25;
+        double VELOCITY_TOLERANCE = 0.01;
+    }
+
+    public interface LEDs {
+        int CANDLE = 24;
+        int ledLength = 141;
     }
 }

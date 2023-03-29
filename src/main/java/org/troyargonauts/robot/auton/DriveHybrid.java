@@ -9,8 +9,8 @@ public class DriveHybrid extends SequentialCommandGroup {
 
         super(
                 new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(-0.2, 0, 1), Robot.getDrivetrain()).withTimeout(1),
-                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.3, 0, 1), Robot.getDrivetrain()).withTimeout(1.5),
-                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(-0.3, 0, 1), Robot.getDrivetrain()).withTimeout(3.5)
+                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(1.1),
+                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(-0.3, 0, 1), Robot.getDrivetrain()).withTimeout(3)
         );
     }
 }

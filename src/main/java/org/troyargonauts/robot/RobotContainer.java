@@ -36,6 +36,9 @@ public class RobotContainer {
         Robot.getDrivetrain().setDefaultCommand(
                 new RunCommand(
                         () -> {
+                            if ((driver.getLeftTrigger() == 1) && (driver.getRightTrigger() == 1)) {
+                                Robot.getDrivetrain().reverseRightMotors();
+                            }
                             double speed = IStream.create(driver::getLeftY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
@@ -53,6 +56,20 @@ public class RobotContainer {
 
         driver.getLeftBumper().whileTrue(
                 new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
+
+        //LED - Purple
+        driver.getLeftBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
+        );
+
+        //LED - Yellow
+        driver.getRightBumper().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
+        );
+
+        //LED -Rainbow
+        driver.getTopButton().toggleOnTrue(
+                new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
         );
     }
 
