@@ -30,14 +30,14 @@ public class Constants {
         double kP = 1;
         double kI = 0;
         double kD = 0;
-        
+
         double kTurnP = 1;
         double kTurnI = 0;
         double kTurnD = 0;
 
         double kDriveTolerance = 1;
         double kTurnToleranceDeg = 1;
-        
+
         double ks = 0.1;
         double kv = 0.1;
         double ka = 0.1;
@@ -56,7 +56,7 @@ public class Constants {
 
     public interface Elevator {
         int LIFT_MOTOR_PORT = 11;
-        
+
         double kP = 1;
         double kI = 0;
         double kD = 0;
@@ -67,4 +67,22 @@ public class Constants {
         int BOTTOM_PORT = 0;
     }
 
+    public interface Arm {
+        int ARM_PORT = 7;
+        int WRIST_PORT = 8;
+        int ROLLER_PORT = 9;
+
+        double WRIST_P = 0.142;
+        double WRIST_I = 0;
+        double WRIST_D = 0;
+        double WRIST_TOLERANCE = 0.1;
+
+        double ARM_P = 0.1;
+        double ARM_I = 0;
+        double ARM_D = 0;
+        double ARM_TOLERANCE = 0.1;
+
+        double ARM_GEAR_RATIO = 125;
+        double WRIST_GEAR_RATIO = 28;
+    }
 }
