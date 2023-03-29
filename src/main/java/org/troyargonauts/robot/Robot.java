@@ -5,7 +5,6 @@
 
 package org.troyargonauts.robot;
 
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
+import org.troyargonauts.robot.subsystems.Arm;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -25,6 +25,7 @@ import org.troyargonauts.robot.subsystems.*;
 public class Robot extends TimedRobot {
     private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
+    private static Arm arm;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
 
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         driveTrain = new DriveTrain();
+        arm = new Arm();
         led = new LEDSystem();
         robotContainer = new RobotContainer();
 
@@ -105,6 +107,14 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
+    }
+
+    public static Arm getArm() {
+        if (arm == null) {
+            arm = new Arm();
+        }
+
+        return arm;
     }
 
 }

@@ -1,4 +1,4 @@
-package org.troyargonauts.subsystems;
+package org.troyargonauts.robot.subsystems;
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -8,8 +8,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.troyargonauts.Constants;
-import org.troyargonauts.Robot;
+import org.troyargonauts.robot.Constants;
+import org.troyargonauts.robot.Robot;
 
 /**
  * Class representing arm. Includes PID control and absolute encoders
