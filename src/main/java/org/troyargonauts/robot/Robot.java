@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
     private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
     private static Arm arm;
+    private static Elevator elevator;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
 
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         driveTrain = new DriveTrain();
         arm = new Arm();
+        elevator = new Elevator();
         led = new LEDSystem();
         robotContainer = new RobotContainer();
 
@@ -115,6 +117,12 @@ public class Robot extends TimedRobot {
         }
 
         return arm;
+    }
+
+    public static Elevator getElevator() {
+        if (elevator == null) elevator = new Elevator();
+        return elevator;
+
     }
 
 }

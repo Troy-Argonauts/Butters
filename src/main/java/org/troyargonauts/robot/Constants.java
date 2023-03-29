@@ -85,4 +85,17 @@ public final class Constants {
         double ARM_GEAR_RATIO = 125;
         double WRIST_GEAR_RATIO = 28;
     }
+
+    public interface Elevator {
+        int LIFT_MOTOR_PORT = 11;
+
+        double kP = 1;
+        double kI = 0;
+        double kD = 0;
+
+        double ELEVATOR_GEARBOX_SCALE = 1;
+
+        int TOP_PORT = 1;
+        int BOTTOM_PORT = 0;
+    }
 }

@@ -71,7 +71,11 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
         );
 
-
+        Robot.getElevator().setDefaultCommand(
+                new RunCommand(() -> {
+                    Robot.getElevator().setPower(operator.getLeftTrigger());
+                }, Robot.getElevator())
+        );
     }
 
     /**
