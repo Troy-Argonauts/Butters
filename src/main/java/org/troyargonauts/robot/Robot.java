@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
     private static DriveTrain driveTrain;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-    private static roller can;
 
     private static LEDSystem led;
 
@@ -36,7 +35,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         driveTrain = new DriveTrain();
         led = new LEDSystem();
-        can = new roller();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
@@ -109,10 +107,4 @@ public class Robot extends TimedRobot {
         return robotContainer;
     }
 
-    public static roller getRoller() {
-        if (can == null) {
-            can = new roller();
-        }
-        return can;
-    }
 }
