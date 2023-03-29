@@ -47,6 +47,28 @@ public class RobotContainer {
                 )
         );
 
+        Robot.getRoller().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            double armSpeed = IStream.create(operator::getLeftY)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            double wristSpeed = IStream.create(operator::getRightY)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            double upEle = IStream.create(operator::getRightTrigger)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            double downEle = IStream.create(operator::getLeftTrigger)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            Robot.getRoller().setarmSPeeed(armSpeed);
+                            Robot.getRoller().setwristSPeeed(wristSpeed);
+                            Robot.getRoller().setEleSpeed(upEle - downEle);
+                        }, Robot.getRoller()
+                )
+        );
+
         driver.getRightBumper().whileTrue(
                 new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
         );
@@ -55,19 +77,31 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
         );
 
-        //LED - Purple
-        driver.getLeftBumper().toggleOnTrue(
-                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
-        );
-
-        //LED - Yellow
-        driver.getRightBumper().toggleOnTrue(
-                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
-        );
+//        //LED - Purple
+//        driver.getLeftBumper().toggleOnTrue(
+//                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
+//        );
+//
+//        //LED - Yellow
+//        driver.getRightBumper().toggleOnTrue(
+//                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
+//        );
 
         //LED -Rainbow
         driver.getTopButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
+        );
+
+        operator.getRightBumper().whileTrue(
+                new InstantCommand(() -> Robot.getRoller().setSPeeed(0.5))
+        ).whileFalse(
+                new InstantCommand(() -> Robot.getRoller().setSPeeed(0))
+        );
+
+        operator.getLeftBumper().whileTrue(
+                new InstantCommand(() -> Robot.getRoller().setSPeeed(-0.5))
+        ).whileFalse(
+                new InstantCommand(() -> Robot.getRoller().setSPeeed(0))
         );
     }
 

@@ -12,9 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
-import org.troyargonauts.robot.auton.DropDriveOut;
 import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
 
@@ -29,6 +27,8 @@ public class Robot extends TimedRobot {
     private static DriveTrain driveTrain;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
+    private static roller can;
+
     private static LEDSystem led;
 
     @Override
@@ -36,12 +36,12 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         driveTrain = new DriveTrain();
         led = new LEDSystem();
+        can = new roller();
         robotContainer = new RobotContainer();
 
         // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Score and Balance", new ScoreBalance());
         chooser.addOption("Nothing", null);
@@ -107,5 +107,12 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
+    }
+
+    public static roller getRoller() {
+        if (can == null) {
+            can = new roller();
+        }
+        return can;
     }
 }
