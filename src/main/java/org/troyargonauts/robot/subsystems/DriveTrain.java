@@ -87,6 +87,8 @@ public class DriveTrain extends SubsystemBase {
         rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
         leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
 
+        pigeonRoll = pigeon.getRoll();
+
         pigeon.getBiasedAccelerometer(pigeonAccelValue);
         //System.out.println(pigeon.getYaw());
 
@@ -218,5 +220,16 @@ public class DriveTrain extends SubsystemBase {
             motor.getInternalController().enableVoltageCompensation(true);
             motor.getInternalController().configStatorCurrentLimit(CURRENT_LIMIT);
         });
+    }
+
+    public void balance() {
+        if (pigeonRoll > Constants.DriveTrain.BALANCE_THRESHOLD) {
+            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.05);
+        } else if (pigeonRoll < -Constants.DriveTrain.BALANCE_THRESHOLD) {
+            Robot.getDrivetrain().cheesyDrive(1, 0, 0.05);
+        } else {
+            Robot.getDrivetrain().cheesyDrive(0, 0, 0.05);
+            Robot.getLEDs().rainbow();
+        }
     }
 }
