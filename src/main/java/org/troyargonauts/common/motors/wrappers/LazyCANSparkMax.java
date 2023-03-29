@@ -1,4 +1,4 @@
-package org.troyargonauts.common.util.motorcontrol;
+package org.troyargonauts.common.motors.wrappers;
 
 // Copyright 2019 FRC Team 3476 Code Orange
 
@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 
 /**
  * Sends only new commands to the Talon to reduce CAN usage.
+ * TODO: Full Recode to use MotorController Interface + CANSparkMax class
  */
 public class LazyCANSparkMax extends CANSparkMax {
 

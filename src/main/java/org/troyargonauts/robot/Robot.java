@@ -8,7 +8,6 @@ package org.troyargonauts.robot;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -44,23 +43,13 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
-//        chooser.setDefaultOption("Drive Straight", new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0.2, 0, 1), Robot.getDrivetrain()).withTimeout(2.5));
         chooser.setDefaultOption("Drive Out", Robot.getDrivetrain().drivePID(145).withTimeout(6));
         chooser.addOption("Score and Drive Out", new DropDriveOut());
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Score and Balance", new ScoreBalance());
         chooser.addOption("Nothing", null);
         chooser.addOption("Claw PID", new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-19.5)));
-//        chooser.addOption("Turn PID", getDrivetrain().turnPID(90));
 
-
-//        pigeon.configFactoryDefault();
-//        pigeon.clearStickyFaults();
-//        final Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
-//        pigeonConfig.MountPosePitch = 0;
-//        pigeonConfig.MountPoseRoll = 0;
-//        pigeonConfig.MountPoseYaw = 0;
-//        pigeon.configAllSettings(pigeonConfig);
         CameraServer.startAutomaticCapture();
     }
 
@@ -73,6 +62,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
+    }
+    
+    @Override
+    public void autonomousInit() {
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
+        if (autonomousCommand != null) {
         Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kCoast);
         Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kCoast);
     }
@@ -81,8 +77,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {}
     
     @Override
-    public void autonomousInit()
-    {
+    public void autonomousInit() {
         Robot.getDrivetrain().resetEncoders();
         Robot.getDrivetrain().setIdleMode(CANSparkMax.IdleMode.kBrake);
         Robot.getIntake().resetEndcoders();
@@ -94,18 +89,12 @@ public class Robot extends TimedRobot {
             autonomousCommand.schedule();
         }
     }
-    
-    @Override
-    public void autonomousPeriodic() {}
 
     @Override
-    public void teleopInit()
-    {
-        Robot.getIntake().setIdleState(CANSparkMax.IdleMode.kBrake);
-        if (autonomousCommand != null)
-        {
-            autonomousCommand.cancel();
-        }
+    public void teleopInit() {
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
+
+        if (autonomousCommand != null) {
     }
     
     @Override
@@ -113,8 +102,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testInit()
-    {
+    public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
@@ -127,7 +115,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
-
+    
     /** 
      * Returns driveTrain object
      * @return DriveTrain object instantiated in Robot class
@@ -150,13 +138,5 @@ public class Robot extends TimedRobot {
             robotContainer = new RobotContainer();
         }
         return robotContainer;
-    }
-
-
-    public static Intake getIntake(){
-        if(intake == null){
-            intake = new Intake();
-        }
-        return intake;
     }
 }

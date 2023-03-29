@@ -1,136 +1,104 @@
 package org.troyargonauts.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.troyargonauts.common.util.motorcontrol.LazyCANSparkMax;
+import org.troyargonauts.common.motors.MotorCreation;
+import org.troyargonauts.common.motors.wrappers.LazyTalon;
+import org.troyargonauts.common.motors.wrappers.MotorController;
+import org.troyargonauts.common.motors.wrappers.MotorControllerGroup;
 import org.troyargonauts.robot.Constants;
 import org.troyargonauts.robot.Robot;
+import org.troyargonauts.robot.subsystems.DualSpeedTransmission.Gear;
 
-/**
- * Drivetrain allows control of the robot's drivetrain in cheesy drive and tank drive. 
- * Includes a distance PID and a turn PID using the Pigeon 2 from CTRE.
- * @author @SolidityContract @sgowda260 @Shreyan-M
- */
+import java.util.List;
+import java.util.function.BiConsumer;
+
 public class DriveTrain extends SubsystemBase {
 
-    private final LazyCANSparkMax frontRight, middleRight, backRight, frontLeft, middleLeft, backLeft;
+
+    /**
+     * Motor controller groups for the right and left sides of the drivetrain.
+     */
+    private final MotorControllerGroup<TalonFX> rightSide, leftSide;
+
+    /**
+     * PID controllers for the drivetrain. The turn PID is used to turn the robot to a specific angle. The drive PID is used to drive the robot a specific distance.
+     */
+    private final PIDController drivePID, turnPID;
+
+    /**
+     * Collects encoder values from the right and left sides of the drivetrain. Uses master motor (frontRight and frontLeft) for encoder values.
+     */
+    private double rightEncoderValue, leftEncoderValue;
 
     private Pigeon2 pigeon;
 
-    private final PIDController drivePID, turnPID, autoBalancePID;
+    public double pigeonRoll, pigeonYaw;
+    public short[] pigeonAccelValue = new short[3];
 
-    public double frontRightEncoderValue, middleRightEncoderValue, backRightEncoderValue, frontLeftEncoderValue, middleLeftEncoderValue, backLeftEncoderValue;
-
-    public double gyroValue;
+    private DualSpeedTransmission dualSpeedTransmission;
+    private static final StatorCurrentLimitConfiguration CURRENT_LIMIT = new StatorCurrentLimitConfiguration(
+            true, 60, 60,0.2
+    );
 
     /**
      * Constructor for the robot's Drivetrain. Instantiates motor controllers, changes encoder conversion factors and instantiates PID controllers.
-     * Motor controllers on the right side are reversed and set to follow other motor controllers.
+     * Motor controllers on the right side are reversed
+     * Motor controllers are added to groups as their respective role (master or slave)
      */
-
     public DriveTrain() {
-        frontRight = new LazyCANSparkMax(Constants.DriveTrain.FRONT_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleRight = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backRight = new LazyCANSparkMax(Constants.DriveTrain.BACK_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        frontLeft = new LazyCANSparkMax(Constants.DriveTrain.FRONT_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        middleLeft = new LazyCANSparkMax(Constants.DriveTrain.MIDDLE_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        backLeft = new LazyCANSparkMax(Constants.DriveTrain.BACK_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        LazyTalon<TalonFX> frontRight = MotorCreation.createDriveTalonFX(Constants.DriveTrain.FRONT_RIGHT, false);
+        LazyTalon<TalonFX> middleRight =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_RIGHT, true);
+        LazyTalon<TalonFX> backRight =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_RIGHT, true);
 
-        frontRight.restoreFactoryDefaults();
-        middleRight.restoreFactoryDefaults();
-        backRight.restoreFactoryDefaults();
-        frontLeft.restoreFactoryDefaults();
-        middleLeft.restoreFactoryDefaults();
-        backLeft.restoreFactoryDefaults();
+        LazyTalon<TalonFX> frontLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.FRONT_LEFT, false);
+        LazyTalon<TalonFX> middleLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_LEFT, true);
+        LazyTalon<TalonFX> backLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_LEFT, true);
 
-        frontLeft.setInverted(true);
-        middleLeft.setInverted(true);
-        backLeft.setInverted(true);
-        frontRight.setInverted(false);
-        middleRight.setInverted(false);
-        backRight.setInverted(false);
+        rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true, false);
+        leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false, false);
 
-        backRight.follow(frontRight);
-        middleRight.follow(frontRight);
-        backLeft.follow(frontLeft);
-        middleLeft.follow(frontLeft);
-
-        frontRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
-        middleRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
-        backRight.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
-        frontLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
-        middleLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
-        backLeft.getEncoder().setPositionConversionFactor(Constants.DriveTrain.DISTANCE_CONVERSION);
+        dualSpeedTransmission = new DualSpeedTransmission(this);
 
         pigeon = new Pigeon2(Constants.DriveTrain.PIGEON);
 
-        drivePID = new PIDController(Constants.DriveTrain.kDriveP, Constants.DriveTrain.kDriveI, Constants.DriveTrain.kDriveD);
-        turnPID = new PIDController(Constants.DriveTrain.kTurnP, Constants.DriveTrain.kTurnI, Constants.DriveTrain.kTurnD);
-        autoBalancePID = new PIDController(Constants.DriveTrain.kBalanceP, Constants.DriveTrain.kBalanceI, Constants.DriveTrain.kBalanceP);
+        configMotors(rightSide);
+        configMotors(leftSide);
 
-        drivePID.setTolerance(Constants.DriveTrain.kDriveTolerance, Constants.DriveTrain.kVelcoityTolerance);
-        turnPID.setTolerance(Constants.DriveTrain.kTurnToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
-        autoBalancePID.setTolerance(Constants.DriveTrain.kBalanceToleranceDeg, Constants.DriveTrain.kVelcoityTolerance);
+        drivePID = new PIDController(Constants.DriveTrain.DRIVE_P, Constants.DriveTrain.DRIVE_I, Constants.DriveTrain.DRIVE_D);
+        turnPID = new PIDController(Constants.DriveTrain.TURN_P, Constants.DriveTrain.TURN_I, Constants.DriveTrain.TURN_D);
+
+        drivePID.setTolerance(Constants.DriveTrain.DRIVE_TOLERANCE, Constants.DriveTrain.VELOCITY_TOLERANCE);
+        turnPID.setTolerance(Constants.DriveTrain.TURN_TOLERANCE_DEG, Constants.DriveTrain.VELOCITY_TOLERANCE);
 
         turnPID.enableContinuousInput(-180, 180);
 
-        frontRight.setOpenLoopRampRate(0.35);
-        middleRight.setOpenLoopRampRate(0.35);
-        backRight.setOpenLoopRampRate(0.35);
-        frontLeft.setOpenLoopRampRate(0.35);
-        middleLeft.setOpenLoopRampRate(0.35);
-        backLeft.setOpenLoopRampRate(0.35);
-
-        frontRight.setClosedLoopRampRate(0.25);
-        middleRight.setClosedLoopRampRate(0.25);
-        backRight.setClosedLoopRampRate(0.25);
-        frontLeft.setClosedLoopRampRate(0.25);
-        middleLeft.setClosedLoopRampRate(0.25);
-        backLeft.setClosedLoopRampRate(0.25);
-
-        resetEncoders();
-
-//        frontRight.burnFlash();
-//        middleRight.burnFlash();
-//        backRight.burnFlash();
-//        frontLeft.burnFlash();
-//        middleLeft.burnFlash();
-//        backLeft.burnFlash();
+        rightSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
+        leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
     }
 
     @Override
     public void periodic() {
-        frontRightEncoderValue = frontRight.getEncoder().getPosition();
-        middleRightEncoderValue = middleRight.getEncoder().getPosition();
-        backRightEncoderValue = backRight.getEncoder().getPosition();
-        frontLeftEncoderValue = frontLeft.getEncoder().getPosition();
-        middleLeftEncoderValue = middleLeft.getEncoder().getPosition();
-        backLeftEncoderValue = backLeft.getEncoder().getPosition();
+        rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
 
-        SmartDashboard.putNumber("frontRightEncoderValue", frontRightEncoderValue);
-        SmartDashboard.putNumber("middleRightEncoderValue", middleRightEncoderValue);
-        SmartDashboard.putNumber("backRightEncoderValue", backRightEncoderValue);
-        SmartDashboard.putNumber("frontLeftEncoderValue", frontLeftEncoderValue);
-        SmartDashboard.putNumber("middleLeftEncoderValue", middleLeftEncoderValue);
-        SmartDashboard.putNumber("backLeftEncoderValue", backLeftEncoderValue);
-        SmartDashboard.putNumber("Right Position", getRightPosition());
-        SmartDashboard.putNumber("Left Position", getLeftPosition());
-        SmartDashboard.putNumber("Position", getPosition());
+        pigeon.getBiasedAccelerometer(pigeonAccelValue);
+        //System.out.println(pigeon.getYaw());
 
-        gyroValue = pigeon.getYaw();
+        SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
+        SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
+        SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
+        SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
+        SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
     }
 
-
-    
-    /** 
-     * Sets motors value based on speed and turn parameters. 
+    /**
+     * Sets motors value based on speed and turn parameters.
      * Robots speed and turn will be controlled by different joysticks.
      * Allows robot to move in specified direction with more control.
      * @param speed speed of robot.
@@ -138,12 +106,12 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void cheesyDrive(double speed, double turn, double nerf) {
-        frontRight.set(((speed + (turn * 0.85)) + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
-        frontLeft.set((speed - (turn * 0.85)) * nerf);
+        rightSide.getMaster().set((speed + turn) * nerf);
+        leftSide.getMaster().set((speed - turn) * nerf);
     }
 
-    /** 
-     * Sets left and right motor values based on left and right parameters. 
+    /**
+     * Sets left and right motor values based on left and right parameters.
      * Robots left and right side will be controlled by different joysticks.
      * Used for mainly testing and troubleshooting.
      * @param left speed of the left side of the robot.
@@ -151,148 +119,104 @@ public class DriveTrain extends SubsystemBase {
      * @param nerf decreases the max speed and amount we want to turn the robot.
      */
     public void tankDrive(double left, double right, double nerf) {
-        frontRight.set((right + Constants.DriveTrain.RIGHT_CORRECTION) * nerf);
-        frontLeft.set(left * nerf);
+        rightSide.getMaster().set(right * nerf);
+        leftSide.getMaster().set(left * nerf);
     }
 
-    
-    /** 
+
+
+    public void resetEncoders() {
+        rightSide.forEach(talonFX -> talonFX.getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50));
+        leftSide.forEach(talonFX -> talonFX.getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50));
+    }
+
+    /**
      * Returns encoder position based on the average value from the frontLeft and frontRight motor controller encoders.
      * @return encoder position based on encoder values.
      */
     public double getPosition() {
-        return (getLeftPosition() + getRightPosition()) / 2;
-    }
-
-    /** 
-     * Returns encoder position based on the value from all the left motor controllers.
-     * @return encoder position based on frontLeft motor controller encoder.
-     */
-    public double getLeftPosition() {
-        return -(frontLeftEncoderValue + middleLeftEncoderValue + backLeftEncoderValue) / 3;
-    }
-
-    /** 
-     * Returns encoder position based on the value from all the right motor controllers.
-     * @return encoder position based on frontRight motor controller encoder.
-     */
-    public double getRightPosition() {
-        return -(frontRightEncoderValue + middleRightEncoderValue + backRightEncoderValue) / 3;
+        return (leftEncoderValue + rightEncoderValue) / 2;
     }
 
     /**
-     * Resets the encoders to a position of 0
-     */
-
-    public void resetEncoders() {
-        frontRight.getEncoder().setPosition(0);
-        middleRight.getEncoder().setPosition(0);
-        backRight.getEncoder().setPosition(0);
-        frontLeft.getEncoder().setPosition(0);
-        middleLeft.getEncoder().setPosition(0);
-        backLeft.getEncoder().setPosition(0);
-    }
-
-    /**
-     * Resets the pigeon to a yaw of 0
-     */
-    public void resetAngle() {
-        pigeon.setYaw(0);
-    }
-
-
-
-
-    
-    /** 
-     * Returns angles between -180 and 180 degrees from pigeon
-     * @return angle of robot
-     */
-    public double getAngle() {
-        double output = gyroValue % 360;
-        while (Math.abs(output) > 180) {
-            if (output < 0) {
-                output += 360;
-            } else {
-                output -= 360;
-            }
-        }
-        return output;
-    }
-
-    /** 
-     * Uses PIDController to turn the robot a certain angle based on the pigeons yaw
-     * @param angle the angle we want the robot to be at
-     * @return PIDCommand that turns robot to target angle
-     */
-    public PIDCommand turnPID(double angle) {
-        return new PIDCommand(
-            turnPID,
-            () -> getAngle(),
-            angle,
-            output -> cheesyDrive(0, output, 1),
-            Robot.getDrivetrain()
-        );
-    }
-
-    /** 
      * Uses PIDController to drive the robot a certain distance based on the average of the left and right encoder values
      * @param setpoint the setpoint in inches we want the robot to drive to.
      * @return PIDCommand that turns robot to target angle
      */
-    public PIDCommand drivePID(double setpoint) {
-        return new PIDCommand(
-            drivePID,
-            () -> getPosition(),
-            setpoint,
-            output -> cheesyDrive(-output, 0, 1),
-            Robot.getDrivetrain()
+    public void drivePID(double setpoint) {
+        new PIDCommand(
+                drivePID,
+                this::getPosition,
+                setpoint,
+                output -> cheesyDrive(output, 0, 1),
+                Robot.getDrivetrain()
         );
     }
 
-    /** 
-     * Causes the robot to brake.
+    public PIDCommand turnPID(double angle) {
+        return new PIDCommand(
+                turnPID,
+                this::getAngle,
+                angle,
+                output -> cheesyDrive(0, output, 1),
+                Robot.getDrivetrain()
+        );
+    }
+
+    public double getAngle() {
+        double angle = pigeon.getYaw() % 360;
+        while (Math.abs(angle) > 180) {
+            if (angle < 0) {
+                angle += 360;
+            } else {
+                angle -= 360;
+            }
+        }
+        return angle;
+    }
+
+
+
+    public void resetYaw() {
+        pigeon.setYaw(0);
+    }
+
+    /**
      * Resets encoders to 0.
+     * Allows the robot to resist moving forward or backward.
      */
-    public void brakeMode() {
+    public void resistMovement() {
         resetEncoders();
-        setIdleMode(CANSparkMax.IdleMode.kBrake);
         drivePID(0);
     }
 
-
-
-
-
-
-    /** 
-     * Uses PIDController to balance the robot on the charging station based on the angular offset determined by the gyro.
-     * @return PIDCommand that balances robot.
-     */
-    public PIDCommand autoBalance() {
-        return new PIDCommand(
-            autoBalancePID,
-            () -> pigeon.getPitch(),
-            0,
-            output -> cheesyDrive(output, 0, 0.2),
-            Robot.getDrivetrain()
-        );
-    }
-    public void setIdleMode(CANSparkMax.IdleMode idleMode) {
-        frontLeft.setIdleMode(idleMode);
-        middleLeft.setIdleMode(idleMode);
-        backLeft.setIdleMode(idleMode);
-        frontRight.setIdleMode(idleMode);
-        middleRight.setIdleMode(idleMode);
-        backRight.setIdleMode(idleMode);
+    public MotorControllerGroup<TalonFX> getRightSide() {
+        return rightSide;
     }
 
-    public void reverseRightMotors() {
-//        frontLeft.setInverted(true);
-//        middleLeft.setInverted(true);
-//        backLeft.setInverted(true);
-        frontRight.setInverted(true);
-        middleRight.setInverted(true);
-        backRight.setInverted(true);
+    public MotorControllerGroup<TalonFX> getLeftSide() {
+        return leftSide;
+    }
+
+    public void setGearingParameters(MotorController.GearingParameters gearingParameters) {
+        rightSide.forEach(talonFX -> talonFX.setGearingParameters(gearingParameters));
+        leftSide.forEach(talonFX -> talonFX.setGearingParameters(gearingParameters));
+    }
+
+    public void set(final BiConsumer<MotorControllerGroup<TalonFX>, MotorControllerGroup<TalonFX>> consumer) {
+        consumer.accept(leftSide, rightSide);
+    }
+
+    public DualSpeedTransmission getDualSpeedTransmission() {
+        return dualSpeedTransmission;
+    }
+
+    private void configMotors(final MotorControllerGroup<TalonFX> motors) {
+        motors.forEach(motor -> {
+            motor.setNeutralBehaviour(MotorController.NeutralBehaviour.BRAKE);
+            motor.getInternalController().configVoltageCompSaturation(12.0);
+            motor.getInternalController().enableVoltageCompensation(true);
+            motor.getInternalController().configStatorCurrentLimit(CURRENT_LIMIT);
+        });
     }
 }

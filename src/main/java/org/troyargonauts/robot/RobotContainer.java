@@ -12,7 +12,6 @@ import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
-import org.troyargonauts.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,43 +50,12 @@ public class RobotContainer {
                 )
         );
 
-
-        //Intake Up
-        operator.getLeftBumper().whileTrue(
-                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.UP), Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
-                );
-
-        //Intake Down
-        operator.getRightBumper().whileTrue(
-                        new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.DOWN), Robot.getIntake()))
-                .onFalse(new InstantCommand(() -> Robot.getIntake().setRotateIntakeState(Intake.rotateStates.STOP), Robot.getIntake())
-                );
-
-        //Claw Open - Manual
-        operator.getDPadRight().whileTrue(
-                        new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(1), Robot.getIntake())
-                );
-
-        //Claw Close - Manual
-        operator.getDPadLeft().whileTrue(
-                new InstantCommand(() -> Robot.getIntake().updateClawSetpoint(-1), Robot.getIntake())
+        driver.getRightBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
         );
 
-        //Claw Close - Cone
-        operator.getTopButton().whileTrue(
-                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-31), Robot.getIntake())
-                );
-
-        //Claw Close - Cube
-        operator.getLeftButton().whileTrue(
-                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(-23), Robot.getIntake())
-        );
-
-        //Claw Open
-        operator.getBottomButton().whileTrue(
-                new InstantCommand(() -> Robot.getIntake().setSqueezeSetpoint(0), Robot.getIntake())
-        );
+        driver.getLeftBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
 
         //LED - Purple
         driver.getLeftBumper().toggleOnTrue(
@@ -102,11 +70,6 @@ public class RobotContainer {
         //LED -Rainbow
         driver.getTopButton().toggleOnTrue(
                 new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
-        );
-
-        //Reset Encoders - Intake
-        operator.getStartButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getIntake().resetEndcoders(), Robot.getIntake())
         );
     }
 
