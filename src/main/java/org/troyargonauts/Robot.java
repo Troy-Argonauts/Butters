@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import org.troyargonauts.subsystems.DriveTrain;
 import org.troyargonauts.subsystems.Elevator;
-import org.troyargonauts.subsystems.Turret;
 
 
 /**
@@ -29,15 +28,12 @@ public class Robot extends TimedRobot {
 
     private static DriveTrain driveTrain = new DriveTrain();
 
-    
-    private static Turret turret;
 
     @Override
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         elevator = new Elevator();
-        turret = new Turret();
 
         robotContainer = new RobotContainer();
     }
@@ -57,7 +53,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit()
     {
-        autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null)
         {
             autonomousCommand.schedule();
@@ -112,13 +107,4 @@ public class Robot extends TimedRobot {
         return elevator;
 
     }
-
-    public static Turret getTurret() {
-        if (turret == null){
-            turret = new Turret();
-        }
-
-        return turret;
-    }
-
 }

@@ -1,7 +1,6 @@
 package org.troyargonauts;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-
 public class Constants {
 
     public interface DriveConstants {
@@ -56,36 +55,16 @@ public class Constants {
     }
 
     public interface Elevator {
-        int LEFT = 11;
-        int RIGHT = 12;
+        int LIFT_MOTOR_PORT = 11;
         
         double kP = 1;
         double kI = 0;
         double kD = 0;
 
-        double PERIOD = 0.02;
+        double ELEVATOR_GEARBOX_SCALE = 1;
 
-        double kEncoderGearboxScale = 1;
+        int TOP_PORT = 1;
+        int BOTTOM_PORT = 0;
     }
 
-    public interface Turret {
-        double kP = 1;
-        double kI = 0;
-        double kD = 0;
-
-        double PERIOD = 0.02;
-        int CHANNEL = 0;
-        double FULL_RANGE = 180;
-        double OFFSET = 30;
-
-        int PORT = 10;
-
-        double NERF = 0.5;
-    }
-
-    public interface Manipulator {
-        int kManipulatorForwardChannel = 0;
-        int kManipulatorReverseChannel = 1;
-    }
-    
 }

@@ -1,6 +1,8 @@
 package org.troyargonauts.subsystems;
 import com.revrobotics.*;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -9,18 +11,15 @@ import org.troyargonauts.Robot;
 
 /**
  * Class representing elevator subsystem. includes PID control and limit switches
- * @author TeoElRey, sgowda260
+ * @author TeoElRey, sgowda260, SolidityContract, ASH-will-WIN
  */
 public class Elevator extends SubsystemBase {
-    private final CANSparkMax leftMotor;
-    private final CANSparkMax rightMotor;
-    private SparkMaxLimitSwitch upperLimitSwitch;
-    private SparkMaxLimitSwitch lowerLimitSwitch;
-    // private boolean upperLimitSwitchValue;
-    // private boolean lowerLimitSwitchValue;
-    private PIDController pid;
-    private double rightMotorPosition;
-    private double leftMotorPosition;
+    private final CANSparkMax liftMotor;
+    // private final DigitalInput topLimitSwitch;
+    private final DigitalInput bottomLimitSwitch;
+    private final PIDController liftPID;
+    private double liftMotorPosition;
+    private double liftMotorSetpoint;
 
 
 
@@ -32,24 +31,18 @@ public class Elevator extends SubsystemBase {
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
-        leftMotor = new CANSparkMax(Constants.Elevator.LEFT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMotor = new CANSparkMax(Constants.Elevator.RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        liftMotor = new CANSparkMax(Constants.Elevator.LIFT_MOTOR_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        leftMotor.setInverted(false);
-        rightMotor.setInverted(false);
+        liftMotor.setInverted(false);
 
-        leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        liftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
-        rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
+        liftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
 
-//        upperLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-//        upperLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-//
-//        lowerLimitSwitch = leftMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-//        lowerLimitSwitch = rightMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        pid = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD, Constants.Elevator.PERIOD);
+        // topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_PORT);
+        bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_PORT);
+
+        liftPID = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
     }
 
     /**
@@ -58,35 +51,15 @@ public class Elevator extends SubsystemBase {
      */
     @Override
     public void periodic() {
-//        upperLimitSwitchValue = getUpperLimitSwitchState();
-//        lowerLimitSwitchValue = getLowerLimitSwitchState();
-        rightMotorPosition = rightMotor.getEncoder().getPosition();
-        leftMotorPosition = leftMotor.getEncoder().getPosition();
-        SmartDashboard.putNumber("Right Encoder", rightMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Left Encoder", leftMotor.getEncoder().getPosition());
+        liftMotorPosition = liftMotor.getEncoder().getPosition();
 
-        SmartDashboard.putNumber("Left Draw", leftMotor.getOutputCurrent());
-        SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
+        liftPID.calculate(liftMotorPosition, liftMotorSetpoint);
+
+        SmartDashboard.putNumber("Lift Motor Position", liftMotorPosition);
+        // SmartDashboard.putBoolean("Top Limit Switch", topLimitSwitch.get());
+        SmartDashboard.putBoolean("Bottom Limit Switch", bottomLimitSwitch.get());
+        SmartDashboard.putBoolean("Elevator Setpoint", liftPID.atSetpoint());
     }
-
-    // /**
-    //  * Will check whether the upper limit switch is enabled or not.
-    //  * If it is, this means the elevator has extended to desired point and will stop extending
-    //  *
-    //  * @return  returns whether the limit switch is enabled or not.
-    //  */
-    // public boolean getUpperLimitSwitchState() {
-    //     return upperLimitSwitch.isLimitSwitchEnabled();
-    // }
-    // /**
-    //  * Will check whether the lower limit switch is enabled or not.
-    //  * If it is, this means the elevator has retracted to desired point and will stop retracting
-    //  *
-    //  * @return  returns whether the limit switch is enabled or not.
-    //  */
-    // public boolean getLowerLimitSwitchState() {
-    //     return lowerLimitSwitch.isLimitSwitchEnabled();
-    // }
 
     /**
      * Elevator power will be set to a given speed from -1 to 1
@@ -95,15 +68,41 @@ public class Elevator extends SubsystemBase {
      *
      * @param speed desired elevator extension or retraction speed
      */
-    public void setPower(double speed, double nerf) {
-        leftMotor.set(speed * nerf);
-        rightMotor.set(speed * nerf);
+    public void setPower(double speed) {
+        if (speed > 0) {
+            // if (topLimitSwitch.get()) {
+            //     liftMotor.set(0);
+            // } else{
+                liftMotor.set(speed);
+            // }
+        } else {
+            if (bottomLimitSwitch.get()) {
+                liftMotor.set(0);
+            } else {
+                liftMotor.set(speed);
+            }
+        }
     }
 
+    /**
+     * Sets all encoder values to 0.
+     */
     public void resetEncoders(){
-        leftMotor.getEncoder().setPosition(0);
-        rightMotor.getEncoder().setPosition(0);
+        liftMotor.getEncoder().setPosition(0);
     }
+
+    /**
+     * Returns the average position of both motors.
+     * @return average position of both motors.
+     */
+    public double getPosition() {
+        return liftMotorPosition / Constants.Elevator.ELEVATOR_GEARBOX_SCALE;
+    }
+
+    public void setElevatorSetpoint(double setpoint) {
+        liftMotorSetpoint = setpoint;
+    }
+
     /**
      * The elevator will shift to a given setpoint using the
      * predetermined PID Controller.
@@ -111,12 +110,12 @@ public class Elevator extends SubsystemBase {
      * @param setpoint will be the desired extension point
      */
     public PIDCommand elevatorPID(double setpoint) {
-        pid.setSetpoint(setpoint);
+        liftPID.setSetpoint(setpoint);
         return new PIDCommand(
-            pid,
-            () -> ((rightMotorPosition + leftMotorPosition) / (2 * Constants.Elevator.kEncoderGearboxScale)),
+            liftPID,
+            () -> getPosition(),
             setpoint,
-            output -> setPower(output, 0.5),
+            output -> setPower(output),
             Robot.getElevator()
         );
     }
