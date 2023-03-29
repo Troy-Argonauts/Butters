@@ -40,8 +40,5 @@ public final class Constants {
         int LOW_HIGH_THRESHOLD = 4362;
         int HIGH_LOW_THRESHOLD = 2018;
         double SHIFTING_THRESHOLD = 1;
-
-        double LOW_GEARBOX_RATIO = 19.61;
-        double HIGH_GEARBOX_RATIO = 9.07;
     }
 }

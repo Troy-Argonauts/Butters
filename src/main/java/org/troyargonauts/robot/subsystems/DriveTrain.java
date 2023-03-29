@@ -135,11 +135,7 @@ public class DriveTrain extends SubsystemBase {
      * @return encoder position based on encoder values.
      */
     public double getPosition() {
-        if (dualSpeedTransmission.getGear().equals(Gear.LOW)) {
-            return (leftEncoderValue + rightEncoderValue) / (2 * Constants.DriveTrain.LOW_GEARBOX_RATIO);
-        } else {
-            return (leftEncoderValue + rightEncoderValue) / (2 * Constants.DriveTrain.HIGH_GEARBOX_RATIO);
-        }
+        return (leftEncoderValue + rightEncoderValue) / 2;
     }
 
     /**
@@ -149,12 +145,40 @@ public class DriveTrain extends SubsystemBase {
      */
     public void drivePID(double setpoint) {
         new PIDCommand(
-            drivePID,
-            this::getPosition,
-            setpoint,
-            output -> cheesyDrive(output, 0, 1),
-            Robot.getDrivetrain()
+                drivePID,
+                this::getPosition,
+                setpoint,
+                output -> cheesyDrive(output, 0, 1),
+                Robot.getDrivetrain()
         );
+    }
+
+    public PIDCommand turnPID(double angle) {
+        return new PIDCommand(
+                turnPID,
+                this::getAngle,
+                angle,
+                output -> cheesyDrive(0, output, 1),
+                Robot.getDrivetrain()
+        );
+    }
+
+    public double getAngle() {
+        double angle = pigeon.getYaw() % 360;
+        while (Math.abs(angle) > 180) {
+            if (angle < 0) {
+                angle += 360;
+            } else {
+                angle -= 360;
+            }
+        }
+        return angle;
+    }
+
+
+
+    public void resetYaw() {
+        pigeon.setYaw(0);
     }
 
     /**
