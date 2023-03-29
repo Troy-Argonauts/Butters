@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
 import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
@@ -45,7 +46,7 @@ public class Robot extends TimedRobot {
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
-        chooser.addOption("Score and Balance", new ScoreBalance());
+        chooser.addOption("Score and Balance", new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain()));
         chooser.addOption("Nothing", null);
 
         CameraServer.startAutomaticCapture();
@@ -73,6 +74,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
     }
+
 
     @Override
     public void teleopPeriodic() {

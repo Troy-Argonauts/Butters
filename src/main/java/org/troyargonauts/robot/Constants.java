@@ -31,6 +31,11 @@ public final class Constants {
         double TURN_P = 1;
         double TURN_I = 0;
         double TURN_D = 0;
+        double BALANCE_THRESHOLD = 1.5;
+        double kDriveTolerance = 0.5;
+        double kTurnToleranceDeg = 1;
+        double kBalanceToleranceDeg = 4;
+        double kVelcoityTolerance = 0.05;
 
         double DRIVE_TOLERANCE = 1;
         double TURN_TOLERANCE_DEG = 1;

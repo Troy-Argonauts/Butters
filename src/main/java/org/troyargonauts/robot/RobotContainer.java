@@ -76,6 +76,10 @@ public class RobotContainer {
                     Robot.getElevator().setPower(operator.getLeftTrigger());
                 }, Robot.getElevator())
         );
+
+        driver.getBottomButton().whileTrue(
+                new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
+        );
     }
 
     /**
