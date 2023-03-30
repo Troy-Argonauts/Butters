@@ -46,57 +46,42 @@ public final class Constants {
         double SHIFTING_THRESHOLD = 1;
     }
 
-    public interface Intake {
-        double SQUEEZE_MOTOR_SPEED = 0.2;
-        double ROTATE_MOTOR_SPEED = 0.4;
-
-        int SQUEEZE_MOTOR_PORT = 1;
-        int ROTATE_MOTOR_PORT = 8;
-        int TOP_LIMIT_SWITCH = 0;
-        int OUT_LIMIT_SWTICH = 1;
-
-        double kSqueezeP = 0.015;
-        double kSqueezeI = 0.0001;
-        double kSqueezeD = 0.001;
-
-        double kRotateP = 1;
-        double kRotateI = 0;
-        double kRotateD = 0;
-
-        double TOLERANCE = 0.25;
-        double VELOCITY_TOLERANCE = 0.01;
-    }
-
     public interface LEDs {
         int CANDLE = 24;
         int ledLength = 141;
     }
 
     public interface Arm {
-        int ARM_PORT = 7;
+        int ARM_PORT = 9;
         int WRIST_PORT = 8;
-        int ROLLER_PORT = 9;
+        int ROLLER_PORT = 7;
 
-        double WRIST_P = 0.142;
+        double WRIST_P = 0.0008;
         double WRIST_I = 0;
         double WRIST_D = 0;
-        double WRIST_TOLERANCE = 0.1;
+        double WRIST_TOLERANCE = 5;
 
         double ARM_P = 0.1;
         double ARM_I = 0;
         double ARM_D = 0;
-        double ARM_TOLERANCE = 0.1;
+        double ARM_TOLERANCE = 5;
 
         double ARM_GEAR_RATIO = 125;
         double WRIST_GEAR_RATIO = 28;
+
+        int ARM_UPPER_LIMIT_PORT = 3;
+        int ARM_LOWER_LIMIT_PORT = 4;
+        int WRIST_UPPER_LIMIT_PORT = 1;
+        int WRIST_LOWER_LIMIT_PORT = 2;
     }
 
     public interface Elevator {
-        int LIFT_MOTOR_PORT = 11;
+        int LIFT_MOTOR_PORT = 10;
 
-        double kP = 1;
+        double kP = 0.01;
         double kI = 0;
         double kD = 0;
+        double ELEVATOR_TOLERANCE = 5;
 
         double ELEVATOR_GEARBOX_SCALE = 1;
 

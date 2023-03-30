@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch.Type;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +21,8 @@ public class Arm extends SubsystemBase {
     private final PIDController armPID, wristPID;
     private double armEncoderValue, wristEncoderValue;
     private double armSetpoint, wristSetpoint;
-    private final SparkMaxLimitSwitch upperLimitSwitchArm, lowerLimitSwitchArm, upperLimitSwitchWrist, lowerLimitSwitchWrist;
+
+    private final DigitalInput upLimitWrist, downLimitWrist, upLimitArm, downLimitArm;
 
     /**
      * Here, the motors, absolute encoders, and PID Controller are instantiated.
@@ -30,15 +32,20 @@ public class Arm extends SubsystemBase {
         wristMotor = new CANSparkMax(Constants.Arm.WRIST_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         rollMotor = new CANSparkMax(Constants.Arm.ROLLER_PORT, MotorType.kBrushless);
 
-        upperLimitSwitchArm = armMotor.getForwardLimitSwitch(Type.kNormallyClosed);
-        lowerLimitSwitchArm = armMotor.getForwardLimitSwitch(Type.kNormallyClosed);
+        upLimitArm = new DigitalInput(Constants.Arm.ARM_UPPER_LIMIT_PORT);
+        downLimitArm = new DigitalInput(Constants.Arm.ARM_LOWER_LIMIT_PORT);
 
-        upperLimitSwitchWrist = wristMotor.getForwardLimitSwitch(Type.kNormallyClosed);
-        lowerLimitSwitchWrist = wristMotor.getForwardLimitSwitch(Type.kNormallyClosed);
+        upLimitWrist = new DigitalInput(Constants.Arm.WRIST_UPPER_LIMIT_PORT);
+        downLimitWrist = new DigitalInput(Constants.Arm.WRIST_LOWER_LIMIT_PORT);
+
+        armMotor.getEncoder().setPositionConversionFactor(125);
+        wristMotor.getEncoder().setPositionConversionFactor(28);
+
+        armMotor.setInverted(true);
 
         armMotor.setIdleMode(IdleMode.kBrake);
         wristMotor.setIdleMode(IdleMode.kBrake);
-        rollMotor.setIdleMode(IdleMode.kCoast);
+        rollMotor.setIdleMode(IdleMode.kBrake);
 
         armPID = new PIDController(Constants.Arm.ARM_D, Constants.Arm.ARM_I, Constants.Arm.ARM_P);
         armPID.setTolerance(Constants.Arm.ARM_TOLERANCE);
@@ -52,14 +59,27 @@ public class Arm extends SubsystemBase {
         armEncoderValue = armMotor.getEncoder().getPosition();
         wristEncoderValue = wristMotor.getEncoder().getPosition();
 
-        setArmPower(armPID.calculate(armEncoderValue, armSetpoint));
-        setWristPower(wristPID.calculate(wristEncoderValue, wristSetpoint));
+        SmartDashboard.putBoolean("up limit wrist", !upLimitWrist.get());
+        SmartDashboard.putBoolean("down limit wrist", !downLimitWrist.get());
+        SmartDashboard.putBoolean("up limit arm", !upLimitArm.get());
+        SmartDashboard.putBoolean("down limit arm", !downLimitArm.get());
+
+//        setArmPower(armPID.calculate(armEncoderValue, armSetpoint));
+//        setWristPower(wristPID.calculate(wristEncoderValue, wristSetpoint));
 
         SmartDashboard.putNumber("Arm Encoder", armEncoderValue);
         SmartDashboard.putBoolean("Arm Finished", armPID.atSetpoint());
 
         SmartDashboard.putNumber("Wrist Encoder", wristEncoderValue);
         SmartDashboard.putBoolean("Wrist Finished", wristPID.atSetpoint());
+
+        if (!upLimitArm.get()) {
+            armMotor.getEncoder().setPosition(0);
+        }
+
+        if (!downLimitWrist.get()) {
+            wristMotor.getEncoder().setPosition(0);
+        }
     }
 
     /**
@@ -92,15 +112,15 @@ public class Arm extends SubsystemBase {
      * @param speed sets elbow motor to desired speed given that it is within the encoder limits.
      */
     public void setArmPower(double speed) {
-        if (speed > 0) {
-            if (upperLimitSwitchArm.isPressed()) {
+        if (speed < 0) {
+            if (!upLimitArm.get()) {
                 armMotor.set(0);
             } else {
                 armMotor.set(speed);
                 SmartDashboard.putNumber("Arm Speed", speed);
             }
         } else {
-            if (lowerLimitSwitchArm.isPressed()) {
+            if (!downLimitArm.get()) {
                 armMotor.set(0);
             } else {
                 armMotor.set(speed);
@@ -115,14 +135,14 @@ public class Arm extends SubsystemBase {
      */
     public void setWristPower(double speed) {
         if (speed > 0) {
-            if (upperLimitSwitchWrist.isPressed()) {
+            if (!upLimitWrist.get()) {
                 wristMotor.set(0);
             } else {
                 wristMotor.set(speed);
                 SmartDashboard.putNumber("Wrist Speed", speed);
             }
         } else {
-            if (lowerLimitSwitchWrist.isPressed()) {
+            if (!downLimitWrist.get()) {
                 wristMotor.set(0);
             } else {
                 wristMotor.set(speed);

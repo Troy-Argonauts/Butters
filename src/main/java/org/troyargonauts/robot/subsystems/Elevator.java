@@ -33,16 +33,19 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
         liftMotor = new CANSparkMax(Constants.Elevator.LIFT_MOTOR_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        liftMotor.setInverted(false);
+        liftMotor.setInverted(true);
 
         liftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         liftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
 
+        liftMotor.getEncoder().setPositionConversionFactor(9);
+
         // topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_PORT);
         bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_PORT);
 
         liftPID = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
+        liftPID.setTolerance(Constants.Elevator.ELEVATOR_TOLERANCE);
     }
 
     /**
@@ -53,12 +56,16 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         liftMotorPosition = liftMotor.getEncoder().getPosition();
 
-        liftPID.calculate(liftMotorPosition, liftMotorSetpoint);
+//        liftPID.calculate(liftMotorPosition, liftMotorSetpoint);
 
         SmartDashboard.putNumber("Lift Motor Position", liftMotorPosition);
         // SmartDashboard.putBoolean("Top Limit Switch", topLimitSwitch.get());
-        SmartDashboard.putBoolean("Bottom Limit Switch", bottomLimitSwitch.get());
+        SmartDashboard.putBoolean("Bottom Limit Switch", !bottomLimitSwitch.get());
         SmartDashboard.putBoolean("Elevator Setpoint", liftPID.atSetpoint());
+
+        if (!bottomLimitSwitch.get()) {
+            resetEncoders();
+        }
     }
 
     /**
@@ -70,13 +77,13 @@ public class Elevator extends SubsystemBase {
      */
     public void setPower(double speed) {
         if (speed > 0) {
-            // if (topLimitSwitch.get()) {
-            //     liftMotor.set(0);
-            // } else{
+            if (liftMotorPosition > 219.8557891845703) {
+                liftMotor.set(0);
+            } else {
                 liftMotor.set(speed);
-            // }
+            }
         } else {
-            if (bottomLimitSwitch.get()) {
+            if (!bottomLimitSwitch.get()) {
                 liftMotor.set(0);
             } else {
                 liftMotor.set(speed);

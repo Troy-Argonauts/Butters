@@ -12,6 +12,7 @@ import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
+import org.troyargonauts.robot.subsystems.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,6 +48,35 @@ public class RobotContainer {
                 )
         );
 
+        Robot.getArm().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            double wristSpeed = IStream.create(operator::getLeftY)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            double armSpeed = IStream.create(operator::getRightY)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            Robot.getArm().setWristPower(wristSpeed * 0.3);
+                            Robot.getArm().setArmPower(armSpeed * 0.5);
+                        }, Robot.getArm()
+                )
+        );
+
+        Robot.getElevator().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            double upSpeed = IStream.create(operator::getRightTrigger)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            double downSpeed = IStream.create(operator::getLeftTrigger)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            System.out.println(upSpeed - downSpeed);
+                            Robot.getElevator().setPower((upSpeed - downSpeed) * 0.3);
+                        }, Robot.getElevator()
+                )
+        );
 
         driver.getRightBumper().whileTrue(
                 new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
@@ -71,14 +101,24 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
         );
 
-        Robot.getElevator().setDefaultCommand(
-                new RunCommand(() -> {
-                    Robot.getElevator().setPower(operator.getLeftTrigger());
-                }, Robot.getElevator())
-        );
-
         driver.getBottomButton().whileTrue(
                 new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
+        );
+
+        operator.getRightBumper().whileTrue(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD))
+        ).whileFalse(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF))
+        );
+
+        operator.getLeftBumper().whileTrue(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD))
+        ).whileFalse(
+                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF))
+        );
+
+        operator.getTopButton().onTrue(
+                Robot.getArm().wristPID(104.666)
         );
     }
 

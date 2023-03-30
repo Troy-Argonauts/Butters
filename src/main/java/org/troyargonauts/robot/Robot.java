@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.robot.auton.DriveHybrid;
-import org.troyargonauts.robot.auton.ScoreBalance;
 import org.troyargonauts.robot.subsystems.*;
 import org.troyargonauts.robot.subsystems.Arm;
 
@@ -45,9 +44,13 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
+        chooser.setDefaultOption("Elevator PID", Robot.getElevator().elevatorPID(108.42903137207031));
         chooser.addOption("Drive Hybrid Score", new DriveHybrid());
         chooser.addOption("Score and Balance", new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain()));
         chooser.addOption("Nothing", null);
+
+        elevator.resetEncoders();
+        arm.resetEncoders();
 
         CameraServer.startAutomaticCapture();
     }
