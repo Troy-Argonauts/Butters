@@ -38,8 +38,8 @@ public class Arm extends SubsystemBase {
         upLimitWrist = new DigitalInput(Constants.Arm.WRIST_UPPER_LIMIT_PORT);
         downLimitWrist = new DigitalInput(Constants.Arm.WRIST_LOWER_LIMIT_PORT);
 
-        armMotor.getEncoder().setPositionConversionFactor(125);
-        wristMotor.getEncoder().setPositionConversionFactor(28);
+        armMotor.getEncoder().setPositionConversionFactor(Constants.Arm.ARM_GEAR_RATIO);
+        wristMotor.getEncoder().setPositionConversionFactor(Constants.Arm.WRIST_GEAR_RATIO);
 
         armMotor.setInverted(true);
 

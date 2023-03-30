@@ -113,7 +113,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 	}
 
 	public boolean lowAmpDraw() {
-		return (Math.abs(rightMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.AMPS_THRESHOLD) && (Math.abs(leftMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.AMPS_THRESHOLD);
+		return (Math.abs(rightMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.SHIFTING_AMP_THRESHOLD) && (Math.abs(leftMaster.getDrawnCurrentAmps()) < Constants.DriveTrain.SHIFTING_AMP_THRESHOLD);
 	}
 
 	public void setMaxVoltage(double voltage) {

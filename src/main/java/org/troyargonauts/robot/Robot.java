@@ -7,6 +7,8 @@ package org.troyargonauts.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,20 +30,19 @@ public class Robot extends TimedRobot {
     private static Arm arm;
     private static Elevator elevator;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
-
-
     private static LEDSystem led;
 
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+        LiveWindow.disableAllTelemetry();
+        LiveWindow.setEnabled(false);
+
         driveTrain = new DriveTrain();
         arm = new Arm();
         elevator = new Elevator();
         led = new LEDSystem();
         robotContainer = new RobotContainer();
 
-        // autonomous chooser on the dashboard.
         driveTrain.resetEncoders();
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Elevator PID", Robot.getElevator().elevatorPID(108.42903137207031));
