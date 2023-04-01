@@ -76,10 +76,6 @@ public class DualSpeedTransmission extends SubsystemBase {
 		return automaticShifting;
 	}
 
-	/**
-	 * If this method overloads the roborio main thread, implement CompletableFuture.
-	 */
-
 	@Override
 	public void periodic() {
 		if (isAutomaticShifting()) {
@@ -87,14 +83,12 @@ public class DualSpeedTransmission extends SubsystemBase {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.HIGH);
-					System.out.println("high");
 					shiftTime = 0;
 				}
 			} else if (drivetrainReady() && (getGear() == Gear.HIGH)) {
 				shiftTime += Timer.getFPGATimestamp() - timer.get();
 				if (shiftTime > Constants.DriveTrain.SHIFTING_THRESHOLD) {
 					setGear(Gear.LOW);
-					System.out.println("low");
 					shiftTime = 0;
 				}
 			}

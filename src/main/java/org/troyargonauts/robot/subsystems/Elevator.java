@@ -4,24 +4,20 @@ import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants;
-import org.troyargonauts.robot.Robot;
 
 /**
  * Class representing elevator subsystem. includes PID control and limit switches
  * @author TeoElRey, sgowda260, SolidityContract, ASH-will-WIN
  */
 public class Elevator extends SubsystemBase {
-    private final CANSparkMax liftMotor;
-    // private final DigitalInput topLimitSwitch;
+    private final LazyCANSparkMax elevatorMotor;
     private final DigitalInput bottomLimitSwitch;
-    private final PIDController liftPID;
-    private double liftMotorPosition;
-    private double liftMotorSetpoint;
-
-
+    private final PIDController elevatorPID;
+    private double elevatorEncoder;
+    private double desiredTarget;
 
     /**
      * Instantiates the motor controllers, limit switches, encoder, and PID controller for the Elevator.
@@ -31,21 +27,19 @@ public class Elevator extends SubsystemBase {
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
-        liftMotor = new CANSparkMax(Constants.Elevator.LIFT_MOTOR_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        elevatorMotor = new LazyCANSparkMax(Constants.Elevator.LIFT_MOTOR_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        liftMotor.setInverted(true);
+        elevatorMotor.setInverted(true);
 
-        liftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        liftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
+        elevatorMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
 
-        liftMotor.getEncoder().setPositionConversionFactor(9);
+        elevatorMotor.getEncoder().setPositionConversionFactor(9);
 
-        // topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_PORT);
         bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_PORT);
 
-        liftPID = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
-        liftPID.setTolerance(Constants.Elevator.ELEVATOR_TOLERANCE);
+        elevatorPID = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI ,Constants.Elevator.kD);
     }
 
     /**
@@ -54,18 +48,25 @@ public class Elevator extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        liftMotorPosition = liftMotor.getEncoder().getPosition();
+        elevatorEncoder = elevatorMotor.getEncoder().getPosition();
 
-//        liftPID.calculate(liftMotorPosition, liftMotorSetpoint);
-
-        SmartDashboard.putNumber("Lift Motor Position", liftMotorPosition);
-        // SmartDashboard.putBoolean("Top Limit Switch", topLimitSwitch.get());
-        SmartDashboard.putBoolean("Bottom Limit Switch", !bottomLimitSwitch.get());
-        SmartDashboard.putBoolean("Elevator Setpoint", liftPID.atSetpoint());
+        SmartDashboard.putNumber("Lift Motor Position", elevatorEncoder);
+//        SmartDashboard.putBoolean("Bottom Limit Switch", !bottomLimitSwitch.get());
 
         if (!bottomLimitSwitch.get()) {
             resetEncoders();
         }
+    }
+
+    public void run() {
+        double motorSpeed = elevatorPID.calculate(elevatorEncoder, desiredTarget);
+        if (motorSpeed > Constants.Elevator.MAXIMUM_SPEED) motorSpeed = Constants.Elevator.MAXIMUM_SPEED;
+        else if (motorSpeed < -Constants.Elevator.MAXIMUM_SPEED) motorSpeed = -Constants.Elevator.MAXIMUM_SPEED;
+        setPower(motorSpeed);
+    }
+
+    public void setDesiredTarget(double desiredTarget) {
+        this.desiredTarget = desiredTarget;
     }
 
     /**
@@ -77,16 +78,16 @@ public class Elevator extends SubsystemBase {
      */
     public void setPower(double speed) {
         if (speed > 0) {
-            if (liftMotorPosition > 219.8557891845703) {
-                liftMotor.set(0);
+            if (elevatorEncoder > 219.8557891845703) {
+                elevatorMotor.set(0);
             } else {
-                liftMotor.set(speed);
+                elevatorMotor.set(speed);
             }
         } else {
             if (!bottomLimitSwitch.get()) {
-                liftMotor.set(0);
+                elevatorMotor.set(0);
             } else {
-                liftMotor.set(speed);
+                elevatorMotor.set(speed);
             }
         }
     }
@@ -95,7 +96,7 @@ public class Elevator extends SubsystemBase {
      * Sets all encoder values to 0.
      */
     public void resetEncoders(){
-        liftMotor.getEncoder().setPosition(0);
+        elevatorMotor.getEncoder().setPosition(0);
     }
 
     /**
@@ -103,27 +104,11 @@ public class Elevator extends SubsystemBase {
      * @return average position of both motors.
      */
     public double getPosition() {
-        return liftMotorPosition / Constants.Elevator.ELEVATOR_GEARBOX_SCALE;
+        return elevatorEncoder / Constants.Elevator.ELEVATOR_GEARBOX_SCALE;
     }
 
     public void setElevatorSetpoint(double setpoint) {
-        liftMotorSetpoint = setpoint;
+        elevatorEncoder = setpoint;
     }
 
-    /**
-     * The elevator will shift to a given setpoint using the
-     * predetermined PID Controller.
-     * 
-     * @param setpoint will be the desired extension point
-     */
-    public PIDCommand elevatorPID(double setpoint) {
-        liftPID.setSetpoint(setpoint);
-        return new PIDCommand(
-            liftPID,
-            () -> getPosition(),
-            setpoint,
-            output -> setPower(output),
-            Robot.getElevator()
-        );
-    }
 }

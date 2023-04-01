@@ -15,10 +15,7 @@ public final class Constants {
         int REAR_LEFT = 2;
         int PIGEON = 25;
         double DEADBAND = 0.05;
-
-        //Values in Inches
         int WHEEL_DIAMETER = 6;
-
         MotorController.GearingParameters gearingLowGear = new MotorController.GearingParameters(1.0 / 19.6, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
         MotorController.GearingParameters gearingHighGear = new MotorController.GearingParameters(1.0 / 9.06677, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
 
@@ -48,38 +45,34 @@ public final class Constants {
 
     public interface Arm {
         int ARM_PORT = 9;
-        int WRIST_PORT = 8;
-        int ROLLER_PORT = 7;
-
-        double WRIST_P = 0.0008;
-        double WRIST_I = 0;
-        double WRIST_D = 0;
-        double WRIST_TOLERANCE = 5;
-
-        double ARM_P = 0.1;
+        double ARM_P = 0.00008;
         double ARM_I = 0;
         double ARM_D = 0;
         double ARM_TOLERANCE = 5;
-
         double ARM_GEAR_RATIO = 125;
-        double WRIST_GEAR_RATIO = 28;
-
+        double MAXIMUM_SPEED = 0.6;
         int ARM_UPPER_LIMIT_PORT = 3;
         int ARM_LOWER_LIMIT_PORT = 4;
+    }
+
+    public interface Wrist {
+        int WRIST_PORT = 8;
+        int ROTATE_PORT = 7;
+        double[] WRIST_GAINS = {0.005, 0, 0};
+        double WRIST_GEAR_RATIO = 49;
+        double ROTATE_GEAR_RATIO = 100;
+        double MAXIMUM_SPEED = 1;
         int WRIST_UPPER_LIMIT_PORT = 1;
         int WRIST_LOWER_LIMIT_PORT = 2;
     }
 
     public interface Elevator {
         int LIFT_MOTOR_PORT = 10;
-
         double kP = 0.01;
         double kI = 0;
         double kD = 0;
-        double ELEVATOR_TOLERANCE = 5;
-
+        double MAXIMUM_SPEED = 0.6;
         double ELEVATOR_GEARBOX_SCALE = 1;
-
         int TOP_PORT = 1;
         int BOTTOM_PORT = 0;
     }

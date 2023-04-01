@@ -41,7 +41,7 @@ public class DriveTrain extends SubsystemBase {
     public double pigeonRoll, pigeonYaw;
     public short[] pigeonAccelValue = new short[3];
 
-    private DualSpeedTransmission dualSpeedTransmission;
+    private final DualSpeedTransmission dualSpeedTransmission;
     private static final StatorCurrentLimitConfiguration CURRENT_LIMIT = new StatorCurrentLimitConfiguration(
             true, 60, 60,0.2
     );
@@ -90,13 +90,12 @@ public class DriveTrain extends SubsystemBase {
         pigeonRoll = pigeon.getRoll();
 
         pigeon.getBiasedAccelerometer(pigeonAccelValue);
-        //System.out.println(pigeon.getYaw());
 
-        SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
-        SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
-        SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
-        SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
-        SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
+//        SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
+//        SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
+//        SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
+//        SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
+//        SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
     }
 
     /**
@@ -124,8 +123,6 @@ public class DriveTrain extends SubsystemBase {
         rightSide.getMaster().set(right * nerf);
         leftSide.getMaster().set(left * nerf);
     }
-
-
 
     public void resetEncoders() {
         rightSide.forEach(talonFX -> talonFX.getInternalController().getSensorCollection().setIntegratedSensorPosition(0, 50));
@@ -176,8 +173,6 @@ public class DriveTrain extends SubsystemBase {
         }
         return angle;
     }
-
-
 
     public void resetYaw() {
         pigeon.setYaw(0);

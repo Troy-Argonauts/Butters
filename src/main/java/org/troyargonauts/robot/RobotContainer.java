@@ -13,6 +13,7 @@ import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
 import org.troyargonauts.robot.subsystems.Arm;
+import org.troyargonauts.robot.subsystems.Wrist;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -57,8 +58,8 @@ public class RobotContainer {
                             double armSpeed = IStream.create(operator::getRightY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
-                            Robot.getArm().setWristPower(wristSpeed * 0.3);
-                            Robot.getArm().setArmPower(armSpeed * 0.5);
+                            Robot.getWrist().setPower(wristSpeed * 0.5);
+                            Robot.getArm().setPower(armSpeed * 0.5);
                         }, Robot.getArm()
                 )
         );
@@ -72,7 +73,6 @@ public class RobotContainer {
                             double downSpeed = IStream.create(operator::getLeftTrigger)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
-                            System.out.println(upSpeed - downSpeed);
                             Robot.getElevator().setPower((upSpeed - downSpeed) * 0.3);
                         }, Robot.getElevator()
                 )
@@ -86,50 +86,29 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
         );
 
-//        //LED - Purple
-//        driver.getLeftBumper().toggleOnTrue(
-//                new InstantCommand(() -> Robot.getLEDs().purpleCube(), Robot.getLEDs())
-//        );
-//
-//        //LED - Yellow
-//        driver.getRightBumper().toggleOnTrue(
-//                new InstantCommand(() -> Robot.getLEDs().yellowCone(), Robot.getLEDs())
-//        );
-
-        //LED -Rainbow
-        driver.getTopButton().toggleOnTrue(
-                new InstantCommand(() -> Robot.getLEDs().rainbow(), Robot.getLEDs())
-        );
-
         driver.getBottomButton().whileTrue(
                 new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
         );
 
         operator.getRightBumper().whileTrue(
-                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.FORWARD))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.FORWARD))
         ).whileFalse(
-                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF))
         );
 
         operator.getLeftBumper().whileTrue(
-                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.BACKWARD))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.BACKWARD))
         ).whileFalse(
-                new InstantCommand(() -> Robot.getArm().setIntakeState(Arm.IntakeState.OFF))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF))
         );
 
-        operator.getTopButton().onTrue(
-                Robot.getArm().wristPID(104.666)
+        driver.getRightButton().whileTrue(
+                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(303))
         );
-    }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        // TODO: Implement properly
-        return null;
+        driver.getBottomButton().whileTrue(
+                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(0))
+        );
     }
 
     public static Gamepad getDriver() {
