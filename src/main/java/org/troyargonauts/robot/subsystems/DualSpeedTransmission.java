@@ -38,6 +38,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 	}
 
 	public void setGear(Gear gear) {
+		if (gear == getGear()) return;
 		switch(gear) {
 		case LOW:
 			shiftSolenoid.set(DoubleSolenoid.Value.kReverse);

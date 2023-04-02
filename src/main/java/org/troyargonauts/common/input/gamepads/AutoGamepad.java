@@ -179,7 +179,7 @@ public final class AutoGamepad extends Gamepad {
     }
 
     // Rumble //
-    public void setRumble(double intensity) {
-        getDetectedGamepad().setRumble(intensity);
+    public void setRumble(double intensity, double duration) {
+        getDetectedGamepad().setRumble(intensity, duration);
     }
 }

@@ -5,8 +5,12 @@ package org.troyargonauts.common.input.gamepads;
 /* found in the root directory of this project. */
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import org.troyargonauts.common.input.Gamepad;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A wrapper for the XboxController class to work with the {@link Gamepad} interface.
@@ -147,8 +151,15 @@ public class Xbox extends Gamepad {
 
     // Rumble
     @Override
-    public void setRumble(double intensity) {
-        mJoystick.setRumble(RumbleType.kLeftRumble, intensity);
-        mJoystick.setRumble(RumbleType.kRightRumble, intensity);
+    public void setRumble(double intensity, double duration) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            mJoystick.setRumble(RumbleType.kLeftRumble, intensity);
+            mJoystick.setRumble(RumbleType.kRightRumble, intensity);
+            Timer.delay(duration);
+            mJoystick.setRumble(RumbleType.kLeftRumble, 0);
+            mJoystick.setRumble(RumbleType.kRightRumble, 0);
+        });
+        executor.shutdown();
     }
 }

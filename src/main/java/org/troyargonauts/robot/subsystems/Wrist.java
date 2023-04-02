@@ -1,30 +1,28 @@
 package org.troyargonauts.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
-import org.troyargonauts.robot.Constants;
+
+import static org.troyargonauts.robot.Constants.Wrist.*;
 
 public class Wrist extends SubsystemBase {
 
 	private final LazyCANSparkMax wristMotor, rotateMotor;
-	public PIDController wristPID;
-	private double wristEncoder, desiredTarget;
+	private double desiredTarget;
 	private final DigitalInput upLimitWrist, downLimitWrist;
 
 	public Wrist() {
-		wristMotor = new LazyCANSparkMax(Constants.Wrist.WRIST_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
-		rotateMotor = new LazyCANSparkMax(Constants.Wrist.ROTATE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+		wristMotor = MotorCreation.createDefaultSparkMax(WRIST_PORT);
+		rotateMotor = MotorCreation.createDefaultSparkMax(ROTATE_PORT);
 
-		upLimitWrist = new DigitalInput(Constants.Wrist.WRIST_UPPER_LIMIT_PORT);
-		downLimitWrist = new DigitalInput(Constants.Wrist.WRIST_LOWER_LIMIT_PORT);
+		upLimitWrist = new DigitalInput(WRIST_UPPER_LIMIT_PORT);
+		downLimitWrist = new DigitalInput(WRIST_LOWER_LIMIT_PORT);
 
-		wristMotor.getEncoder().setPositionConversionFactor(Constants.Wrist.WRIST_GEAR_RATIO);
-		rotateMotor.getEncoder().setPositionConversionFactor(Constants.Wrist.ROTATE_GEAR_RATIO);
+		wristMotor.getEncoder().setPositionConversionFactor(WRIST_GEAR_RATIO);
 
 		wristMotor.setInverted(false);
 		rotateMotor.setInverted(false);
@@ -32,55 +30,41 @@ public class Wrist extends SubsystemBase {
 		wristMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 		rotateMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-		wristPID = new PIDController(Constants.Wrist.WRIST_GAINS[0], Constants.Wrist.WRIST_GAINS[1], Constants.Wrist.WRIST_GAINS[2]);
+		wristMotor.getPIDController().setP(WRIST_P);
+		wristMotor.getPIDController().setI(WRIST_I);
+		wristMotor.getPIDController().setD(WRIST_D);
+
+		wristMotor.getPIDController().setOutputRange(-0.6, 0.6);
+
+		wristMotor.burnFlash();
 	}
 
 	@Override
 	public void periodic() {
-		wristEncoder = wristMotor.getEncoder().getPosition();
-
-//		SmartDashboard.putBoolean("up limit wrist", !upLimitWrist.get());
-//		SmartDashboard.putBoolean("down limit wrist", !downLimitWrist.get());
-//
-		SmartDashboard.putNumber("Wrist Encoder", wristEncoder);
-		SmartDashboard.putBoolean("Wrist Finished", wristPID.atSetpoint());
-		SmartDashboard.putNumber("Error", wristPID.getPositionError());
+		SmartDashboard.putNumber("Wrist Encoder", wristMotor.getEncoder().getPosition());
 
 		if (!downLimitWrist.get()) {
 			wristMotor.getEncoder().setPosition(0);
+			setDesiredTarget(WristState.HOME);
 		}
 	}
 
 	public void run() {
-		double motorSpeed = wristPID.calculate(wristEncoder, desiredTarget);
-//		if (motorSpeed > Constants.Wrist.MAXIMUM_SPEED) motorSpeed = Constants.Wrist.MAXIMUM_SPEED;
-//		else if (motorSpeed < -Constants.Wrist.MAXIMUM_SPEED) motorSpeed = -Constants.Wrist.MAXIMUM_SPEED;
-		System.out.println(motorSpeed);
-		wristMotor.set(motorSpeed);
+		wristMotor.getPIDController().setReference(desiredTarget, CANSparkMax.ControlType.kPosition);
 	}
 
-	public void setDesiredTarget(double desiredTarget) {
-		System.out.println("set wrist target to " + desiredTarget);
-		this.desiredTarget = desiredTarget;
+	public void setDesiredTarget(WristState desiredState) {
+		desiredTarget = desiredState.getEncoderPosition();
 	}
 
-	/**
-	 * Sets Wrist to set speed given it is within encoder limits.
-	 * @param speed sets wrist motor to desired speed given that it is within the encoder limits.
-	 */
-	public void setPower(double speed) {
-		if ((speed > 0 && !upLimitWrist.get()) || (speed < 0 && !downLimitWrist.get())) {
-			speed = 0;
+
+	public void setPower(double joyStickValue) {
+		double newTarget = desiredTarget + joyStickValue * 100;
+		if (desiredTarget == 0 && !downLimitWrist.get() && newTarget > 0) {
+			desiredTarget = newTarget;
+		} else if (!upLimitWrist.get() && desiredTarget > newTarget) {
+			desiredTarget = newTarget;
 		}
-		System.out.println(speed);
-		wristMotor.set(speed);
-	}
-
-	/**
-	 * Enums are the states of the intake rollers (FORWARD, OFF, BACKWARD).
-	 */
-	public enum IntakeState {
-		FORWARD, OFF, BACKWARD
 	}
 
 	/**
@@ -90,14 +74,37 @@ public class Wrist extends SubsystemBase {
 	public void setIntakeState(IntakeState state) {
 		switch(state) {
 			case FORWARD:
-				rotateMotor.set(0.5);
+				rotateMotor.set(0.7);
 				break;
 			case OFF:
 				rotateMotor.set(0);
 				break;
 			case BACKWARD:
-				rotateMotor.set(-0.5);
+				rotateMotor.set(-0.7);
 				break;
+		}
+	}
+
+	/**
+	 * Enums are the states of the intake rollers (FORWARD, OFF, BACKWARD).
+	 */
+	public enum IntakeState {
+		FORWARD, OFF, BACKWARD
+	}
+
+	public enum WristState {
+		INITIAL_HOME(-710),
+		MIDDLE_CONE(834),
+		HOME(0);
+
+		private final int encoderPosition;
+
+		WristState(int encoderPosition) {
+			this.encoderPosition = encoderPosition;
+		}
+
+		public int getEncoderPosition() {
+			return encoderPosition;
 		}
 	}
 

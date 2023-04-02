@@ -150,8 +150,10 @@ public class Gamepad implements Sendable {
     }
 
     // Rumble //
-    /** @param intensity amount to make the gamepad rumble */
-    public void setRumble(double intensity) {
+    /**
+     * @param intensity amount to make the gamepad rumble
+     */
+    public void setRumble(double intensity, double duration) {
         return;
     }
 

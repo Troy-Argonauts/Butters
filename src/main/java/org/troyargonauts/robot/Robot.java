@@ -5,19 +5,15 @@
 
 package org.troyargonauts.robot;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.troyargonauts.robot.auton.HomingSequence;
 import org.troyargonauts.robot.subsystems.*;
-import org.troyargonauts.robot.subsystems.Arm;
-
-import java.beans.beancontext.BeanContextServiceAvailableEvent;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -26,14 +22,19 @@ import java.beans.beancontext.BeanContextServiceAvailableEvent;
  * project.
  */
 public class Robot extends TimedRobot {
-    private static RobotContainer robotContainer;
     private static DriveTrain driveTrain;
     private static Arm arm;
     private static Elevator elevator;
     private static Wrist wrist;
+    private static LEDSystem ledSystem;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
-    private static LEDSystem led;
+    private boolean hasLimitBeenPressed = false;
     private Command autonomousCommand;
+
+    public static LEDSystem getLEDSystem() {
+        if (ledSystem == null) ledSystem = new LEDSystem();
+        return ledSystem;
+    }
 
     @Override
     public void robotInit() {
@@ -43,69 +44,48 @@ public class Robot extends TimedRobot {
         driveTrain = new DriveTrain();
         arm = new Arm();
         elevator = new Elevator();
-        led = new LEDSystem();
         wrist = new Wrist();
-        robotContainer = new RobotContainer();
+        //ledSystem = new LEDSystem();
 
-        driveTrain.resetEncoders();
+        resetAllEncoders();
+
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
-        chooser.addOption("Wrist PID", new InstantCommand(() -> Robot.getWrist().setDesiredTarget(303), Robot.getWrist()));
-        chooser.addOption("Arm PID", new InstantCommand(() -> Robot.getArm().setDesiredTarget(-2000), Robot.getArm()));
-
-        elevator.resetEncoders();
-        arm.resetEncoders();
-        wrist.resetEncoders();
-        SmartDashboard.putNumber("wrist p", Constants.Wrist.WRIST_GAINS[0]);
-        SmartDashboard.putNumber("wrist i", Constants.Wrist.WRIST_GAINS[1]);
-        SmartDashboard.putNumber("wrist d", Constants.Wrist.WRIST_GAINS[2]);
-//        CameraServer.startAutomaticCapture();
+        chooser.setDefaultOption("Homing Sequence", new HomingSequence());
     }
 
     @Override
     public void robotPeriodic() {
+        elevator.run();
         wrist.run();
-//        elevator.run();
-        arm.run();
 
-        Robot.getWrist().wristPID = new PIDController(Constants.Wrist.WRIST_GAINS[0], Constants.Wrist.WRIST_GAINS[1], Constants.Wrist.WRIST_GAINS[2]);
+        if (arm.isHomeLimitPressed()) {
+            hasLimitBeenPressed = true;
+        }
 
-
-//        SmartDashboard.putNumber("Left Y", RobotContainer.getDriver().getLeftY());
-//        SmartDashboard.putNumber("Right X", RobotContainer.getDriver().getRightX());
+        if (hasLimitBeenPressed) {
+            arm.run();
+        }
         CommandScheduler.getInstance().run();
     }
 
     @Override
     public void disabledInit() {
         getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
-        //arm.setDesiredTarget(0);
-        wrist.setDesiredTarget(0);
-        //elevator.setDesiredTarget(0);
+        arm.setDesiredTarget(Arm.ArmState.HOME);
+        wrist.setDesiredTarget(Wrist.WristState.HOME);
+        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
     }
 
     @Override
     public void autonomousInit() {
         getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
-        Robot.getDrivetrain().resetEncoders();
+        resetAllEncoders();
 
         autonomousCommand = chooser.getSelected();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
-    }
-
-    @Override
-    public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
-        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
-    }
-
-
-    @Override
-    public void teleopPeriodic() {
     }
 
     @Override
@@ -125,16 +105,6 @@ public class Robot extends TimedRobot {
         return driveTrain;
     }
 
-    public static LEDSystem getLEDs() {
-        if (led == null) led = new LEDSystem();
-        return led;
-    }
-
-    public static RobotContainer getRobotContainer() {
-        if (robotContainer == null) robotContainer = new RobotContainer();
-        return robotContainer;
-    }
-
     public static Arm getArm() {
         if (arm == null) arm = new Arm();
         return arm;
@@ -150,6 +120,19 @@ public class Robot extends TimedRobot {
         return elevator;
     }
 
+    @Override
+    public void teleopInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+        new RobotContainer();
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
+    }
 
-
+    public void resetAllEncoders() {
+        driveTrain.resetEncoders();
+        elevator.resetEncoders();
+        arm.resetEncoders();
+        wrist.resetEncoders();
+    }
 }

@@ -5,14 +5,14 @@
 
 package org.troyargonauts.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
-import org.troyargonauts.robot.subsystems.Arm;
+import org.troyargonauts.robot.subsystems.DualSpeedTransmission;
+import org.troyargonauts.robot.subsystems.Elevator;
 import org.troyargonauts.robot.subsystems.Wrist;
 
 /**
@@ -49,18 +49,49 @@ public class RobotContainer {
                 )
         );
 
+        driver.getRightBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
+                        .andThen(new InstantCommand(() -> getDriver().setRumble(1.0, 0.5)))
+        );
+
+        driver.getLeftBumper().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
+                        .andThen(new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW)))
+        );
+
+        driver.getRightButton().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
+                        .andThen(() -> Robot.getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW))
+        );
+
+        driver.getLeftButton().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
+                        .andThen(() -> Robot.getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH))
+        );
+
+        driver.getBottomButton().whileTrue(
+                new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
+        );
+
         Robot.getArm().setDefaultCommand(
+                new RunCommand(
+                        () -> {
+                            double armSpeed = IStream.create(operator::getRightY)
+                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .get();
+                            Robot.getArm().setPower(armSpeed);
+                        }, Robot.getArm()
+                )
+        );
+
+        Robot.getWrist().setDefaultCommand(
                 new RunCommand(
                         () -> {
                             double wristSpeed = IStream.create(operator::getLeftY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
-                            double armSpeed = IStream.create(operator::getRightY)
-                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
-                                    .get();
-                            Robot.getWrist().setPower(wristSpeed * 0.5);
-                            Robot.getArm().setPower(armSpeed * 0.5);
-                        }, Robot.getArm()
+                            Robot.getWrist().setPower(wristSpeed);
+                        }, Robot.getWrist()
                 )
         );
 
@@ -73,22 +104,12 @@ public class RobotContainer {
                             double downSpeed = IStream.create(operator::getLeftTrigger)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
-                            Robot.getElevator().setPower((upSpeed - downSpeed) * 0.3);
+                            Robot.getElevator().setPower((upSpeed - downSpeed));
                         }, Robot.getElevator()
                 )
         );
 
-        driver.getRightBumper().whileTrue(
-                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().disableAutomaticShifting())
-        );
 
-        driver.getLeftBumper().whileTrue(
-                new InstantCommand(() -> Robot.getDrivetrain().getDualSpeedTransmission().enableAutomaticShifting())
-        );
-
-        driver.getBottomButton().whileTrue(
-                new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
-        );
 
         operator.getRightBumper().whileTrue(
                 new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.FORWARD))
@@ -102,12 +123,9 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF))
         );
 
-        driver.getRightButton().whileTrue(
-                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(303))
-        );
-
-        driver.getBottomButton().whileTrue(
-                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(0))
+        operator.getRightButton().whileTrue(
+                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.MIDDLE_CONE))
+                        .andThen(new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.MIDDLE_CONE)))
         );
     }
 

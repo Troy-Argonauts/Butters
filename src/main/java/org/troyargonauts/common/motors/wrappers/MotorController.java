@@ -1,7 +1,5 @@
 package org.troyargonauts.common.motors.wrappers;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import org.troyargonauts.common.math.OMath;
 
 public interface MotorController<T> {

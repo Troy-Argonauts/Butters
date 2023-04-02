@@ -1,11 +1,9 @@
 package org.troyargonauts.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyTalon;
@@ -13,10 +11,11 @@ import org.troyargonauts.common.motors.wrappers.MotorController;
 import org.troyargonauts.common.motors.wrappers.MotorControllerGroup;
 import org.troyargonauts.robot.Constants;
 import org.troyargonauts.robot.Robot;
-import org.troyargonauts.robot.subsystems.DualSpeedTransmission.Gear;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import static org.troyargonauts.robot.Constants.DriveTrain.DRIVE_TOLERANCE;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -25,11 +24,6 @@ public class DriveTrain extends SubsystemBase {
      * Motor controller groups for the right and left sides of the drivetrain.
      */
     private final MotorControllerGroup<TalonFX> rightSide, leftSide;
-
-    /**
-     * PID controllers for the drivetrain. The turn PID is used to turn the robot to a specific angle. The drive PID is used to drive the robot a specific distance.
-     */
-    private final PIDController drivePID, turnPID;
 
     /**
      * Collects encoder values from the right and left sides of the drivetrain. Uses master motor (frontRight and frontLeft) for encoder values.
@@ -70,13 +64,13 @@ public class DriveTrain extends SubsystemBase {
         configMotors(rightSide);
         configMotors(leftSide);
 
-        drivePID = new PIDController(Constants.DriveTrain.DRIVE_P, Constants.DriveTrain.DRIVE_I, Constants.DriveTrain.DRIVE_D);
-        turnPID = new PIDController(Constants.DriveTrain.TURN_P, Constants.DriveTrain.TURN_I, Constants.DriveTrain.TURN_D);
-
-        drivePID.setTolerance(Constants.DriveTrain.DRIVE_TOLERANCE, Constants.DriveTrain.VELOCITY_TOLERANCE);
-        turnPID.setTolerance(Constants.DriveTrain.TURN_TOLERANCE_DEG, Constants.DriveTrain.VELOCITY_TOLERANCE);
-
-        turnPID.enableContinuousInput(-180, 180);
+//        drivePID = new PIDController(Constants.DriveTrain.DRIVE_P, Constants.DriveTrain.DRIVE_I, Constants.DriveTrain.DRIVE_D);
+//        turnPID = new PIDController(Constants.DriveTrain.TURN_P, Constants.DriveTrain.TURN_I, Constants.DriveTrain.TURN_D);
+//
+//        drivePID.setTolerance(DRIVE_TOLERANCE, Constants.DriveTrain.VELOCITY_TOLERANCE);
+//        turnPID.setTolerance(Constants.DriveTrain.TURN_TOLERANCE_DEG, Constants.DriveTrain.VELOCITY_TOLERANCE);
+//
+//        turnPID.enableContinuousInput(-180, 180);
 
         rightSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
         leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
@@ -137,30 +131,6 @@ public class DriveTrain extends SubsystemBase {
         return (leftEncoderValue + rightEncoderValue) / 2;
     }
 
-    /**
-     * Uses PIDController to drive the robot a certain distance based on the average of the left and right encoder values
-     * @param setpoint the setpoint in inches we want the robot to drive to.
-     * @return PIDCommand that turns robot to target angle
-     */
-    public void drivePID(double setpoint) {
-        new PIDCommand(
-                drivePID,
-                this::getPosition,
-                setpoint,
-                output -> cheesyDrive(output, 0, 1),
-                Robot.getDrivetrain()
-        );
-    }
-
-    public PIDCommand turnPID(double angle) {
-        return new PIDCommand(
-                turnPID,
-                this::getAngle,
-                angle,
-                output -> cheesyDrive(0, output, 1),
-                Robot.getDrivetrain()
-        );
-    }
 
     public double getAngle() {
         double angle = pigeon.getYaw() % 360;
@@ -184,7 +154,7 @@ public class DriveTrain extends SubsystemBase {
      */
     public void resistMovement() {
         resetEncoders();
-        drivePID(0);
+        getRightSide().getMaster().getInternalController().set(ControlMode.Position, 0);
     }
 
     public MotorControllerGroup<TalonFX> getRightSide() {
@@ -224,7 +194,7 @@ public class DriveTrain extends SubsystemBase {
             Robot.getDrivetrain().cheesyDrive(1, 0, 0.05);
         } else {
             Robot.getDrivetrain().cheesyDrive(0, 0, 0.05);
-            Robot.getLEDs().rainbow();
+            Robot.getLEDSystem().rainbow();
         }
     }
 }

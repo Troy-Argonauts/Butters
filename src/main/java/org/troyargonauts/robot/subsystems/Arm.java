@@ -1,22 +1,23 @@
 package org.troyargonauts.robot.subsystems;
-import com.revrobotics.*;
-import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 import org.troyargonauts.robot.Constants;
 
+import static org.troyargonauts.robot.Constants.Arm.*;
+
 /**
  * Class representing arm. Includes PID control and absolute encoders
+ *
  * @author TeoElRey, ASH-will-WIN, SolidityContract
  */
 public class Arm extends SubsystemBase {
     private final LazyCANSparkMax armMotor;
-    private final PIDController armPID;
-    private double armEncoder;
     private final DigitalInput upLimitArm, downLimitArm;
 
     private double desiredTarget;
@@ -25,29 +26,29 @@ public class Arm extends SubsystemBase {
      * Here, the motors, absolute encoders, and PID Controller are instantiated.
      */
     public Arm() {
-        armMotor = new LazyCANSparkMax(Constants.Arm.ARM_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        armMotor = MotorCreation.createDefaultSparkMax(ARM_PORT);
 
         upLimitArm = new DigitalInput(Constants.Arm.ARM_UPPER_LIMIT_PORT);
         downLimitArm = new DigitalInput(Constants.Arm.ARM_LOWER_LIMIT_PORT);
 
         armMotor.getEncoder().setPositionConversionFactor(Constants.Arm.ARM_GEAR_RATIO);
-        
+
         armMotor.setInverted(false);
 
         armMotor.setIdleMode(IdleMode.kBrake);
 
-        armPID = new PIDController(Constants.Arm.ARM_P, Constants.Arm.ARM_I, Constants.Arm.ARM_D);
-        armPID.setTolerance(Constants.Arm.ARM_TOLERANCE);
+        armMotor.getPIDController().setP(ARM_P);
+        armMotor.getPIDController().setI(ARM_I);
+        armMotor.getPIDController().setD(ARM_D);
+
+        armMotor.getPIDController().setOutputRange(-0.75, 0.75);
+
+        armMotor.burnFlash();
     }
 
     @Override
     public void periodic() {
-        armEncoder = armMotor.getEncoder().getPosition();
-
-//        SmartDashboard.putBoolean("up limit arm", !upLimitArm.get());
-//        SmartDashboard.putBoolean("down limit arm", !downLimitArm.get());
-        SmartDashboard.putNumber("Arm Encoder", armEncoder);
-        SmartDashboard.putBoolean("Arm Finished", armPID.atSetpoint());
+        SmartDashboard.putNumber("Arm Encoder", armMotor.getEncoder().getPosition());
 
         if (!upLimitArm.get()) {
             armMotor.getEncoder().setPosition(0);
@@ -55,39 +56,46 @@ public class Arm extends SubsystemBase {
     }
 
     public void run() {
-        double motorSpeed = armPID.calculate(armEncoder, desiredTarget);
-        if (motorSpeed > Constants.Arm.MAXIMUM_SPEED) motorSpeed = Constants.Arm.MAXIMUM_SPEED;
-        else if (motorSpeed < -Constants.Arm.MAXIMUM_SPEED) motorSpeed = -Constants.Arm.MAXIMUM_SPEED;
-        setPower(motorSpeed);
+        armMotor.getPIDController().setReference(desiredTarget, CANSparkMax.ControlType.kPosition);
     }
 
-    public void setDesiredTarget(double desiredTarget) {
-        this.desiredTarget = desiredTarget;
+    public void setDesiredTarget(ArmState desiredState) {
+        desiredTarget = desiredState.getEncoderPosition();
     }
 
     /**
-     * Sets Elbow to set speed given it is within encoder limits.
-     * @param speed sets elbow motor to desired speed given that it is within the encoder limits.
+     * Sets Elbow to the joystick value given it is within encoder limits.
+     *
+     * @param joyStickValue sets elbow motor to a joystick value given that it is within the encoder limits.
      */
-    public void setPower(double speed) {
-        if (speed > 0) {
-            if (!upLimitArm.get()) {
-                armMotor.set(0);
-            } else {
-                armMotor.set(speed);
-//                SmartDashboard.putNumber("Arm Speed", speed);
-            }
-        } else {
-            if (!downLimitArm.get()) {
-                armMotor.set(0);
-            } else {
-                armMotor.set(speed);
-//                SmartDashboard.putNumber("Arm Speed", speed);
-            }
+    public void setPower(double joyStickValue) {
+        double newTarget = desiredTarget + joyStickValue * 100;
+        if (desiredTarget == 0 && !upLimitArm.get() && newTarget > 0) {
+            desiredTarget = newTarget;
+        } else if (!downLimitArm.get() && desiredTarget > newTarget) {
+            desiredTarget = newTarget;
         }
+    }
+
+    public boolean isHomeLimitPressed() {
+        return !upLimitArm.get();
     }
 
     public void resetEncoders() {
         armMotor.getEncoder().setPosition(0);
+    }
+
+    public enum ArmState {
+
+        HOME(0), FLOOR_PICKUP(-7029);
+        final int encoderPosition;
+
+        ArmState(int encoderPosition) {
+            this.encoderPosition = encoderPosition;
+        }
+
+        public int getEncoderPosition() {
+            return encoderPosition;
+        }
     }
 }
