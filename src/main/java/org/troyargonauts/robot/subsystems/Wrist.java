@@ -59,10 +59,10 @@ public class Wrist extends SubsystemBase {
 
 
 	public void setPower(double joyStickValue) {
-		double newTarget = desiredTarget + joyStickValue * 100;
-		if (desiredTarget == 0 && !downLimitWrist.get() && newTarget > 0) {
+		double newTarget = desiredTarget + (joyStickValue * 100);
+		if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0) {
 			desiredTarget = newTarget;
-		} else if (!upLimitWrist.get() && desiredTarget > newTarget) {
+		} else if (upLimitWrist.get() && newTarget < desiredTarget) {
 			desiredTarget = newTarget;
 		}
 	}
@@ -95,6 +95,7 @@ public class Wrist extends SubsystemBase {
 	public enum WristState {
 		INITIAL_HOME(-710),
 		MIDDLE_CONE(834),
+		FLOOR_PICKUP(375),
 		HOME(0);
 
 		private final int encoderPosition;

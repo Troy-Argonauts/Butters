@@ -6,6 +6,7 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.robot.Constants;
 
+import static org.troyargonauts.robot.Constants.LEDs.CANDLE;
 import static org.troyargonauts.robot.Constants.LEDs.ledLength;
 
 
@@ -34,7 +35,7 @@ public class LEDSystem extends SubsystemBase {
      * @author JJCgits, firearcher2012, ASH-will-WIN
      */
     public LEDSystem() {
-        candle = new CANdle(Constants.LEDs.CANDLE);
+        candle = new CANdle(CANDLE);
         config = new CANdleConfiguration();
         config.stripType = CANdle.LEDStripType.RGB;
         candle.configAllSettings(config);

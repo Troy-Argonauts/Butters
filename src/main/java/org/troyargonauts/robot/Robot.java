@@ -5,6 +5,7 @@
 
 package org.troyargonauts.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -40,6 +41,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
+
+        DataLogManager.start("/media/sda1/logs");
 
         driveTrain = new DriveTrain();
         arm = new Arm();

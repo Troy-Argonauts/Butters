@@ -15,7 +15,7 @@ import org.troyargonauts.robot.Robot;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static org.troyargonauts.robot.Constants.DriveTrain.DRIVE_TOLERANCE;
+import static org.troyargonauts.robot.Constants.DriveTrain.*;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -46,13 +46,13 @@ public class DriveTrain extends SubsystemBase {
      * Motor controllers are added to groups as their respective role (master or slave)
      */
     public DriveTrain() {
-        LazyTalon<TalonFX> frontRight = MotorCreation.createDriveTalonFX(Constants.DriveTrain.FRONT_RIGHT, false);
-        LazyTalon<TalonFX> middleRight =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_RIGHT, true);
-        LazyTalon<TalonFX> backRight =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_RIGHT, true);
+        LazyTalon<TalonFX> frontRight = MotorCreation.createDriveTalonFX(FRONT_RIGHT, false);
+        LazyTalon<TalonFX> middleRight =  MotorCreation.createDriveTalonFX(TOP_RIGHT, true);
+        LazyTalon<TalonFX> backRight =  MotorCreation.createDriveTalonFX(REAR_RIGHT, true);
 
-        LazyTalon<TalonFX> frontLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.FRONT_LEFT, false);
-        LazyTalon<TalonFX> middleLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.TOP_LEFT, true);
-        LazyTalon<TalonFX> backLeft =  MotorCreation.createDriveTalonFX(Constants.DriveTrain.REAR_LEFT, true);
+        LazyTalon<TalonFX> frontLeft =  MotorCreation.createDriveTalonFX(FRONT_LEFT, false);
+        LazyTalon<TalonFX> middleLeft =  MotorCreation.createDriveTalonFX(TOP_LEFT, true);
+        LazyTalon<TalonFX> backLeft =  MotorCreation.createDriveTalonFX(REAR_LEFT, true);
 
         rightSide = new MotorControllerGroup<>(frontRight, List.of(middleRight, backRight), true, false);
         leftSide = new MotorControllerGroup<>(frontLeft, List.of(middleLeft, backLeft), false, false);
@@ -64,8 +64,8 @@ public class DriveTrain extends SubsystemBase {
         configMotors(rightSide);
         configMotors(leftSide);
 
-        rightSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
-        leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
+        rightSide.forEach(talonFX -> talonFX.setGearingParameters(gearingLowGear));
+        leftSide.forEach(talonFX -> talonFX.setGearingParameters(gearingLowGear));
     }
 
     @Override

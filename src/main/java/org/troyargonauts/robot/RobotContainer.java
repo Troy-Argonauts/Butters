@@ -5,12 +5,14 @@
 
 package org.troyargonauts.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
+import org.troyargonauts.robot.subsystems.Arm;
 import org.troyargonauts.robot.subsystems.DualSpeedTransmission;
 import org.troyargonauts.robot.subsystems.Elevator;
 import org.troyargonauts.robot.subsystems.Wrist;
@@ -73,6 +75,15 @@ public class RobotContainer {
                 new RunCommand(() -> Robot.getDrivetrain().balance(), Robot.getDrivetrain())
         );
 
+        driver.getSelectButton().whileTrue(
+                new InstantCommand(() -> Robot.getDrivetrain().resistMovement(), Robot.getDrivetrain())
+        ).onFalse(
+                new InstantCommand(() -> Robot.getDrivetrain().set((leftSide, rightSide) -> {
+                    leftSide.getMaster().getInternalController().set(ControlMode.PercentOutput, 0);
+                    rightSide.getMaster().getInternalController().set(ControlMode.PercentOutput, 0);
+                }))
+        );
+
         Robot.getArm().setDefaultCommand(
                 new RunCommand(
                         () -> {
@@ -109,23 +120,33 @@ public class RobotContainer {
                 )
         );
 
-
-
         operator.getRightBumper().whileTrue(
-                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.FORWARD))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.FORWARD), Robot.getWrist())
         ).whileFalse(
-                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF), Robot.getWrist())
         );
 
         operator.getLeftBumper().whileTrue(
-                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.BACKWARD))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.BACKWARD), Robot.getWrist())
         ).whileFalse(
-                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF))
+                new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF), Robot.getWrist())
         );
 
         operator.getRightButton().whileTrue(
-                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.MIDDLE_CONE))
-                        .andThen(new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.MIDDLE_CONE)))
+                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.MIDDLE_CONE), Robot.getElevator())
+                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.MIDDLE_CONE), Robot.getWrist())
+        );
+
+        operator.getBottomButton().whileTrue(
+                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
+                        .andThen(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HOME), Robot.getArm())
+                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HOME), Robot.getWrist())
+        );
+
+        operator.getLeftButton().whileTrue(
+                new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.FLOOR_PICKUP), Robot.getArm())
+                        .andThen(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
+                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.FLOOR_PICKUP), Robot.getWrist())
         );
     }
 

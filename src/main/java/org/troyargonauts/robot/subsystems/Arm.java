@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase {
 
         armMotor.getEncoder().setPositionConversionFactor(Constants.Arm.ARM_GEAR_RATIO);
 
-        armMotor.setInverted(false);
+        armMotor.setInverted(true);
 
         armMotor.setIdleMode(IdleMode.kBrake);
 
@@ -60,6 +60,11 @@ public class Arm extends SubsystemBase {
     }
 
     public void setDesiredTarget(ArmState desiredState) {
+        if (desiredState.getEncoderPosition() < desiredTarget && desiredState.getEncoderPosition() < 1000) {
+            armMotor.getPIDController().setOutputRange(-0.4, 0.4);
+        } else {
+            armMotor.getPIDController().setOutputRange(-0.75, 0.75);
+        }
         desiredTarget = desiredState.getEncoderPosition();
     }
 
@@ -69,10 +74,15 @@ public class Arm extends SubsystemBase {
      * @param joyStickValue sets elbow motor to a joystick value given that it is within the encoder limits.
      */
     public void setPower(double joyStickValue) {
-        double newTarget = desiredTarget + joyStickValue * 100;
-        if (desiredTarget == 0 && !upLimitArm.get() && newTarget > 0) {
+        double newTarget = desiredTarget + (-joyStickValue * 100);
+        System.out.println(newTarget);
+        if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0) {
+            armMotor.getPIDController().setOutputRange(-0.75, 0.75);
             desiredTarget = newTarget;
-        } else if (!downLimitArm.get() && desiredTarget > newTarget) {
+        } else if (downLimitArm.get() && newTarget < desiredTarget) { // Encoder values are all negative so signs are inversed compared to others
+            if (newTarget < 1000) {
+                armMotor.getPIDController().setOutputRange(-0.4, 0.4);
+            }
             desiredTarget = newTarget;
         }
     }

@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
 
 import static org.troyargonauts.robot.Constants.Elevator.*;
@@ -27,7 +28,7 @@ public class Elevator extends SubsystemBase {
      * soft limit is set to 7, meaning motors will have a limit of 7 rotations backwards
      */
     public Elevator() {
-        elevatorMotor = new LazyCANSparkMax(LIFT_MOTOR_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        elevatorMotor = MotorCreation.createDefaultSparkMax(LIFT_MOTOR_PORT);
 
         elevatorMotor.setInverted(true);
 
@@ -75,10 +76,10 @@ public class Elevator extends SubsystemBase {
      * @param joyStickValue desired elevator extension or retraction speed
      */
     public void setPower(double joyStickValue) {
-        double newTarget = desiredTarget + joyStickValue * 100;
-        if (desiredTarget == 0 && !bottomLimitSwitch.get() && newTarget > 0) {
+        double newTarget = desiredTarget + (joyStickValue * 30);
+        if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0 && desiredTarget != newTarget) {
             desiredTarget = newTarget;
-        } else if (!upperLimitSwitch.get() && desiredTarget > newTarget) {
+        } else if (newTarget < desiredTarget && bottomLimitSwitch.get()) { // If elevator is moving down (new encoder value is less than current encoder value) and bottomLimitSwitch is not pressed
             desiredTarget = newTarget;
         }
     }
