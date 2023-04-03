@@ -2,6 +2,7 @@ package org.troyargonauts.robot;
 
 import edu.wpi.first.math.util.Units;
 import org.troyargonauts.common.motors.wrappers.MotorController;
+import org.troyargonauts.common.util.Gains;
 
 public final class Constants {
   
@@ -20,14 +21,11 @@ public final class Constants {
         MotorController.GearingParameters gearingHighGear = new MotorController.GearingParameters(1.0 / 9.06677, Units.inchesToMeters(WHEEL_DIAMETER / 2.0), 2048);
 
         int SHIFTING_AMP_THRESHOLD = 10;
-        //PID Tuning Values
-        double DRIVE_P = 0.08;
-        double DRIVE_I = 0.005;
-        double DRIVE_D = 0.03;
 
-        double TURN_P = 1;
-        double TURN_I = 0;
-        double TURN_D = 0;
+        //PID Tuning Values
+        Gains driveGains = new Gains(0, 0, 0, 10);
+        Gains turnGains = new Gains(0, 0, 0, 10);
+
         double BALANCE_THRESHOLD = 1.5;
         double DRIVE_TOLERANCE = 1;
         double TURN_TOLERANCE_DEG = 1;

@@ -1,6 +1,7 @@
 package org.troyargonauts.common.motors.wrappers;
 
 import org.troyargonauts.common.math.OMath;
+import org.troyargonauts.common.util.Gains;
 
 public interface MotorController<T> {
     T getInternalController();
@@ -95,7 +96,7 @@ public interface MotorController<T> {
      */
     void setNeutral();
 
-    boolean setPIDF(final double kP, final double kI, final double kD, final double kFF);
+    boolean setPIDF(final double kP, final double kI, final double kD, final double kFF, final double tolerance);
 
     /**
      * @param cycle % of voltage input to apply to motor
@@ -152,6 +153,8 @@ public interface MotorController<T> {
      */
     double getVelocityLinearMetersPerSecond();
     double getVelocityAngularRPM();
+
+    void configurePIDF(final Gains gains, final int profileID);
 
     /**
      * @return radians/s of the motor

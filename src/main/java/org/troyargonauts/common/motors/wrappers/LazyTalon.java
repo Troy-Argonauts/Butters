@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import org.troyargonauts.common.math.OMath;
+import org.troyargonauts.common.util.Gains;
 
 import java.util.function.Supplier;
 
@@ -201,20 +202,25 @@ public class LazyTalon<TalonType extends BaseTalon> implements MotorController<T
 	}
 
 	@Override
-	// TODO
 	public synchronized double getVelocityAngularRPM() {
 		return nativeUnits2RPM(getInversionMultiplier() * (int) m_internal.getSelectedSensorVelocity(m_selectedProfileID));
 	}
 
 	@Override
-	public synchronized boolean setPIDF(final double p, final double i, final double d, final double ff) {
+	public void configurePIDF(Gains gains, int profileID) {
+		setSelectedProfile(profileID);
+		setPIDF(gains.getP(), gains.getI(), gains.getD(), gains.getF(), gains.getTolerance());
+	}
+
+	@Override
+	public synchronized boolean setPIDF(final double p, final double i, final double d, final double ff, final double tolerance) {
 		boolean success = true;
 
 		success &= runWithRetries(() -> m_internal.config_kP(m_selectedProfileID, p, TIMEOUT_MS));
 		success &= runWithRetries(() -> m_internal.config_kI(m_selectedProfileID, i, TIMEOUT_MS));
 		success &= runWithRetries(() -> m_internal.config_kD(m_selectedProfileID, d, TIMEOUT_MS));
 		success &= runWithRetries(() -> m_internal.config_kF(m_selectedProfileID, ff, TIMEOUT_MS));
-//		success &= runWithRetries(() -> m_internal.configAllowableClosedloopError(m_selectedProfileID, (int) tolerance, TIMEOUT_MS));
+		success &= runWithRetries(() -> m_internal.configAllowableClosedloopError(m_selectedProfileID, (int) tolerance, TIMEOUT_MS));
 
 		return success;
 	}

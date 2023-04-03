@@ -30,7 +30,7 @@ public class DriveTrain extends SubsystemBase {
      */
     private double rightEncoderValue, leftEncoderValue;
 
-    private Pigeon2 pigeon;
+    private final Pigeon2 pigeon;
 
     public double pigeonRoll, pigeonYaw;
     public short[] pigeonAccelValue = new short[3];
@@ -64,14 +64,6 @@ public class DriveTrain extends SubsystemBase {
         configMotors(rightSide);
         configMotors(leftSide);
 
-//        drivePID = new PIDController(Constants.DriveTrain.DRIVE_P, Constants.DriveTrain.DRIVE_I, Constants.DriveTrain.DRIVE_D);
-//        turnPID = new PIDController(Constants.DriveTrain.TURN_P, Constants.DriveTrain.TURN_I, Constants.DriveTrain.TURN_D);
-//
-//        drivePID.setTolerance(DRIVE_TOLERANCE, Constants.DriveTrain.VELOCITY_TOLERANCE);
-//        turnPID.setTolerance(Constants.DriveTrain.TURN_TOLERANCE_DEG, Constants.DriveTrain.VELOCITY_TOLERANCE);
-//
-//        turnPID.enableContinuousInput(-180, 180);
-
         rightSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
         leftSide.forEach(talonFX -> talonFX.setGearingParameters(Constants.DriveTrain.gearingLowGear));
     }
@@ -84,12 +76,6 @@ public class DriveTrain extends SubsystemBase {
         pigeonRoll = pigeon.getRoll();
 
         pigeon.getBiasedAccelerometer(pigeonAccelValue);
-
-//        SmartDashboard.putNumber("DT Right RPM", rightSide.getMaster().getMotorRotations());
-//        SmartDashboard.putNumber("DT Left RPM", leftSide.getMaster().getMotorRotations());
-//        SmartDashboard.putBoolean("DT Auto Shifting", getDualSpeedTransmission().isAutomaticShifting());
-//        SmartDashboard.putNumber("DT Right Amps", rightSide.getMaster().getDrawnCurrentAmps());
-//        SmartDashboard.putNumber("DT Left Amps", leftSide.getMaster().getDrawnCurrentAmps());
     }
 
     /**
@@ -103,6 +89,20 @@ public class DriveTrain extends SubsystemBase {
     public void cheesyDrive(double speed, double turn, double nerf) {
         rightSide.getMaster().set((speed + turn) * nerf);
         leftSide.getMaster().set((speed - turn) * nerf);
+    }
+
+    public void control(Direction direction, double rotations) {
+        if (direction == Direction.TRANSLATION) {
+            leftSide.getMaster().setSelectedProfile(0);
+            rightSide.getMaster().setSelectedProfile(0);
+            rightSide.getMaster().setPositionRotations(rotations);
+            leftSide.getMaster().setPositionRotations(rotations);
+        } else if (direction == Direction.ROTATION) {
+            leftSide.getMaster().setSelectedProfile(1);
+            rightSide.getMaster().setSelectedProfile(1);
+            rightSide.getMaster().getInternalController().set(ControlMode.Position, rotations);
+            leftSide.getMaster().getInternalController().set(ControlMode.Position, rotations);
+        }
     }
 
     /**
@@ -154,7 +154,10 @@ public class DriveTrain extends SubsystemBase {
      */
     public void resistMovement() {
         resetEncoders();
-        getRightSide().getMaster().getInternalController().set(ControlMode.Position, 0);
+        set((left, right) -> {
+            left.getMaster().getInternalController().set(ControlMode.Position, 0);
+            right.getMaster().getInternalController().set(ControlMode.Position, 0);
+        });
     }
 
     public MotorControllerGroup<TalonFX> getRightSide() {
@@ -184,6 +187,8 @@ public class DriveTrain extends SubsystemBase {
             motor.getInternalController().configVoltageCompSaturation(12.0);
             motor.getInternalController().enableVoltageCompensation(true);
             motor.getInternalController().configStatorCurrentLimit(CURRENT_LIMIT);
+            motor.configurePIDF(Constants.DriveTrain.driveGains, 0);
+            motor.configurePIDF(Constants.DriveTrain.turnGains, 1);
         });
     }
 
@@ -196,5 +201,9 @@ public class DriveTrain extends SubsystemBase {
             Robot.getDrivetrain().cheesyDrive(0, 0, 0.05);
             Robot.getLEDSystem().rainbow();
         }
+    }
+
+    public enum Direction {
+        TRANSLATION, ROTATION
     }
 }
