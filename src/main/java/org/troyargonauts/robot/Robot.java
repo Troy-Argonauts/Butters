@@ -7,7 +7,9 @@ package org.troyargonauts.robot;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +17,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.troyargonauts.robot.commands.StartingSequence;
 import org.troyargonauts.robot.subsystems.*;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -29,6 +38,7 @@ public class Robot extends TimedRobot {
     private static Wrist wrist;
     private static LEDSystem ledSystem;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private boolean hasLimitBeenPressed = false;
     private Command autonomousCommand;
 
@@ -55,21 +65,23 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
         chooser.setDefaultOption("Homing Sequence", new StartingSequence());
+
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            elevator.run();
+            wrist.run();
+
+            if (arm.isHomeLimitPressed()) {
+                hasLimitBeenPressed = true;
+            }
+
+            if (hasLimitBeenPressed) {
+                arm.run();
+            }
+        }, 100, 10, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void robotPeriodic() {
-        elevator.run();
-        wrist.run();
-
-        if (arm.isHomeLimitPressed()) {
-            hasLimitBeenPressed = true;
-        }
-
-        if (hasLimitBeenPressed) {
-            arm.run();
-        }
-
         CommandScheduler.getInstance().run();
     }
 

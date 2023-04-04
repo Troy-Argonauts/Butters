@@ -66,6 +66,7 @@ public class Arm extends SubsystemBase {
             armMotor.getPIDController().setOutputRange(-0.75, 0.75);
         }
         desiredTarget = desiredState.getEncoderPosition();
+        System.out.println(desiredTarget);
     }
 
     /**
@@ -96,7 +97,7 @@ public class Arm extends SubsystemBase {
 
     public enum ArmState {
 
-        HOME(0), FLOOR_PICKUP(-7029);
+        HOME(0), FLOOR_PICKUP(6500);
         final int encoderPosition;
 
         ArmState(int encoderPosition) {
