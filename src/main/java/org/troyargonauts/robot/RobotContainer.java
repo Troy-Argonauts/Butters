@@ -12,9 +12,8 @@ import org.troyargonauts.common.input.Gamepad;
 import org.troyargonauts.common.input.gamepads.AutoGamepad;
 import org.troyargonauts.common.math.OMath;
 import org.troyargonauts.common.streams.IStream;
-import org.troyargonauts.robot.subsystems.Arm;
+import org.troyargonauts.robot.commands.*;
 import org.troyargonauts.robot.subsystems.DualSpeedTransmission;
-import org.troyargonauts.robot.subsystems.Elevator;
 import org.troyargonauts.robot.subsystems.Wrist;
 
 /**
@@ -84,6 +83,7 @@ public class RobotContainer {
                 }))
         );
 
+
         Robot.getArm().setDefaultCommand(
                 new RunCommand(
                         () -> {
@@ -132,21 +132,20 @@ public class RobotContainer {
                 new InstantCommand(() -> Robot.getWrist().setIntakeState(Wrist.IntakeState.OFF), Robot.getWrist())
         );
 
-        operator.getRightButton().whileTrue(
-                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.MIDDLE_CONE), Robot.getElevator())
-                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.MIDDLE_CONE), Robot.getWrist())
+        operator.getLeftButton().toggleOnTrue(
+                new HybridScoring()
         );
 
-        operator.getBottomButton().whileTrue(
-                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
-                        .andThen(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HOME), Robot.getArm())
-                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HOME), Robot.getWrist())
+        operator.getBottomButton().toggleOnTrue(
+                new HomePosition()
         );
 
-        operator.getLeftButton().whileTrue(
-                new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.FLOOR_PICKUP), Robot.getArm())
-                        .andThen(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
-                        .andThen(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.FLOOR_PICKUP), Robot.getWrist())
+        operator.getRightButton().toggleOnTrue(
+                new FloorPickup()
+        );
+
+        operator.getTopButton().toggleOnTrue(
+                new MidScoring()
         );
     }
 

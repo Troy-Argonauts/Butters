@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import org.troyargonauts.robot.auton.HomingSequence;
+import org.troyargonauts.robot.commands.StartingSequence;
 import org.troyargonauts.robot.subsystems.*;
 
 /**
@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
 
-        DataLogManager.start("/media/sda1/logs");
+//        DataLogManager.start("/media/sda1/logs");
 
         driveTrain = new DriveTrain();
         arm = new Arm();
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
-        chooser.setDefaultOption("Homing Sequence", new HomingSequence());
+        chooser.setDefaultOption("Homing Sequence", new StartingSequence());
     }
 
     @Override
@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
         if (hasLimitBeenPressed) {
             arm.run();
         }
+
         CommandScheduler.getInstance().run();
     }
 

@@ -45,7 +45,7 @@ public class Wrist extends SubsystemBase {
 
 		if (!downLimitWrist.get()) {
 			wristMotor.getEncoder().setPosition(0);
-			setDesiredTarget(WristState.HOME);
+			desiredTarget = 0;
 		}
 	}
 
@@ -94,9 +94,11 @@ public class Wrist extends SubsystemBase {
 
 	public enum WristState {
 		INITIAL_HOME(-710),
-		MIDDLE_CONE(834),
+		MIDDLE(754),
 		FLOOR_PICKUP(375),
-		HOME(0);
+		HYBRID_SCORE(1115),
+		HOME(0),
+		HIGH_CUBE(473);
 
 		private final int encoderPosition;
 

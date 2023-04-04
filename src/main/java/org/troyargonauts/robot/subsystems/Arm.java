@@ -74,12 +74,11 @@ public class Arm extends SubsystemBase {
      * @param joyStickValue sets elbow motor to a joystick value given that it is within the encoder limits.
      */
     public void setPower(double joyStickValue) {
-        double newTarget = desiredTarget + (-joyStickValue * 100);
-        System.out.println(newTarget);
+        double newTarget = desiredTarget + (joyStickValue * 100);
         if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0) {
             armMotor.getPIDController().setOutputRange(-0.75, 0.75);
             desiredTarget = newTarget;
-        } else if (downLimitArm.get() && newTarget < desiredTarget) { // Encoder values are all negative so signs are inversed compared to others
+        } else if (upLimitArm.get() && newTarget < desiredTarget) { // Encoder values are all negative so signs are inversed compared to others
             if (newTarget < 1000) {
                 armMotor.getPIDController().setOutputRange(-0.4, 0.4);
             }

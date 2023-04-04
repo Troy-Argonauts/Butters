@@ -3,6 +3,7 @@ package org.troyargonauts.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
@@ -54,6 +55,8 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         elevatorEncoder = elevatorMotor.getEncoder().getPosition();
 
+        SmartDashboard.putNumber("elevator motor", elevatorEncoder);
+
         if (!bottomLimitSwitch.get()) {
             resetEncoders();
         }
@@ -86,7 +89,10 @@ public class Elevator extends SubsystemBase {
 
     public enum ElevatorState {
 
-        HOME(0), INITIAL_MOVEMENT(100), MIDDLE_CONE(196);
+        HOME(0),
+        INITIAL_MOVEMENT(101),
+        MIDDLE(182),
+        HIGH(221);
         final double encoderPosition;
 
         ElevatorState(double encoderPosition) {
