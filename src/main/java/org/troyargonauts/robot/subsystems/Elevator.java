@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
      * @param joyStickValue desired elevator extension or retraction speed
      */
     public void setPower(double joyStickValue) {
-        double newTarget = desiredTarget + (joyStickValue * 30);
+        double newTarget = desiredTarget + (joyStickValue * 50);
         if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0 && desiredTarget != newTarget) {
             desiredTarget = newTarget;
         } else if (newTarget < desiredTarget && bottomLimitSwitch.get()) { // If elevator is moving down (new encoder value is less than current encoder value) and bottomLimitSwitch is not pressed

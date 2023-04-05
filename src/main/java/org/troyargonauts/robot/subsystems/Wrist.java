@@ -63,7 +63,7 @@ public class Wrist extends SubsystemBase {
 
 	public void setPower(double joyStickValue) {
 		double newTarget = desiredTarget + (joyStickValue * 100);
-		if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0) {
+		if ((desiredTarget <= 5 || desiredTarget >= -10) && newTarget > 0) {
 			desiredTarget = newTarget;
 		} else if (upLimitWrist.get() && newTarget < desiredTarget) {
 			desiredTarget = newTarget;
