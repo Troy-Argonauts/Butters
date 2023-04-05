@@ -94,9 +94,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
 //        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
-//        arm.setDesiredTarget(Arm.ArmState.HOME);
-//        wrist.setDesiredTarget(Wrist.WristState.HOME);
-//        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
+        arm.setDesiredTarget(Arm.ArmState.HOME);
+        wrist.setDesiredTarget(Wrist.WristState.HOME);
+        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
     }
 
     @Override

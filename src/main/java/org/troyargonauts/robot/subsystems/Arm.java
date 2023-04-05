@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
         armMotor.getPIDController().setI(ARM_I);
         armMotor.getPIDController().setD(ARM_D);
 
-        armMotor.getPIDController().setOutputRange(-0.75, 0.75);
+        armMotor.getPIDController().setOutputRange(-0.40, 0.40);
 
         armMotor.burnFlash();
     }
@@ -49,6 +49,9 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Encoder", armMotor.getEncoder().getPosition());
+
+        SmartDashboard.putBoolean("up limit arm", !upLimitArm.get());
+        SmartDashboard.putBoolean("down limit arm", !downLimitArm.get());
 
         if (!upLimitArm.get()) {
             armMotor.getEncoder().setPosition(0);
@@ -61,9 +64,9 @@ public class Arm extends SubsystemBase {
 
     public void setDesiredTarget(ArmState desiredState) {
         if (desiredState.getEncoderPosition() < desiredTarget && desiredState.getEncoderPosition() < 1000) {
-            armMotor.getPIDController().setOutputRange(-0.4, 0.4);
+            armMotor.getPIDController().setOutputRange(-0.30, 0.30);
         } else {
-            armMotor.getPIDController().setOutputRange(-0.75, 0.75);
+            armMotor.getPIDController().setOutputRange(-0.40, 0.40);
         }
         desiredTarget = desiredState.getEncoderPosition();
         System.out.println(desiredTarget);
@@ -97,7 +100,7 @@ public class Arm extends SubsystemBase {
 
     public enum ArmState {
 
-        HOME(0), FLOOR_PICKUP(6500);
+        HOME(0), FLOOR_PICKUP(6890);
         final int encoderPosition;
 
         ArmState(int encoderPosition) {

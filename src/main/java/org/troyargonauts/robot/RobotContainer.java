@@ -162,6 +162,10 @@ public class RobotContainer {
         operator.getTopButton().toggleOnTrue(
                 new MidScoring()
         );
+
+        operator.getDPadUp().toggleOnTrue(
+                new HighCubeScoring()
+        );
     }
 
     public static Gamepad getDriver() {

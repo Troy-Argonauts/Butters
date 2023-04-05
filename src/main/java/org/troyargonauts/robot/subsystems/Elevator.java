@@ -56,6 +56,7 @@ public class Elevator extends SubsystemBase {
         elevatorEncoder = elevatorMotor.getEncoder().getPosition();
 
         SmartDashboard.putNumber("elevator motor", elevatorEncoder);
+        SmartDashboard.putBoolean("Down limit elevator", !bottomLimitSwitch.get());
 
         if (!bottomLimitSwitch.get()) {
             resetEncoders();
@@ -91,7 +92,7 @@ public class Elevator extends SubsystemBase {
 
         HOME(0),
         INITIAL_MOVEMENT(101),
-        MIDDLE(182),
+        MIDDLE(200),
         HIGH(221);
         final double encoderPosition;
 
