@@ -26,7 +26,7 @@ public final class Constants {
         Gains driveGains = new Gains(0, 0, 0, 10);
         Gains turnGains = new Gains(0, 0, 0, 10);
 
-        double BALANCE_THRESHOLD = 1.5;
+        double BALANCE_THRESHOLD = 1.75;
         double DRIVE_TOLERANCE = 1;
         double TURN_TOLERANCE_DEG = 1;
         double VELOCITY_TOLERANCE = 0.05;

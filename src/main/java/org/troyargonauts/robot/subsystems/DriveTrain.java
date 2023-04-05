@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyTalon;
@@ -74,6 +75,7 @@ public class DriveTrain extends SubsystemBase {
         leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
 
         pigeonRoll = pigeon.getRoll();
+        SmartDashboard.putNumber("Pigeon Roll", pigeonRoll);
 
         pigeon.getBiasedAccelerometer(pigeonAccelValue);
     }
@@ -93,11 +95,13 @@ public class DriveTrain extends SubsystemBase {
 
     public void control(Direction direction, double rotations) {
         if (direction == Direction.TRANSLATION) {
+            // 0 = Translation
             leftSide.getMaster().setSelectedProfile(0);
             rightSide.getMaster().setSelectedProfile(0);
             rightSide.getMaster().setPositionRotations(rotations);
             leftSide.getMaster().setPositionRotations(rotations);
         } else if (direction == Direction.ROTATION) {
+            // 1 = Rotation
             leftSide.getMaster().setSelectedProfile(1);
             rightSide.getMaster().setSelectedProfile(1);
             rightSide.getMaster().getInternalController().set(ControlMode.Position, rotations);
@@ -194,11 +198,11 @@ public class DriveTrain extends SubsystemBase {
 
     public void balance() {
         if (pigeonRoll > Constants.DriveTrain.BALANCE_THRESHOLD) {
-            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.05);
+            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.07);
         } else if (pigeonRoll < -Constants.DriveTrain.BALANCE_THRESHOLD) {
-            Robot.getDrivetrain().cheesyDrive(1, 0, 0.05);
+            Robot.getDrivetrain().cheesyDrive(1, 0, 0.07);
         } else {
-            Robot.getDrivetrain().cheesyDrive(0, 0, 0.05);
+            Robot.getDrivetrain().cheesyDrive(0, 0, 0.07);
             Robot.getLEDSystem().rainbow();
         }
     }

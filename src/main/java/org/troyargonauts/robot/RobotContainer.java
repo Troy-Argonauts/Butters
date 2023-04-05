@@ -26,6 +26,7 @@ public class RobotContainer {
 
     public static final Gamepad driver = new AutoGamepad(0);
     public static final Gamepad operator = new AutoGamepad(1);
+    public static double slowSpeed = 0.04;
 
     public RobotContainer() {
         // Configure the trigger bindings
@@ -81,6 +82,20 @@ public class RobotContainer {
                     leftSide.getMaster().getInternalController().set(ControlMode.PercentOutput, 0);
                     rightSide.getMaster().getInternalController().set(ControlMode.PercentOutput, 0);
                 }))
+        );
+
+        driver.getTopButton().whileTrue(
+                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(slowSpeed, 0, 1), Robot.getDrivetrain())
+        ).whileFalse(
+                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0, 0, 0), Robot.getDrivetrain())
+        );
+
+        driver.getDPadUp().onTrue(
+                new InstantCommand(() -> slowSpeed += 0.001)
+        );
+
+        driver.getDPadDown().onTrue(
+                new InstantCommand(() -> slowSpeed -= 0.001)
         );
 
 

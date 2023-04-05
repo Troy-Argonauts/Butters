@@ -49,12 +49,18 @@ public class Robot extends TimedRobot {
         elevator = new Elevator();
         wrist = new Wrist();
         //ledSystem = new LEDSystem();
+        new RobotContainer();
 
         resetAllEncoders();
 
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
         chooser.setDefaultOption("Homing Sequence", new StartingSequence());
+
+
+        arm.setDesiredTarget(Arm.ArmState.HOME);
+        wrist.setDesiredTarget(Wrist.WristState.HOME);
+        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
     }
 
     @Override
@@ -71,14 +77,15 @@ public class Robot extends TimedRobot {
         }
 
         CommandScheduler.getInstance().run();
+        SmartDashboard.putNumber("Speed", RobotContainer.slowSpeed);
     }
 
     @Override
     public void disabledInit() {
-        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
-        arm.setDesiredTarget(Arm.ArmState.HOME);
-        wrist.setDesiredTarget(Wrist.WristState.HOME);
-        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
+//        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
+//        arm.setDesiredTarget(Arm.ArmState.HOME);
+//        wrist.setDesiredTarget(Wrist.WristState.HOME);
+//        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
     }
 
     @Override
@@ -90,6 +97,14 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
+    }
+
+    @Override
+    public void teleopInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
     }
 
     @Override
@@ -123,16 +138,6 @@ public class Robot extends TimedRobot {
         if (elevator == null) elevator = new Elevator();
         return elevator;
     }
-
-    @Override
-    public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
-        new RobotContainer();
-        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.LOW);
-    }
-
     public void resetAllEncoders() {
         driveTrain.resetEncoders();
         elevator.resetEncoders();
