@@ -45,6 +45,8 @@ public class Elevator extends SubsystemBase {
         elevatorMotor.getPIDController().setP(ELEV_P);
         elevatorMotor.getPIDController().setI(ELEV_I);
         elevatorMotor.getPIDController().setD(ELEV_D);
+
+        elevatorMotor.getPIDController().setOutputRange(-0.4, 0.4);
     }
 
     /**
@@ -56,7 +58,10 @@ public class Elevator extends SubsystemBase {
         elevatorEncoder = elevatorMotor.getEncoder().getPosition();
 
         SmartDashboard.putNumber("elevator motor", elevatorEncoder);
+        SmartDashboard.putNumber("elevator Desired", desiredTarget);
+
         SmartDashboard.putBoolean("Down limit elevator", !bottomLimitSwitch.get());
+        SmartDashboard.putNumber("elevator output", elevatorMotor.getOutputCurrent());
 
         if (!bottomLimitSwitch.get()) {
             resetEncoders();
@@ -64,7 +69,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public void run() {
-        elevatorMotor.getPIDController().setOutputRange(-0.4, 0.4);
         elevatorMotor.getPIDController().setReference(desiredTarget, CANSparkMax.ControlType.kPosition);
     }
 
@@ -110,5 +114,9 @@ public class Elevator extends SubsystemBase {
      */
     public void resetEncoders(){
         elevatorMotor.getEncoder().setPosition(0);
+    }
+
+    public boolean isPIDFinished() {
+        return Math.abs(desiredTarget - elevatorMotor.getEncoder().getPosition()) <= 5;
     }
 }

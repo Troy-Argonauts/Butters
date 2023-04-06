@@ -68,7 +68,7 @@ public final class Constants {
 
     public interface Elevator {
         int LIFT_MOTOR_PORT = 10;
-        double ELEV_P = 0.0055;
+        double ELEV_P = 0.055;
         double ELEV_I = 0.0000008;
         double ELEV_D = 0.0002;
         double ELEVATOR_GEARBOX_SCALE = 9;

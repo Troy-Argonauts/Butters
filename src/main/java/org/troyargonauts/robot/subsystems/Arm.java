@@ -49,12 +49,17 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm Encoder", armMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("arm Desired", desiredTarget);
 
         SmartDashboard.putBoolean("up limit arm", !upLimitArm.get());
         SmartDashboard.putBoolean("down limit arm", !downLimitArm.get());
 
         if (!upLimitArm.get()) {
             armMotor.getEncoder().setPosition(0);
+        }
+
+        if (!downLimitArm.get()) {
+            armMotor.getEncoder().setPosition(6890);
         }
     }
 
@@ -69,7 +74,7 @@ public class Arm extends SubsystemBase {
             armMotor.getPIDController().setOutputRange(-0.40, 0.40);
         }
         desiredTarget = desiredState.getEncoderPosition();
-        System.out.println(desiredTarget);
+        System.out.println("Arm Desired: " + desiredTarget);
     }
 
     /**
@@ -111,4 +116,5 @@ public class Arm extends SubsystemBase {
             return encoderPosition;
         }
     }
+    
 }

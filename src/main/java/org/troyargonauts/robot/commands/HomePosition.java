@@ -18,7 +18,7 @@ public class HomePosition extends SequentialCommandGroup {
                 new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HOME), Robot.getArm()),
                 new WaitCommand(0.3),
                 new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HOME), Robot.getWrist()),
-                new WaitUntilCommand(() -> Robot.getWrist().getDownLimitSwitch()),
+                new WaitCommand(0.5),
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
         );
     }

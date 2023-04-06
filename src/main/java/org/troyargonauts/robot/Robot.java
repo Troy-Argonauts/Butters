@@ -5,6 +5,7 @@
 
 package org.troyargonauts.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Tracer;
@@ -58,10 +59,11 @@ public class Robot extends TimedRobot {
         arm = new Arm();
         elevator = new Elevator();
         wrist = new Wrist();
-        //ledSystem = new LEDSystem();
         new RobotContainer();
 
         resetAllEncoders();
+
+        CameraServer.startAutomaticCapture();
 
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
@@ -94,9 +96,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
 //        getDrivetrain().getDualSpeedTransmission().setGear(DualSpeedTransmission.Gear.HIGH);
-        arm.setDesiredTarget(Arm.ArmState.HOME);
-        wrist.setDesiredTarget(Wrist.WristState.HOME);
-        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
+//        arm.setDesiredTarget(Arm.ArmState.HOME);
+//        wrist.setDesiredTarget(Wrist.WristState.HOME);
+//        elevator.setDesiredTarget(Elevator.ElevatorState.HOME);
     }
 
     @Override

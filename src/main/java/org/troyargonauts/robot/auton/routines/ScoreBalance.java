@@ -1,4 +1,4 @@
-package org.troyargonauts.robot.auton;
+package org.troyargonauts.robot.auton.routines;
 
 
 import edu.wpi.first.wpilibj2.command.RunCommand;

@@ -34,7 +34,7 @@ public class Wrist extends SubsystemBase {
 		wristMotor.getPIDController().setI(WRIST_I);
 		wristMotor.getPIDController().setD(WRIST_D);
 
-		wristMotor.getPIDController().setOutputRange(-0.3, 0.3);
+		wristMotor.getPIDController().setOutputRange(-0.4, 0.4);
 
 		wristMotor.burnFlash();
 	}
@@ -42,13 +42,13 @@ public class Wrist extends SubsystemBase {
 	@Override
 	public void periodic() {
 		SmartDashboard.putNumber("Wrist Encoder", wristMotor.getEncoder().getPosition());
+		SmartDashboard.putNumber("wrist Desired", desiredTarget);
 
 		SmartDashboard.putBoolean("Down limit wrist", !downLimitWrist.get());
 		SmartDashboard.putBoolean("up limit wrist", !upLimitWrist.get());
 
 		if (!downLimitWrist.get()) {
 			wristMotor.getEncoder().setPosition(0);
-			desiredTarget = 0;
 		}
 	}
 
@@ -96,10 +96,9 @@ public class Wrist extends SubsystemBase {
 	}
 
 	public enum WristState {
-		RESET(-5),
-		INITIAL_HOME(-710),
+		INITIAL_HOME(-900),
 		MIDDLE(1000),
-		FLOOR_PICKUP(325),
+		FLOOR_PICKUP(335),
 		HYBRID_SCORE(1115),
 		HOME(0),
 		HIGH_CUBE(473);
