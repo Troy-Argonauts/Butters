@@ -6,22 +6,17 @@
 package org.troyargonauts.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.troyargonauts.robot.auton.routines.*;
 import org.troyargonauts.robot.commands.StartingSequence;
 import org.troyargonauts.robot.subsystems.*;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +35,8 @@ public class Robot extends TimedRobot {
     private static LEDSystem ledSystem;
     private final SendableChooser<Command> chooser = new SendableChooser<>();
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    private boolean hasLimitBeenPressed = false;
+    private boolean hasArmLimitBeenPressed = false;
+    private boolean hasWristLimitBeenPressed = false;
     private Command autonomousCommand;
 
     public static LEDSystem getLEDSystem() {
@@ -63,11 +59,18 @@ public class Robot extends TimedRobot {
 
         resetAllEncoders();
 
-        CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture().setFPS(14);
 
         SmartDashboard.putData("Autonomous modes", chooser);
         chooser.setDefaultOption("Nothing", new WaitCommand(15));
-        chooser.setDefaultOption("Homing Sequence", new StartingSequence());
+        chooser.addOption("Homing Sequence", new StartingSequence().withTimeout(15));
+        chooser.addOption("Home and Drive", new HomeDrive().withTimeout(15));
+        chooser.addOption("Drive Out", new DriveOut().withTimeout(15));
+        chooser.addOption("Drive Hybrid", new DriveHybrid().withTimeout(15));
+        chooser.addOption("High Mobility", new HighMobility().withTimeout(15));
+        chooser.addOption("Hybrid Mobility", new HybridMobility().withTimeout(15));
+        chooser.addOption("Mid Mobility", new MidMobiltity().withTimeout(15));
+        chooser.addOption("Auto Balance", new AutoBalance().withTimeout(15));
 
         arm.setDesiredTarget(Arm.ArmState.HOME);
         wrist.setDesiredTarget(Wrist.WristState.HOME);
@@ -75,14 +78,21 @@ public class Robot extends TimedRobot {
 
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             elevator.run();
-            wrist.run();
 
             if (arm.isHomeLimitPressed()) {
-                hasLimitBeenPressed = true;
+                hasArmLimitBeenPressed = true;
             }
 
-            if (hasLimitBeenPressed) {
+            if (hasArmLimitBeenPressed) {
                 arm.run();
+            }
+
+            if (wrist.getDownLimitSwitch()) {
+                hasWristLimitBeenPressed = true;
+            }
+
+            if (hasWristLimitBeenPressed) {
+                wrist.run();
             }
         }, 100, 10, TimeUnit.MILLISECONDS);
     }
@@ -90,7 +100,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        SmartDashboard.putNumber("Speed", RobotContainer.slowSpeed);
     }
 
     @Override

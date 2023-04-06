@@ -14,7 +14,8 @@ public class StartingSequence extends ParallelCommandGroup {
         addCommands(
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.INITIAL_MOVEMENT), Robot.getElevator()),
                 new WaitUntilCommand(() -> Robot.getElevator().isPIDFinished()),
-                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.INITIAL_HOME), Robot.getWrist())
+                new InstantCommand(() -> Robot.getWrist().setDirectPower(-0.2), Robot.getWrist()),
+                new WaitUntilCommand(Robot.getWrist()::getDownLimitSwitch)
         );
     }
 }

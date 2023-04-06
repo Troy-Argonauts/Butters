@@ -47,7 +47,10 @@ public class Wrist extends SubsystemBase {
 		SmartDashboard.putBoolean("Down limit wrist", !downLimitWrist.get());
 		SmartDashboard.putBoolean("up limit wrist", !upLimitWrist.get());
 
-		if (!downLimitWrist.get()) {
+		if (!downLimitWrist.get() && desiredTarget < 0) {
+			wristMotor.getEncoder().setPosition(0);
+			desiredTarget = 0;
+		} else if (!downLimitWrist.get()) {
 			wristMotor.getEncoder().setPosition(0);
 		}
 	}
@@ -96,7 +99,7 @@ public class Wrist extends SubsystemBase {
 	}
 
 	public enum WristState {
-		INITIAL_HOME(-900),
+		INITIAL_HOME(-800),
 		MIDDLE(1000),
 		FLOOR_PICKUP(335),
 		HYBRID_SCORE(1115),
@@ -120,5 +123,16 @@ public class Wrist extends SubsystemBase {
 
 	public boolean getDownLimitSwitch() {
 		return !downLimitWrist.get();
+	}
+
+	public boolean isPIDFinished() {
+		return Math.abs(desiredTarget - wristMotor.getEncoder().getPosition()) <= 5;
+	}
+
+	public void setDirectPower(double power) {
+		while (downLimitWrist.get()) {
+			wristMotor.set(power);
+		}
+		wristMotor.set(0);
 	}
 }

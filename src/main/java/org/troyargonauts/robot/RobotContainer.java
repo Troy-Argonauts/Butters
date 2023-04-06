@@ -84,20 +84,6 @@ public class RobotContainer {
                 }))
         );
 
-        driver.getTopButton().whileTrue(
-                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(slowSpeed, 0, 1), Robot.getDrivetrain())
-        ).whileFalse(
-                new RunCommand(() -> Robot.getDrivetrain().cheesyDrive(0, 0, 0), Robot.getDrivetrain())
-        );
-
-        driver.getDPadUp().onTrue(
-                new InstantCommand(() -> slowSpeed += 0.001)
-        );
-
-        driver.getDPadDown().onTrue(
-                new InstantCommand(() -> slowSpeed -= 0.001)
-        );
-
 
         Robot.getArm().setDefaultCommand(
                 new RunCommand(

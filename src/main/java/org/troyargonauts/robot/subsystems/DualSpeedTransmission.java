@@ -96,6 +96,7 @@ public class DualSpeedTransmission extends SubsystemBase {
 		}
 
 		SmartDashboard.putBoolean("Low Gear", getGear() == Gear.LOW);
+		SmartDashboard.putBoolean("High Gear", getGear() == Gear.HIGH);
 	}
 
 	public boolean drivetrainReady() {

@@ -116,5 +116,5 @@ public class Arm extends SubsystemBase {
             return encoderPosition;
         }
     }
-    
+
 }
