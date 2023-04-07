@@ -104,7 +104,8 @@ public class Wrist extends SubsystemBase {
 		FLOOR_PICKUP(335),
 		HYBRID_SCORE(1115),
 		HOME(0),
-		HIGH_CUBE(473);
+		HIGH_CUBE(473),
+		HUMAN_PLAYER(162);
 
 		private final int encoderPosition;
 
@@ -129,10 +130,12 @@ public class Wrist extends SubsystemBase {
 		return Math.abs(desiredTarget - wristMotor.getEncoder().getPosition()) <= 5;
 	}
 
-	public void setDirectPower(double power) {
+	public boolean setDirectPower(double power) {
 		while (downLimitWrist.get()) {
 			wristMotor.set(power);
 		}
 		wristMotor.set(0);
+		wristMotor.getEncoder().setPosition(0);
+		return true;
 	}
 }

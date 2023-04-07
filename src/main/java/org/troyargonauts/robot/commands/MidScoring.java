@@ -14,6 +14,7 @@ public class MidScoring extends SequentialCommandGroup {
         // TODO: Add your sequential commands in the super() call, e.g.
         //           super(new OpenClawCommand(), new MoveArmCommand());
         super(
+                new InstantCommand(() -> System.out.println("Mid Scoring")),
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.INITIAL_MOVEMENT), Robot.getElevator()),
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.MIDDLE), Robot.getElevator()),
                 new WaitUntilCommand(() -> Robot.getElevator().isPIDFinished()),

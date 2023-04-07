@@ -10,17 +10,17 @@ import org.troyargonauts.robot.subsystems.Arm;
 import org.troyargonauts.robot.subsystems.Elevator;
 import org.troyargonauts.robot.subsystems.Wrist;
 
-public class HomePosition extends SequentialCommandGroup {
-    public HomePosition() {
+public class HumanPlayer extends SequentialCommandGroup {
+    public HumanPlayer() {
         // TODO: Add your sequential commands in the super() call, e.g.
         //           super(new OpenClawCommand(), new MoveArmCommand());
         super(
-                new InstantCommand(() -> System.out.println("Home")),
-                new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HOME), Robot.getArm()),
-                new WaitCommand(0.3),
-                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HOME), Robot.getWrist()),
+                new InstantCommand(() -> System.out.println("Human Player")),
+                new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HUMAN_PLAYER), Robot.getArm()),
                 new WaitCommand(0.5),
-                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator())
+                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HUMAN_PLAYER), Robot.getElevator()),
+                new WaitUntilCommand(Robot.getElevator()::isPIDFinished),
+                new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HUMAN_PLAYER), Robot.getWrist())
         );
     }
 }
