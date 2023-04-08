@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.troyargonauts.common.motors.MotorCreation;
 import org.troyargonauts.common.motors.wrappers.LazyCANSparkMax;
@@ -84,7 +85,7 @@ public class Elevator extends SubsystemBase {
      * @param joyStickValue desired elevator extension or retraction speed
      */
     public void setPower(double joyStickValue) {
-        double newTarget = desiredTarget + (joyStickValue * 50);
+        double newTarget = desiredTarget + (joyStickValue * 20);
         if ((desiredTarget <= 5 || desiredTarget >= 0) && newTarget > 0 && desiredTarget != newTarget) {
             desiredTarget = newTarget;
         } else if (newTarget < desiredTarget && bottomLimitSwitch.get()) { // If elevator is moving down (new encoder value is less than current encoder value) and bottomLimitSwitch is not pressed
@@ -97,7 +98,8 @@ public class Elevator extends SubsystemBase {
         HOME(0),
         INITIAL_MOVEMENT(101),
         MIDDLE(200),
-        HIGH(221);
+        HIGH(221),
+        HUMAN_PLAYER(30);
         final double encoderPosition;
 
         ElevatorState(double encoderPosition) {

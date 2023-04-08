@@ -71,8 +71,8 @@ public class DriveTrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        rightEncoderValue = rightSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
-        leftEncoderValue = leftSide.getMaster().getInternalController().getSensorCollection().getIntegratedSensorPosition();
+        rightEncoderValue = rightSide.getMaster().getInternalController().getSelectedSensorPosition();
+        leftEncoderValue = leftSide.getMaster().getInternalController().getSelectedSensorPosition();
 
         pigeonRoll = pigeon.getRoll();
         SmartDashboard.putNumber("Pigeon Roll", pigeonRoll);
@@ -198,12 +198,12 @@ public class DriveTrain extends SubsystemBase {
 
     public void balance() {
         if (pigeonRoll > Constants.DriveTrain.BALANCE_THRESHOLD) {
-            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.07);
+            Robot.getDrivetrain().cheesyDrive(-1, 0, 0.06);
         } else if (pigeonRoll < -Constants.DriveTrain.BALANCE_THRESHOLD) {
-            Robot.getDrivetrain().cheesyDrive(1, 0, 0.07);
+            Robot.getDrivetrain().cheesyDrive(1, 0, 0.06);
         } else {
-            Robot.getDrivetrain().cheesyDrive(0, 0, 0.07);
-            Robot.getLEDSystem().rainbow();
+            Robot.getDrivetrain().cheesyDrive(0, 0, 0.06);
+//            Robot.getLEDSystem().rainbow();
         }
     }
 

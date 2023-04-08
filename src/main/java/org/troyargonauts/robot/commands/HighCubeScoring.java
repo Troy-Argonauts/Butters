@@ -11,9 +11,8 @@ import org.troyargonauts.robot.subsystems.Wrist;
 
 public class HighCubeScoring extends SequentialCommandGroup {
     public HighCubeScoring() {
-        // TODO: Add your sequential commands in the super() call, e.g.
-        //           super(new OpenClawCommand(), new MoveArmCommand());
         super(
+                new InstantCommand(() -> System.out.println("High Cube Scoring")),
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.INITIAL_MOVEMENT), Robot.getElevator()),
                 new WaitUntilCommand(() -> Robot.getElevator().isPIDFinished()),
                 new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HIGH_CUBE), Robot.getWrist()),

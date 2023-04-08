@@ -69,9 +69,9 @@ public class Arm extends SubsystemBase {
 
     public void setDesiredTarget(ArmState desiredState) {
         if (desiredState.getEncoderPosition() < desiredTarget && desiredState.getEncoderPosition() < 1000) {
-            armMotor.getPIDController().setOutputRange(-0.30, 0.30);
+            armMotor.getPIDController().setOutputRange(-0.50, 0.50);
         } else {
-            armMotor.getPIDController().setOutputRange(-0.40, 0.40);
+            armMotor.getPIDController().setOutputRange(-0.60, 0.60);
         }
         desiredTarget = desiredState.getEncoderPosition();
         System.out.println("Arm Desired: " + desiredTarget);
@@ -105,7 +105,7 @@ public class Arm extends SubsystemBase {
 
     public enum ArmState {
 
-        HOME(0), FLOOR_PICKUP(6890);
+        HOME(0), FLOOR_PICKUP(6890), HUMAN_PLAYER(3922);
         final int encoderPosition;
 
         ArmState(int encoderPosition) {

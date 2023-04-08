@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
         CameraServer.startAutomaticCapture().setFPS(14);
 
         SmartDashboard.putData("Autonomous modes", chooser);
-        chooser.setDefaultOption("Nothing", new WaitCommand(15));
+        chooser.addOption("Nothing", new WaitCommand(15));
         chooser.addOption("Homing Sequence", new StartingSequence().withTimeout(15));
         chooser.addOption("Home and Drive", new HomeDrive().withTimeout(15));
         chooser.addOption("Drive Out", new DriveOut().withTimeout(15));
@@ -70,7 +70,10 @@ public class Robot extends TimedRobot {
         chooser.addOption("High Mobility", new HighMobility().withTimeout(15));
         chooser.addOption("Hybrid Mobility", new HybridMobility().withTimeout(15));
         chooser.addOption("Mid Mobility", new MidMobiltity().withTimeout(15));
-        chooser.addOption("Auto Balance", new AutoBalance().withTimeout(15));
+        chooser.setDefaultOption("Auto Balance", new Balance().withTimeout(15));
+        chooser.setDefaultOption("Mid Balance Cone", new MidBalance(GamePiece.CONE).withTimeout(15));
+        chooser.setDefaultOption("Mid Balance Cube", new MidBalance(GamePiece.CUBE).withTimeout(15));
+        chooser.setDefaultOption("High Balance", new HighBalance().withTimeout(15));
 
         arm.setDesiredTarget(Arm.ArmState.HOME);
         wrist.setDesiredTarget(Wrist.WristState.HOME);

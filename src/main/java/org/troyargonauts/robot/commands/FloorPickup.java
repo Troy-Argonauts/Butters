@@ -11,12 +11,11 @@ import org.troyargonauts.robot.subsystems.Wrist;
 
 public class FloorPickup extends SequentialCommandGroup {
     public FloorPickup() {
-        // TODO: Add your sequential commands in the super() call, e.g.
-        //           super(new OpenClawCommand(), new MoveArmCommand());
         super(
+                new InstantCommand(() -> System.out.println("Floor Pickup")),
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HOME), Robot.getElevator()),
                 new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.FLOOR_PICKUP), Robot.getArm()),
-                new WaitCommand(1.75),
+                new WaitCommand(1),
                 new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.FLOOR_PICKUP), Robot.getWrist())
         );
     }

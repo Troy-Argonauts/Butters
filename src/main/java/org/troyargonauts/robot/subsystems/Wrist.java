@@ -101,10 +101,11 @@ public class Wrist extends SubsystemBase {
 	public enum WristState {
 		INITIAL_HOME(-800),
 		MIDDLE(1000),
-		FLOOR_PICKUP(335),
+		FLOOR_PICKUP(445),
 		HYBRID_SCORE(1115),
 		HOME(0),
-		HIGH_CUBE(473);
+		HIGH_CUBE(473),
+		HUMAN_PLAYER(240);
 
 		private final int encoderPosition;
 
@@ -126,13 +127,10 @@ public class Wrist extends SubsystemBase {
 	}
 
 	public boolean isPIDFinished() {
-		return Math.abs(desiredTarget - wristMotor.getEncoder().getPosition()) <= 5;
+		return Math.abs(desiredTarget - wristMotor.getEncoder().getPosition()) <= 10;
 	}
 
 	public void setDirectPower(double power) {
-		while (downLimitWrist.get()) {
-			wristMotor.set(power);
-		}
-		wristMotor.set(0);
+		wristMotor.set(power);
 	}
 }
