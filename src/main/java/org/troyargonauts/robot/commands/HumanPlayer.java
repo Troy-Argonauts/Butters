@@ -12,6 +12,8 @@ import org.troyargonauts.robot.subsystems.Wrist;
 
 public class HumanPlayer extends SequentialCommandGroup {
     public HumanPlayer() {
+        // TODO: Add your sequential commands in the super() call, e.g.
+        //           super(new OpenClawCommand(), new MoveArmCommand());
         super(
                 new InstantCommand(() -> System.out.println("Human Player")),
                 new InstantCommand(() -> Robot.getArm().setDesiredTarget(Arm.ArmState.HUMAN_PLAYER), Robot.getArm()),
