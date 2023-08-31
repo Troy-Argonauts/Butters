@@ -91,7 +91,8 @@ public class RobotContainer {
                             double armSpeed = IStream.create(operator::getRightY)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
-                            Robot.getArm().setPower(armSpeed);
+                           // Robot.getArm().setPower(armSpeed);
+                            Robot.getArm().rawPower(armSpeed);
                         }, Robot.getArm()
                 )
         );
@@ -111,7 +112,8 @@ public class RobotContainer {
                 new RunCommand(
                         () -> {
                             double upSpeed = IStream.create(operator::getRightTrigger)
-                                    .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
+                                    .filtered(
+                                            x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
                                     .get();
                             double downSpeed = IStream.create(operator::getLeftTrigger)
                                     .filtered(x -> OMath.deadband(x, Constants.DriveTrain.DEADBAND))
@@ -155,6 +157,10 @@ public class RobotContainer {
 
         operator.getDPadRight().toggleOnTrue(
                 new HumanPlayer()
+        );
+
+        operator.getDPadLeft().toggleOnTrue(
+                new FloorShoot()
         );
     }
 

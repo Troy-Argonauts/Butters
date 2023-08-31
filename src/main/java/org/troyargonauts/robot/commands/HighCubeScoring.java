@@ -16,7 +16,8 @@ public class HighCubeScoring extends SequentialCommandGroup {
                 new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.INITIAL_MOVEMENT), Robot.getElevator()),
                 new WaitUntilCommand(() -> Robot.getElevator().isPIDFinished()),
                 new InstantCommand(() -> Robot.getWrist().setDesiredTarget(Wrist.WristState.HIGH_CUBE), Robot.getWrist()),
-                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HIGH), Robot.getElevator())
+                new InstantCommand(() -> Robot.getElevator().setDesiredTarget(Elevator.ElevatorState.HIGH), Robot.getElevator()),
+                new WaitUntilCommand(() -> Robot.getElevator().isPIDFinished())
         );
     }
 }

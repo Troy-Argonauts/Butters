@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
             }
 
             if (hasArmLimitBeenPressed) {
-                arm.run();
+               // arm.run();
             }
 
             if (wrist.getDownLimitSwitch()) {

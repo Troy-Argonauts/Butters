@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        elevatorMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 7);
+        elevatorMotor.setSmartCurrentLimit(100);
 
         elevatorMotor.getEncoder().setPositionConversionFactor(ELEVATOR_GEARBOX_SCALE);
 
@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase {
         elevatorMotor.getPIDController().setI(ELEV_I);
         elevatorMotor.getPIDController().setD(ELEV_D);
 
-        elevatorMotor.getPIDController().setOutputRange(-0.4, 0.4);
+        elevatorMotor.getPIDController().setOutputRange(-0.5, 0.5);
     }
 
     /**
@@ -63,6 +63,7 @@ public class Elevator extends SubsystemBase {
 
         SmartDashboard.putBoolean("Down limit elevator", !bottomLimitSwitch.get());
         SmartDashboard.putNumber("elevator output", elevatorMotor.getOutputCurrent());
+        SmartDashboard.putNumber("elevator app output", elevatorMotor.getAppliedOutput());
 
         if (!bottomLimitSwitch.get()) {
             resetEncoders();
@@ -93,6 +94,9 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    public void rawPower(double power) {
+        elevatorMotor.set(power);
+    }
     public enum ElevatorState {
 
         HOME(0),
@@ -119,6 +123,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean isPIDFinished() {
-        return Math.abs(desiredTarget - elevatorMotor.getEncoder().getPosition()) <= 5;
+        return Math.abs(desiredTarget - elevatorMotor.getEncoder().getPosition()) <= 10;
     }
 }

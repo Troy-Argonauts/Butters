@@ -105,7 +105,9 @@ public class Wrist extends SubsystemBase {
 		HYBRID_SCORE(1115),
 		HOME(0),
 		HIGH_CUBE(473),
-		HUMAN_PLAYER(240);
+		HUMAN_PLAYER(240),
+		FLOOR_SHOOT(970);
+
 
 		private final int encoderPosition;
 

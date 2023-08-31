@@ -54,13 +54,15 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("up limit arm", !upLimitArm.get());
         SmartDashboard.putBoolean("down limit arm", !downLimitArm.get());
 
+        SmartDashboard.putNumber("Arm Speed", armMotor.getAppliedOutput());
+
         if (!upLimitArm.get()) {
             armMotor.getEncoder().setPosition(0);
         }
 
-        if (!downLimitArm.get()) {
-            armMotor.getEncoder().setPosition(6890);
-        }
+    //    if (!downLimitArm.get()) {
+     //       armMotor.getEncoder().setPosition(6890);
+     //   }
     }
 
     public void run() {
@@ -93,6 +95,10 @@ public class Arm extends SubsystemBase {
             }
             desiredTarget = newTarget;
         }
+    }
+
+    public void rawPower(double power) {
+        armMotor.set(power);
     }
 
     public boolean isHomeLimitPressed() {
